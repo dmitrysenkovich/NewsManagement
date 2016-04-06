@@ -2,20 +2,102 @@
   xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
   <modelVersion>4.0.0</modelVersion>
   <groupId>com.epam</groupId>
-  <artifactId>NewsManagement</artifactId>
-  <packaging>war</packaging>
+  <artifactId>newsmanagement</artifactId>
+  <packaging>jar</packaging>
   <version>1.0-SNAPSHOT</version>
-  <name>NewsManagement Maven Webapp</name>
+  <name>NewsManagement</name>
   <url>http://maven.apache.org</url>
+
+  <properties>
+      <jdk.version>1.8</jdk.version>
+      <spring.version>4.2.5.RELEASE</spring.version>
+      <spring.data.version>1.9.0.RELEASE</spring.data.version>
+      <javaee.version>7.0</javaee.version>
+      <mysql.version>5.1.24</mysql.version>
+      <apache.dbcp2.version>2.1.1</apache.dbcp2.version>
+      <apache.pool.version>2.4.2</apache.pool.version>
+      <maven.version>3.0</maven.version>
+      <log4j.version>1.2.17</log4j.version>
+      <junit.version>4.11</junit.version>
+      <slf4j.version>1.6.4</slf4j.version>
+      <mockito.version>1.10.19</mockito.version>
+
+      <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+      <project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
+  </properties>
+
   <dependencies>
-    <dependency>
-      <groupId>junit</groupId>
-      <artifactId>junit</artifactId>
-      <version>3.8.1</version>
-      <scope>test</scope>
-    </dependency>
+      <dependency>
+          <groupId>org.springframework</groupId>
+          <artifactId>spring-core</artifactId>
+          <version>${spring.version}</version>
+      </dependency>
+      <dependency>
+          <groupId>org.springframework</groupId>
+          <artifactId>spring-beans</artifactId>
+          <version>${spring.version}</version>
+      </dependency>
+      <dependency>
+          <groupId>org.springframework</groupId>
+          <artifactId>spring-jdbc</artifactId>
+          <version>${spring.version}</version>
+      </dependency>
+      <dependency>
+          <groupId>org.springframework.data</groupId>
+          <artifactId>spring-data-jpa</artifactId>
+          <version>${spring.data.version}</version>
+      </dependency>
+
+      <dependency>
+          <groupId>mysql</groupId>
+          <artifactId>mysql-connector-java</artifactId>
+          <version>${mysql.version}</version>
+      </dependency>
+
+      <dependency>
+          <groupId>	org.apache.commons</groupId>
+          <artifactId>commons-dbcp2</artifactId>
+          <version>${apache.dbcp2.version}</version>
+      </dependency>
+      <dependency>
+          <groupId>org.apache.commons</groupId>
+          <artifactId>commons-pool2</artifactId>
+          <version>${apache.pool.version}</version>
+      </dependency>
+
+      <dependency>
+          <groupId>log4j</groupId>
+          <artifactId>log4j</artifactId>
+          <version>${log4j.version}</version>
+      </dependency>
+
+      <dependency>
+          <groupId>javax</groupId>
+          <artifactId>javaee-api</artifactId>
+          <version>${javaee.version}</version>
+      </dependency>
+
+      <dependency>
+          <groupId>org.slf4j</groupId>
+          <artifactId>slf4j-simple</artifactId>
+          <version>${slf4j.version}</version>
+      </dependency>
+
+      <dependency>
+          <groupId>junit</groupId>
+          <artifactId>junit</artifactId>
+          <version>${junit.version}</version>
+          <scope>test</scope>
+      </dependency>
+
+      <dependency>
+          <groupId>org.mockito</groupId>
+          <artifactId>mockito-core</artifactId>
+          <version>${mockito.version}</version>
+          <scope>test</scope>
+      </dependency>
   </dependencies>
   <build>
-    <finalName>NewsManagement</finalName>
+      <finalName>NewsManagement</finalName>
   </build>
 </project>
