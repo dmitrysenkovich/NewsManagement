@@ -37,7 +37,8 @@ CREATE TABLE IF NOT EXISTS News_Author
     news_id INT UNSIGNED NOT NULL,
     author_id INT UNSIGNED NOT NULL,
     FOREIGN KEY(news_id) REFERENCES News(news_id) ON DELETE CASCADE,
-    FOREIGN KEY(author_id) REFERENCES Author(author_id) ON DELETE CASCADE
+    FOREIGN KEY(author_id) REFERENCES Author(author_id) ON DELETE CASCADE,
+    UNIQUE(news_id, author_id)
 );
 
 CREATE TABLE IF NOT EXISTS Comments
@@ -53,15 +54,17 @@ CREATE TABLE IF NOT EXISTS Comments
 CREATE TABLE IF NOT EXISTS User
 (
     user_id INT UNSIGNED NOT NULL AUTO_INCREMENT,
+    role_id INT UNSIGNED NOT NULL,
     user_name VARCHAR(50) NOT NULL,
     login VARCHAR(30) NOT NULL,
     password VARCHAR(30) NOT NULL,
+    FOREIGN KEY(role_id) REFERENCES Roles(role_id) ON DELETE CASCADE,
     PRIMARY KEY(user_id)
 );
 
 CREATE TABLE IF NOT EXISTS Roles
 (
-    user_id INT UNSIGNED NOT NULL,
+    role_id INT UNSIGNED NOT NULL AUTO_INCREMENT,
     role_name VARCHAR(50) NOT NULL,
-    FOREIGN KEY(user_id) REFERENCES User(user_id) ON DELETE CASCADE
+    PRIMARY KEY(role_id)
 );

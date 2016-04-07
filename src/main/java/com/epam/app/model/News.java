@@ -11,8 +11,8 @@ public class News {
     private String title;
     private String shortText;
     private String fullText;
-    private Date creationDate;
-    private Timestamp modificationDate;
+    private Timestamp creationDate;
+    private Date modificationDate;
 
     public News() {}
 
@@ -48,19 +48,19 @@ public class News {
         this.fullText = fullText;
     }
 
-    public Date getCreationDate() {
+    public Timestamp getCreationDate() {
         return creationDate;
     }
 
-    public void setCreationDate(Date creationDate) {
+    public void setCreationDate(Timestamp creationDate) {
         this.creationDate = creationDate;
     }
 
-    public Timestamp getModificationDate() {
+    public Date getModificationDate() {
         return modificationDate;
     }
 
-    public void setModificationDate(Timestamp modificationDate) {
+    public void setModificationDate(Date modificationDate) {
         this.modificationDate = modificationDate;
     }
 }

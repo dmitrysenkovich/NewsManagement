@@ -5,7 +5,7 @@ package com.epam.app.model;
  */
 public class Tag {
     private int tagId;
-    private int tagName;
+    private String tagName;
 
     public Tag() {}
 
@@ -17,11 +17,11 @@ public class Tag {
         this.tagId = tagId;
     }
 
-    public int getTagName() {
+    public String getTagName() {
         return tagName;
     }
 
-    public void setTagName(int tagName) {
+    public void setTagName(String tagName) {
         this.tagName = tagName;
     }
 }
