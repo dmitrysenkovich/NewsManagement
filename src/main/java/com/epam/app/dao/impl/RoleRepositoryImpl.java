@@ -1,19 +1,17 @@
 package com.epam.app.dao.impl;
 
-import com.epam.app.dao.CrudRepository;
+import com.epam.app.dao.RoleRepository;
 import com.epam.app.model.Role;
 import org.apache.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 
 import javax.sql.DataSource;
 import java.sql.*;
-import java.util.LinkedList;
-import java.util.List;
 
 /**
  * Role repository implementation.
  */
-public class RoleRepositoryImpl implements CrudRepository<Role> {
+public class RoleRepositoryImpl implements RoleRepository {
     private static final Logger logger = Logger.getLogger(RoleRepositoryImpl.class.getName());
 
     private static final String ADD = "INSERT INTO Roles(role_name) VALUES(?);";
@@ -29,7 +27,6 @@ public class RoleRepositoryImpl implements CrudRepository<Role> {
         logger.info("Adding role..");
         Connection connection = null;
         PreparedStatement preparedStatement = null;
-        Role result = null;
         try {
             connection = dataSource.getConnection();
             preparedStatement = connection.prepareStatement(ADD, Statement.RETURN_GENERATED_KEYS);
@@ -39,7 +36,6 @@ public class RoleRepositoryImpl implements CrudRepository<Role> {
             resultSet.next();
             int roleId = resultSet.getInt(1);
             role.setRoleId(roleId);
-            result = role;
             logger.info("Successfully added role");
         }
         catch (SQLException e) {
@@ -64,7 +60,7 @@ public class RoleRepositoryImpl implements CrudRepository<Role> {
                 }
             }
 
-            return result;
+            return role;
         }
     }
 

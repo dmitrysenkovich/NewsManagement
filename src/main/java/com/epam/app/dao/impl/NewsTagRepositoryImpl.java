@@ -1,6 +1,6 @@
 package com.epam.app.dao.impl;
 
-import com.epam.app.dao.CdRepository;
+import com.epam.app.dao.NewsTagRepository;
 import com.epam.app.model.NewsTag;
 import org.apache.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -13,7 +13,7 @@ import java.sql.SQLException;
 /**
  * NewsTag repository implementation.
  */
-public class NewsTagRepositoryImpl implements CdRepository<NewsTag> {
+public class NewsTagRepositoryImpl implements NewsTagRepository {
     private static final Logger logger = Logger.getLogger(NewsTagRepositoryImpl.class.getName());
 
     private static final String ADD = "INSERT INTO NewsTag(news_id, tag_id) VALUES(?, ?);";

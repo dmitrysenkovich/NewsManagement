@@ -38,7 +38,6 @@ public class NewsRepositoryImpl implements NewsRepository {
         logger.info("Adding news..");
         Connection connection = null;
         PreparedStatement preparedStatement = null;
-        News result = null;
         try {
             connection = dataSource.getConnection();
             preparedStatement = connection.prepareStatement(ADD, Statement.RETURN_GENERATED_KEYS);
@@ -52,7 +51,6 @@ public class NewsRepositoryImpl implements NewsRepository {
             resultSet.next();
             int newsId = resultSet.getInt(1);
             news.setNewsId(newsId);
-            result = news;
             logger.info("Successfully added news");
         }
         catch (SQLException e) {
@@ -77,7 +75,7 @@ public class NewsRepositoryImpl implements NewsRepository {
                 }
             }
 
-            return result;
+            return news;
         }
     }
 
@@ -228,7 +226,7 @@ public class NewsRepositoryImpl implements NewsRepository {
         List<News> fitNews = null;
         try {
             connection = dataSource.getConnection();
-            preparedStatement = connection.prepareStatement(FIND_ALL_SORTED);
+            preparedStatement = connection.prepareStatement(SEARCH_CRITERIA_QUERY);
             ResultSet resultSet = preparedStatement.executeQuery();
             resultSet.next();
 

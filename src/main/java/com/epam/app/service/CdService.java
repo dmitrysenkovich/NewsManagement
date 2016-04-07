@@ -1,22 +1,22 @@
-package com.epam.app.dao;
+package com.epam.app.service;
 
 /**
- * CD repository interface. Just
- * like CRUD but CD:) I don't
- * know a better way to name it:c
+ * Cd service interface.
  */
-public interface CdRepository<T> {
+public interface CdService<T, E> {
     /**
      * Adds new entity.
+     * @param e another entity to be updated.
      * @param t new entity.
      * @return true if added successfully.
      */
-    boolean add(T t);
+    boolean add(E e, T t);
 
     /**
      * Deletes an entity.
+     * @param e another entity to be updated.
      * @param t the entity to be deleted.
      * @return true if deleted successfully.
      */
-    boolean delete(T t);
+    boolean delete(E e, T t);
 }

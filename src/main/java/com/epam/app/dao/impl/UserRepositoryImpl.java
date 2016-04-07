@@ -1,6 +1,6 @@
 package com.epam.app.dao.impl;
 
-import com.epam.app.dao.CrudRepository;
+import com.epam.app.dao.UserRepository;
 import com.epam.app.model.User;
 import org.apache.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -11,7 +11,7 @@ import java.sql.*;
 /**
  * User repository implementation.
  */
-public class UserRepositoryImpl implements CrudRepository<User> {
+public class UserRepositoryImpl implements UserRepository {
     private static final Logger logger = Logger.getLogger(UserRepositoryImpl.class.getName());
 
     private static final String ADD = "INSERT INTO User(role_id, user_name, login, password) VALUES(?, ?, ?, ?);";
@@ -28,7 +28,6 @@ public class UserRepositoryImpl implements CrudRepository<User> {
         logger.info("Adding user..");
         Connection connection = null;
         PreparedStatement preparedStatement = null;
-        User result = null;
         try {
             connection = dataSource.getConnection();
             preparedStatement = connection.prepareStatement(ADD, Statement.RETURN_GENERATED_KEYS);
@@ -41,7 +40,6 @@ public class UserRepositoryImpl implements CrudRepository<User> {
             resultSet.next();
             int userId = resultSet.getInt(1);
             user.setUserId(userId);
-            result = user;
             logger.info("Successfully added user");
         }
         catch (SQLException e) {
@@ -66,7 +64,7 @@ public class UserRepositoryImpl implements CrudRepository<User> {
                 }
             }
 
-            return result;
+            return user;
         }
     }
 

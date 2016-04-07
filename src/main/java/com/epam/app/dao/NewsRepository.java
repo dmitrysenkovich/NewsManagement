@@ -7,7 +7,16 @@ import java.util.List;
 /**
  * News repository interface.
  */
-public interface NewsRepository extends ScrudRepository<News> {
+public interface NewsRepository extends CrudRepository<News> {
+    /**
+     * Retrieves all news specified
+     * by SEARCH_CRITERIA_QUERY string
+     * defined in service layer.
+     * @param SEARCH_CRITERIA_QUERY search criteria.
+     * @return all fit news.
+     */
+    List<News> search(final String SEARCH_CRITERIA_QUERY);
+
     /**
      * Retrieves all news
      * from database sorted by

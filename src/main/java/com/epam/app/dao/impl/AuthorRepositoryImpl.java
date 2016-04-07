@@ -1,6 +1,6 @@
 package com.epam.app.dao.impl;
 
-import com.epam.app.dao.CrudRepository;
+import com.epam.app.dao.AuthorRepository;
 import com.epam.app.model.Author;
 import org.apache.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -11,7 +11,7 @@ import java.sql.*;
 /**
  * Author repository implementation.
  */
-public class AuthorRepositoryImpl implements CrudRepository<Author> {
+public class AuthorRepositoryImpl implements AuthorRepository {
     private static final Logger logger = Logger.getLogger(AuthorRepositoryImpl.class.getName());
 
     private static final String ADD = "INSERT INTO Author(author_name, expired) VALUES(?, ?);";
@@ -28,7 +28,6 @@ public class AuthorRepositoryImpl implements CrudRepository<Author> {
         logger.info("Adding author..");
         Connection connection = null;
         PreparedStatement preparedStatement = null;
-        Author result = null;
         try {
             connection = dataSource.getConnection();
             preparedStatement = connection.prepareStatement(ADD, Statement.RETURN_GENERATED_KEYS);
@@ -39,7 +38,6 @@ public class AuthorRepositoryImpl implements CrudRepository<Author> {
             resultSet.next();
             int authorId = resultSet.getInt(1);
             author.setAuthorId(authorId);
-            result = author;
             logger.info("Successfully added author");
         }
         catch (SQLException e) {
@@ -64,7 +62,7 @@ public class AuthorRepositoryImpl implements CrudRepository<Author> {
                 }
             }
 
-            return result;
+            return author;
         }
     }
 

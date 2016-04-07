@@ -29,7 +29,6 @@ public class TagRepositoryImpl implements TagRepository {
         logger.info("Adding tag..");
         Connection connection = null;
         PreparedStatement preparedStatement = null;
-        Tag result = null;
         try {
             connection = dataSource.getConnection();
             preparedStatement = connection.prepareStatement(ADD, Statement.RETURN_GENERATED_KEYS);
@@ -39,7 +38,6 @@ public class TagRepositoryImpl implements TagRepository {
             resultSet.next();
             int tagId = resultSet.getInt(1);
             tag.setTagId(tagId);
-            result = tag;
             logger.info("Successfully added tag");
         }
         catch (SQLException e) {
@@ -64,7 +62,7 @@ public class TagRepositoryImpl implements TagRepository {
                 }
             }
 
-            return result;
+            return tag;
         }
     }
 
@@ -201,11 +199,10 @@ public class TagRepositoryImpl implements TagRepository {
     }
 
 
-    public List<Tag> addTags(List<Tag> tags) {
+    public List<Tag> addAll(List<Tag> tags) {
         logger.info("Adding tags..");
         Connection connection = null;
         PreparedStatement preparedStatement = null;
-        List<Tag> result = null;
         try {
             connection = dataSource.getConnection();
             preparedStatement = connection.prepareStatement(ADD, Statement.RETURN_GENERATED_KEYS);
@@ -216,18 +213,15 @@ public class TagRepositoryImpl implements TagRepository {
             preparedStatement.executeBatch();
             ResultSet resultSet = preparedStatement.getGeneratedKeys();
             int i = 0;
-            result = new LinkedList<Tag>();
             while (resultSet.next()) {
                 Tag tag = tags.get(i);
                 tag.setTagId(resultSet.getInt(1));
-                result.add(tag);
                 i++;
             }
             logger.info("Successfully added tags");
         }
         catch (SQLException e) {
             logger.error("Error while adding tags: ", e);
-            result = null;
         }
         finally {
             if (preparedStatement != null) {
@@ -236,7 +230,6 @@ public class TagRepositoryImpl implements TagRepository {
                 } catch (SQLException e) {
                     logger.error("Error while trying to close prepared " +
                             "statement after adding tags: ", e);
-                    result = null;
                 }
             }
 
@@ -246,11 +239,10 @@ public class TagRepositoryImpl implements TagRepository {
                 } catch (SQLException e) {
                     logger.error("Error while trying to close connection " +
                             "after adding tags: ", e);
-                    result = null;
                 }
             }
 
-            return result;
+            return tags;
         }
     }
 }

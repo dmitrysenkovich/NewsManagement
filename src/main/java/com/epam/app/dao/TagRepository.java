@@ -7,12 +7,5 @@ import java.util.List;
 /**
  * Tag repository.
  */
-public interface TagRepository extends CrudRepository<Tag> {
-    /**
-     * Adds all tags from list.
-     * @param tags tags to be added.
-     * @return tags with set id
-     * if successfully.
-     */
-    List<Tag> addTags(List<Tag> tags);
+public interface TagRepository extends CrudaRepository<Tag> {
 }

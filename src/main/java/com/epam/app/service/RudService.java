@@ -1,18 +1,9 @@
-package com.epam.app.dao;
+package com.epam.app.service;
 
 /**
- * CRUD repository interface. Defines
- * the contract of a repository with all
- * basic operations.
+ * FUD service interface.
  */
-public interface CrudRepository<T> {
-    /**
-     * Adds new entity.
-     * @param t new entity.
-     * @return this new entity with id set
-     * if added successfully.
-     */
-    T add(T t);
+public interface RudService<T> {
 
     /**
      * Finds an entity by its id.

@@ -1,18 +1,18 @@
 package com.epam.app.dao.impl;
 
-import com.epam.app.dao.CrudRepository;
+import com.epam.app.dao.CommentRepository;
 import com.epam.app.model.Comment;
-import com.epam.app.model.News;
 import org.apache.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 
 import javax.sql.DataSource;
 import java.sql.*;
+import java.util.List;
 
 /**
  * Comment repository implementation.
  */
-public class CommentRepositoryImpl implements CrudRepository<Comment> {
+public class CommentRepositoryImpl implements CommentRepository {
     private static final Logger logger = Logger.getLogger(NewsRepositoryImpl.class.getName());
 
     private static final String ADD = "INSERT INTO Comments(news_id, comment_text, creation_date) VALUES(?, ?, ?);";
@@ -28,7 +28,6 @@ public class CommentRepositoryImpl implements CrudRepository<Comment> {
         logger.info("Adding comment..");
         Connection connection = null;
         PreparedStatement preparedStatement = null;
-        Comment result = null;
         try {
             connection = dataSource.getConnection();
             preparedStatement = connection.prepareStatement(ADD, Statement.RETURN_GENERATED_KEYS);
@@ -40,7 +39,6 @@ public class CommentRepositoryImpl implements CrudRepository<Comment> {
             resultSet.next();
             int commentId = resultSet.getInt(1);
             comment.setNewsId(commentId);
-            result = comment;
             logger.info("Successfully added comment");
         }
         catch (SQLException e) {
@@ -65,7 +63,7 @@ public class CommentRepositoryImpl implements CrudRepository<Comment> {
                 }
             }
 
-            return result;
+            return comment;
         }
     }
 
@@ -195,6 +193,100 @@ public class CommentRepositoryImpl implements CrudRepository<Comment> {
                 } catch (SQLException e) {
                     logger.error("Error while trying to close connection " +
                             "after deleting comment", e);
+                    result = false;
+                }
+            }
+
+            return result;
+        }
+    }
+
+
+    public List<Comment> addAll(List<Comment> comments) {
+        logger.info("Adding comments..");
+        Connection connection = null;
+        PreparedStatement preparedStatement = null;
+        try {
+            connection = dataSource.getConnection();
+            preparedStatement = connection.prepareStatement(ADD, Statement.RETURN_GENERATED_KEYS);
+            for (Comment comment : comments) {
+                preparedStatement.setInt(1, comment.getNewsId());
+                preparedStatement.setString(2, comment.getCommentText());
+                preparedStatement.setTimestamp(3, comment.getCreationDate());
+                preparedStatement.addBatch();
+            }
+            preparedStatement.executeBatch();
+            ResultSet resultSet = preparedStatement.getGeneratedKeys();
+            int i = 0;
+            while (resultSet.next()) {
+                Comment comment = comments.get(i);
+                comment.setCommentId(resultSet.getInt(1));
+                i++;
+            }
+            logger.info("Successfully added comments");
+        }
+        catch (SQLException e) {
+            logger.error("Error while adding comments: ", e);
+        }
+        finally {
+            if (preparedStatement != null) {
+                try {
+                    preparedStatement.close();
+                } catch (SQLException e) {
+                    logger.error("Error while trying to close prepared " +
+                            "statement after adding comments: ", e);
+                }
+            }
+
+            if (connection != null) {
+                try {
+                    connection.close();
+                } catch (SQLException e) {
+                    logger.error("Error while trying to close connection " +
+                            "after adding comments: ", e);
+                }
+            }
+
+            return comments;
+        }
+    }
+
+    public boolean deleteAll(List<Comment> comments) {
+        logger.info("Deleting comments..");
+        Connection connection = null;
+        PreparedStatement preparedStatement = null;
+        boolean result = true;
+        try {
+            connection = dataSource.getConnection();
+            preparedStatement = connection.prepareStatement(DELETE);
+            for (Comment comment : comments) {
+                preparedStatement.setInt(1, comment.getCommentId());
+                preparedStatement.addBatch();
+            }
+            preparedStatement.executeBatch();
+            logger.info("Successfully deleted comments");
+        }
+        catch (SQLException e) {
+            logger.error("Error while deleting comments: ", e);
+            result = false;
+        }
+        finally {
+            if (preparedStatement != null) {
+                try {
+                    preparedStatement.close();
+                } catch (SQLException e) {
+                    logger.error("Error while trying to close prepared " +
+                            "statement after deleting comments: ", e);
+                    result = false;
+                }
+            }
+
+            if (connection != null) {
+                try {
+                    connection.close();
+                } catch (SQLException e) {
+                    logger.error("Error while trying to close connection " +
+                            "after deleting comments: ", e);
                     result = false;
                 }
             }

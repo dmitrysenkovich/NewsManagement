@@ -1,6 +1,6 @@
 package com.epam.app.dao.impl;
 
-import com.epam.app.dao.CdRepository;
+import com.epam.app.dao.NewsAuthorRepository;
 import com.epam.app.model.NewsAuthor;
 import org.apache.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -11,7 +11,7 @@ import java.sql.*;
 /**
  * NewsAuthor repository implementation.
  */
-public class NewsAuthorRepositoryImpl implements CdRepository<NewsAuthor> {
+public class NewsAuthorRepositoryImpl implements NewsAuthorRepository {
     private static final Logger logger = Logger.getLogger(NewsAuthorRepositoryImpl.class.getName());
 
     private static final String ADD = "INSERT INTO NewsAuthor(news_id, author_id) VALUES(?, ?);";
