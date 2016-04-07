@@ -5,6 +5,7 @@ package com.epam.app.model;
  */
 public class User {
     private int userId;
+    private int roleId;
     private String userName;
     private String login;
     private String password;
@@ -17,6 +18,14 @@ public class User {
 
     public void setUserId(int userId) {
         this.userId = userId;
+    }
+
+    public int getRoleId() {
+        return roleId;
+    }
+
+    public void setRoleId(int roleId) {
+        this.roleId = roleId;
     }
 
     public String getUserName() {
