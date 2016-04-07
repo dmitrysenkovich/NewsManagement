@@ -1,6 +1,5 @@
 package com.epam.app.dao.impl;
 
-import com.epam.app.dao.CrudRepository;
 import com.epam.app.dao.NewsRepository;
 import com.epam.app.model.News;
 import org.apache.log4j.Logger;
@@ -14,7 +13,7 @@ import java.util.List;
 /**
  * News repository implementation.
  */
-public class NewsRepositoryImpl implements CrudRepository<News>, NewsRepository {
+public class NewsRepositoryImpl implements NewsRepository {
     private static final Logger logger = Logger.getLogger(NewsRepositoryImpl.class.getName());
 
     private static final String ADD = "INSERT INTO News(title, short_text, full_text, " +
@@ -218,6 +217,60 @@ public class NewsRepositoryImpl implements CrudRepository<News>, NewsRepository 
             }
 
             return result;
+        }
+    }
+
+
+    public List<News> search(final String SEARCH_CRITERIA_QUERY) {
+        logger.info("Retrieving news according to search criteria..");
+        Connection connection = null;
+        PreparedStatement preparedStatement = null;
+        List<News> fitNews = null;
+        try {
+            connection = dataSource.getConnection();
+            preparedStatement = connection.prepareStatement(FIND_ALL_SORTED);
+            ResultSet resultSet = preparedStatement.executeQuery();
+            resultSet.next();
+
+            fitNews = new LinkedList<News>();
+            while (resultSet.next()) {
+                News news = new News();
+                news.setNewsId(resultSet.getInt(1));
+                news.setTitle(resultSet.getString(2));
+                news.setShortText(resultSet.getString(3));
+                news.setFullText(resultSet.getString(4));
+                news.setCreationDate(resultSet.getTimestamp(5));
+                news.setModificationDate(resultSet.getDate(6));
+                fitNews.add(news);
+            }
+            logger.info("Successfully retrieved news according to search criteria");
+        }
+        catch (SQLException e) {
+            logger.error("Error while retrieving news: ", e);
+            fitNews = null;
+        }
+        finally {
+            if (preparedStatement != null) {
+                try {
+                    preparedStatement.close();
+                } catch (SQLException e) {
+                    logger.error("Error while trying to close prepared " +
+                            "statement after retrieving new according to search criteria", e);
+                    fitNews = null;
+                }
+            }
+
+            if (connection != null) {
+                try {
+                    connection.close();
+                } catch (SQLException e) {
+                    logger.error("Error while trying to close connection " +
+                            "after retrieving news according to search criteria", e);
+                    fitNews = null;
+                }
+            }
+
+            return fitNews;
         }
     }
 

@@ -7,7 +7,7 @@ import java.util.List;
 /**
  * News repository interface.
  */
-public interface NewsRepository {
+public interface NewsRepository extends ScrudRepository<News> {
     /**
      * Retrieves all news
      * from database sorted by

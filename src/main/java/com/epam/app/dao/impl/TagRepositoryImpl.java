@@ -1,6 +1,5 @@
 package com.epam.app.dao.impl;
 
-import com.epam.app.dao.CrudRepository;
 import com.epam.app.dao.TagRepository;
 import com.epam.app.model.Tag;
 import org.apache.log4j.Logger;
@@ -14,7 +13,7 @@ import java.util.List;
 /**
  * Tag repository implementation.
  */
-public class TagRepositoryImpl implements CrudRepository<Tag>, TagRepository {
+public class TagRepositoryImpl implements TagRepository {
     private static final Logger logger = Logger.getLogger(TagRepositoryImpl.class.getName());
 
     private static final String ADD = "INSERT INTO Tag(tag_name) VALUES(?);";

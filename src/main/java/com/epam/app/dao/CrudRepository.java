@@ -1,8 +1,9 @@
 package com.epam.app.dao;
 
 /**
- * CrudRepository interface. Should
- * be implemented by every repository.
+ * CRUD repository interface. Defines
+ * the contract of a repository with all
+ * basic operations.
  */
 public interface CrudRepository<T> {
     /**
