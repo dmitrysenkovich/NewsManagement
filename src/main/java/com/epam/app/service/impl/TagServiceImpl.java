@@ -30,7 +30,7 @@ public class TagServiceImpl implements TagService {
     }
 
 
-    public Tag find(int tagId) {
+    public Tag find(Long tagId) {
         logger.info("Reprieving tag..");
         Tag tag = tagRepository.find(tagId);
         if (tag != null)
@@ -63,7 +63,7 @@ public class TagServiceImpl implements TagService {
     }
 
 
-    public List<Tag> addAll(News news, List<Tag> tags) {
+    public List<Tag> addAll(List<Tag> tags) {
         logger.info("Adding tags..");
         tags = tagRepository.addAll(tags);
         boolean allAdded = true;

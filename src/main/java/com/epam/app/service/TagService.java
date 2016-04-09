@@ -19,10 +19,9 @@ public interface TagService extends RudService<Tag> {
 
     /**
      * Adds all tags from list to news.
-     * @param news news that will be updated.
      * @param tags tags to be added.
      * @return tags with set id
      * if successfully.
      */
-    List<Tag> addAll(News news, List<Tag> tags);
+    List<Tag> addAll(List<Tag> tags);
 }

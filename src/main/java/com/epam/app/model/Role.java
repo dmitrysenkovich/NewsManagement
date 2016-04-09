@@ -4,16 +4,16 @@ package com.epam.app.model;
  * Role model.
  */
 public class Role {
-    private int roleId;
+    private Long roleId;
     private String roleName;
 
     public Role() {}
 
-    public int getRoleId() {
+    public Long getRoleId() {
         return roleId;
     }
 
-    public void setRoleId(int roleId) {
+    public void setRoleId(Long roleId) {
         this.roleId = roleId;
     }
 

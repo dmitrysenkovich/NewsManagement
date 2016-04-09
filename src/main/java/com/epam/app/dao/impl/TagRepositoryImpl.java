@@ -7,7 +7,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 
 import javax.sql.DataSource;
 import java.sql.*;
-import java.util.LinkedList;
 import java.util.List;
 
 /**
@@ -36,7 +35,7 @@ public class TagRepositoryImpl implements TagRepository {
             preparedStatement.executeUpdate();
             ResultSet resultSet = preparedStatement.getGeneratedKeys();
             resultSet.next();
-            int tagId = resultSet.getInt(1);
+            Long tagId = resultSet.getLong(1);
             tag.setTagId(tagId);
             logger.info("Successfully added tag");
         }
@@ -67,7 +66,7 @@ public class TagRepositoryImpl implements TagRepository {
     }
 
 
-    public Tag find(int tagId) {
+    public Tag find(Long tagId) {
         logger.info("Retrieving tag..");
         Connection connection = null;
         PreparedStatement preparedStatement = null;
@@ -75,7 +74,7 @@ public class TagRepositoryImpl implements TagRepository {
         try {
             connection = dataSource.getConnection();
             preparedStatement = connection.prepareStatement(FIND);
-            preparedStatement.setInt(1, tagId);
+            preparedStatement.setLong(1, tagId);
             ResultSet resultSet = preparedStatement.executeQuery();
             resultSet.next();
 
@@ -123,7 +122,7 @@ public class TagRepositoryImpl implements TagRepository {
             connection = dataSource.getConnection();
             preparedStatement = connection.prepareStatement(UPDATE);
             preparedStatement.setString(1, tag.getTagName());
-            preparedStatement.setInt(2, tag.getTagId());
+            preparedStatement.setLong(2, tag.getTagId());
             preparedStatement.executeUpdate();
             logger.info("Successfully updated tag");
         }
@@ -165,7 +164,7 @@ public class TagRepositoryImpl implements TagRepository {
         try {
             connection = dataSource.getConnection();
             preparedStatement = connection.prepareStatement(DELETE);
-            preparedStatement.setInt(1, tag.getTagId());
+            preparedStatement.setLong(1, tag.getTagId());
             preparedStatement.executeUpdate();
             logger.info("Successfully deleted tag");
         }
@@ -215,7 +214,7 @@ public class TagRepositoryImpl implements TagRepository {
             int i = 0;
             while (resultSet.next()) {
                 Tag tag = tags.get(i);
-                tag.setTagId(resultSet.getInt(1));
+                tag.setTagId(resultSet.getLong(1));
                 i++;
             }
             logger.info("Successfully added tags");

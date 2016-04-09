@@ -6,17 +6,17 @@ import java.sql.Timestamp;
  * Author model.
  */
 public class Author {
-    private int authorId;
+    private Long authorId;
     private String authorName;
     private Timestamp expired;
 
     public Author() {}
 
-    public int getAuthorId() {
+    public Long getAuthorId() {
         return authorId;
     }
 
-    public void setAuthorId(int authorId) {
+    public void setAuthorId(Long authorId) {
         this.authorId = authorId;
     }
 

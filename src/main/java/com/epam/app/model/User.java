@@ -4,27 +4,27 @@ package com.epam.app.model;
  * User model.
  */
 public class User {
-    private int userId;
-    private int roleId;
+    private Long userId;
+    private Long roleId;
     private String userName;
     private String login;
     private String password;
 
     public User() {}
 
-    public int getUserId() {
+    public Long getUserId() {
         return userId;
     }
 
-    public void setUserId(int userId) {
+    public void setUserId(Long userId) {
         this.userId = userId;
     }
 
-    public int getRoleId() {
+    public Long getRoleId() {
         return roleId;
     }
 
-    public void setRoleId(int roleId) {
+    public void setRoleId(Long roleId) {
         this.roleId = roleId;
     }
 

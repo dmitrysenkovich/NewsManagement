@@ -7,6 +7,7 @@ import com.epam.app.service.CommentService;
 import org.apache.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 
+import java.sql.Timestamp;
 import java.util.List;
 
 /**
@@ -22,6 +23,7 @@ public class CommentServiceImpl implements CommentService {
     public Comment add(News news, Comment comment) {
         logger.info("Adding new comment..");
         comment.setNewsId(news.getNewsId());
+        comment.setCreationDate(new Timestamp(new java.util.Date().getTime()));
         comment = commentRepository.add(comment);
         if (comment.getCommentId() != 0)
             logger.info("Successfully added new comment");
@@ -31,7 +33,7 @@ public class CommentServiceImpl implements CommentService {
     }
 
 
-    public Comment find(int commentId) {
+    public Comment find(Long commentId) {
         logger.info("Reprieving comment..");
         Comment comment = commentRepository.find(commentId);
         if (comment != null)
@@ -66,8 +68,10 @@ public class CommentServiceImpl implements CommentService {
 
     public List<Comment> addAll(News news, List<Comment> comments) {
         logger.info("Adding comments..");
-        for (Comment comment : comments)
+        for (Comment comment : comments) {
             comment.setNewsId(news.getNewsId());
+            comment.setCreationDate(new Timestamp(new java.util.Date().getTime()));
+        }
         comments = commentRepository.addAll(comments);
         boolean allAdded = true;
         for (Comment comment : comments)

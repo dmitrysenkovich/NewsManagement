@@ -42,5 +42,5 @@ public interface NewsService extends RudService<News> {
      * @return news count. -1 if not
      * finished successfully.
      */
-    int countAll();
+    Long countAll();
 }

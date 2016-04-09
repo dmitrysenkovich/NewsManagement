@@ -27,7 +27,7 @@ public class RoleServiceImpl implements RoleService {
     }
 
 
-    public Role find(int roleId) {
+    public Role find(Long roleId) {
         logger.info("Reprieving role..");
         Role role = roleRepository.find(roleId);
         if (role != null)

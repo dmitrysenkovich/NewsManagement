@@ -6,26 +6,26 @@ import java.sql.Timestamp;
  * Comment model.
  */
 public class Comment {
-    private int commentId;
-    private int newsId;
+    private Long commentId;
+    private Long newsId;
     private String commentText;
     private Timestamp creationDate;
 
     public Comment() {}
 
-    public int getCommentId() {
+    public Long getCommentId() {
         return commentId;
     }
 
-    public void setCommentId(int commentId) {
+    public void setCommentId(Long commentId) {
         this.commentId = commentId;
     }
 
-    public int getNewsId() {
+    public Long getNewsId() {
         return newsId;
     }
 
-    public void setNewsId(int newsId) {
+    public void setNewsId(Long newsId) {
         this.newsId = newsId;
     }
 

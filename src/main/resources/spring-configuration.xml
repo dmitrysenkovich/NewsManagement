@@ -10,6 +10,24 @@
 
     <import resource="spring-database.xml" />
 
+    <bean id="authorRepository" class="com.epam.app.dao.impl.AuthorRepositoryImpl"/>
+    <bean id="commentRepository" class="com.epam.app.dao.impl.CommentRepositoryImpl"/>
+    <bean id="newsAuthorRepository" class="com.epam.app.dao.impl.NewsAuthorRepositoryImpl"/>
     <bean id="newsRepository" class="com.epam.app.dao.impl.NewsRepositoryImpl"/>
+    <bean id="newsTagRepository" class="com.epam.app.dao.impl.NewsTagRepositoryImpl"/>
+    <bean id="roleRepository" class="com.epam.app.dao.impl.RoleRepositoryImpl"/>
+    <bean id="tagRepository" class="com.epam.app.dao.impl.TagRepositoryImpl"/>
+    <bean id="userRepository" class="com.epam.app.dao.impl.UserRepositoryImpl"/>
+
+    <bean id="searchUtils" class="com.epam.app.utils.SearchUtils"/>
+
+    <bean id="authorService" class="com.epam.app.service.impl.AuthorServiceImpl"/>
+    <bean id="commentService" class="com.epam.app.service.impl.CommentServiceImpl"/>
+    <bean id="newsAuthorService" class="com.epam.app.service.impl.NewsAuthorServiceImpl"/>
+    <bean id="newsService" class="com.epam.app.service.impl.NewsServiceImpl"/>
+    <bean id="newsTagService" class="com.epam.app.service.impl.NewsTagServiceImpl"/>
+    <bean id="roleService" class="com.epam.app.service.impl.RoleServiceImpl"/>
+    <bean id="tagService" class="com.epam.app.service.impl.TagServiceImpl"/>
+    <bean id="userService" class="com.epam.app.service.impl.UserServiceImpl"/>
 
 </beans>

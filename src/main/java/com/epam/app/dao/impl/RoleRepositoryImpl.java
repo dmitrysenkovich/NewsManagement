@@ -34,7 +34,7 @@ public class RoleRepositoryImpl implements RoleRepository {
             preparedStatement.executeUpdate();
             ResultSet resultSet = preparedStatement.getGeneratedKeys();
             resultSet.next();
-            int roleId = resultSet.getInt(1);
+            Long roleId = resultSet.getLong(1);
             role.setRoleId(roleId);
             logger.info("Successfully added role");
         }
@@ -65,7 +65,7 @@ public class RoleRepositoryImpl implements RoleRepository {
     }
 
 
-    public Role find(int roleId) {
+    public Role find(Long roleId) {
         logger.info("Retrieving role..");
         Connection connection = null;
         PreparedStatement preparedStatement = null;
@@ -73,7 +73,7 @@ public class RoleRepositoryImpl implements RoleRepository {
         try {
             connection = dataSource.getConnection();
             preparedStatement = connection.prepareStatement(FIND);
-            preparedStatement.setInt(1, roleId);
+            preparedStatement.setLong(1, roleId);
             ResultSet resultSet = preparedStatement.executeQuery();
             resultSet.next();
 
@@ -121,7 +121,7 @@ public class RoleRepositoryImpl implements RoleRepository {
             connection = dataSource.getConnection();
             preparedStatement = connection.prepareStatement(UPDATE);
             preparedStatement.setString(1, role.getRoleName());
-            preparedStatement.setInt(2, role.getRoleId());
+            preparedStatement.setLong(2, role.getRoleId());
             preparedStatement.executeUpdate();
             logger.info("Successfully updated role");
         }
@@ -163,7 +163,7 @@ public class RoleRepositoryImpl implements RoleRepository {
         try {
             connection = dataSource.getConnection();
             preparedStatement = connection.prepareStatement(DELETE);
-            preparedStatement.setInt(1, role.getRoleId());
+            preparedStatement.setLong(1, role.getRoleId());
             preparedStatement.executeUpdate();
             logger.info("Successfully deleted role");
         }

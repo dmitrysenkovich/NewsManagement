@@ -36,7 +36,7 @@ public class AuthorRepositoryImpl implements AuthorRepository {
             preparedStatement.executeUpdate();
             ResultSet resultSet = preparedStatement.getGeneratedKeys();
             resultSet.next();
-            int authorId = resultSet.getInt(1);
+            Long authorId = resultSet.getLong(1);
             author.setAuthorId(authorId);
             logger.info("Successfully added author");
         }
@@ -67,7 +67,7 @@ public class AuthorRepositoryImpl implements AuthorRepository {
     }
 
 
-    public Author find(int authorId) {
+    public Author find(Long authorId) {
         logger.info("Retrieving author..");
         Connection connection = null;
         PreparedStatement preparedStatement = null;
@@ -75,7 +75,7 @@ public class AuthorRepositoryImpl implements AuthorRepository {
         try {
             connection = dataSource.getConnection();
             preparedStatement = connection.prepareStatement(FIND);
-            preparedStatement.setInt(1, authorId);
+            preparedStatement.setLong(1, authorId);
             ResultSet resultSet = preparedStatement.executeQuery();
             resultSet.next();
 
@@ -86,7 +86,7 @@ public class AuthorRepositoryImpl implements AuthorRepository {
             logger.info("Successfully retrieved author");
         }
         catch (SQLException e) {
-            logger.error("Error while retrieving news: ", e);
+            logger.error("Error while retrieving author: ", e);
             author = null;
         }
         finally {
@@ -125,7 +125,7 @@ public class AuthorRepositoryImpl implements AuthorRepository {
             preparedStatement = connection.prepareStatement(UPDATE);
             preparedStatement.setString(1, author.getAuthorName());
             preparedStatement.setTimestamp(2, author.getExpired());
-            preparedStatement.setInt(3, author.getAuthorId());
+            preparedStatement.setLong(3, author.getAuthorId());
             preparedStatement.executeUpdate();
             logger.info("Successfully updated author");
         }
@@ -167,7 +167,7 @@ public class AuthorRepositoryImpl implements AuthorRepository {
         try {
             connection = dataSource.getConnection();
             preparedStatement = connection.prepareStatement(DELETE);
-            preparedStatement.setInt(1, author.getAuthorId());
+            preparedStatement.setLong(1, author.getAuthorId());
             preparedStatement.executeUpdate();
             logger.info("Successfully deleted author");
         }

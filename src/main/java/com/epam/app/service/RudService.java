@@ -11,7 +11,7 @@ public interface RudService<T> {
      * @return the entity if the needed
      * entity was found, otherwise null.
      */
-    T find(int id);
+    T find(Long id);
 
     /**
      * Updates an entity.

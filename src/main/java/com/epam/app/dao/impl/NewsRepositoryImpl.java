@@ -22,12 +22,18 @@ public class NewsRepositoryImpl implements NewsRepository {
     private static final String UPDATE = "UPDATE News SET title = ?, short_text = ?, " +
             "full_text = ?, modification_date = ? WHERE news_id = ?;";
     private static final String DELETE = "DELETE FROM News WHERE news_id = ?;";
-    private static final String FIND_ALL_SORTED = "SELECT news_id, title, short_text, " +
-            "full_text, creation_date, modification_date" +
-            "FROM News JOIN (SELECT news_id, COUNT(*) AS comments_count" +
-            "               FROM Comments" +
-            "               GROUP BY news_id) AS News_Stat USING(news_id)" +
-            "ORDER BY comments_count DESC;";
+    private static final String FIND_ALL_SORTED = "(SELECT news_id, title, short_text, " +
+            "full_text, creation_date, modification_date, comments_count " +
+            "FROM News JOIN (SELECT news_id, COUNT(*) AS comments_count " +
+            "                FROM Comments " +
+            "                GROUP BY news_id) AS News_Stat USING(news_id))" +
+            "UNION " +
+            "(SELECT news_id, title, short_text, " +
+            "full_text, creation_date, modification_date, 0 AS comments_count " +
+            "FROM News " +
+            "WHERE news_id NOT IN (SELECT news_id " +
+            "                      FROM Comments))" +
+            "ORDER BY comments_count DESC";
     private static final String COUNT_ALL_NEWS = "SELECT COUNT(*) FROM News;";
 
     @Autowired
@@ -49,7 +55,7 @@ public class NewsRepositoryImpl implements NewsRepository {
             preparedStatement.executeUpdate();
             ResultSet resultSet = preparedStatement.getGeneratedKeys();
             resultSet.next();
-            int newsId = resultSet.getInt(1);
+            Long newsId = resultSet.getLong(1);
             news.setNewsId(newsId);
             logger.info("Successfully added news");
         }
@@ -80,7 +86,7 @@ public class NewsRepositoryImpl implements NewsRepository {
     }
 
 
-    public News find(int newsId) {
+    public News find(Long newsId) {
         logger.info("Retrieving news..");
         Connection connection = null;
         PreparedStatement preparedStatement = null;
@@ -88,7 +94,7 @@ public class NewsRepositoryImpl implements NewsRepository {
         try {
             connection = dataSource.getConnection();
             preparedStatement = connection.prepareStatement(FIND);
-            preparedStatement.setInt(1, newsId);
+            preparedStatement.setLong(1, newsId);
             ResultSet resultSet = preparedStatement.executeQuery();
             resultSet.next();
 
@@ -143,7 +149,7 @@ public class NewsRepositoryImpl implements NewsRepository {
             preparedStatement.setString(2, news.getShortText());
             preparedStatement.setString(3, news.getFullText());
             preparedStatement.setDate(4, news.getModificationDate());
-            preparedStatement.setInt(5, news.getNewsId());
+            preparedStatement.setLong(5, news.getNewsId());
             preparedStatement.executeUpdate();
             logger.info("Successfully updated news");
         }
@@ -185,7 +191,7 @@ public class NewsRepositoryImpl implements NewsRepository {
         try {
             connection = dataSource.getConnection();
             preparedStatement = connection.prepareStatement(DELETE);
-            preparedStatement.setInt(1, news.getNewsId());
+            preparedStatement.setLong(1, news.getNewsId());
             preparedStatement.executeUpdate();
             logger.info("Successfully deleted news");
         }
@@ -228,12 +234,11 @@ public class NewsRepositoryImpl implements NewsRepository {
             connection = dataSource.getConnection();
             preparedStatement = connection.prepareStatement(SEARCH_CRITERIA_QUERY);
             ResultSet resultSet = preparedStatement.executeQuery();
-            resultSet.next();
 
             fitNews = new LinkedList<News>();
             while (resultSet.next()) {
                 News news = new News();
-                news.setNewsId(resultSet.getInt(1));
+                news.setNewsId(resultSet.getLong(1));
                 news.setTitle(resultSet.getString(2));
                 news.setShortText(resultSet.getString(3));
                 news.setFullText(resultSet.getString(4));
@@ -276,18 +281,17 @@ public class NewsRepositoryImpl implements NewsRepository {
     public List<News> findAllSorted() {
         logger.info("Retrieving all news..");
         Connection connection = null;
-        PreparedStatement preparedStatement = null;
+        Statement statement = null;
         List<News> allNews = null;
         try {
             connection = dataSource.getConnection();
-            preparedStatement = connection.prepareStatement(FIND_ALL_SORTED);
-            ResultSet resultSet = preparedStatement.executeQuery();
-            resultSet.next();
+            statement = connection.createStatement();
+            ResultSet resultSet = statement.executeQuery(FIND_ALL_SORTED);
 
             allNews = new LinkedList<News>();
             while (resultSet.next()) {
                 News news = new News();
-                news.setNewsId(resultSet.getInt(1));
+                news.setNewsId(resultSet.getLong(1));
                 news.setTitle(resultSet.getString(2));
                 news.setShortText(resultSet.getString(3));
                 news.setFullText(resultSet.getString(4));
@@ -302,9 +306,9 @@ public class NewsRepositoryImpl implements NewsRepository {
             allNews = null;
         }
         finally {
-            if (preparedStatement != null) {
+            if (statement != null) {
                 try {
-                    preparedStatement.close();
+                    statement.close();
                 } catch (SQLException e) {
                     logger.error("Error while trying to close prepared " +
                             "statement after all retrieving news", e);
@@ -327,17 +331,17 @@ public class NewsRepositoryImpl implements NewsRepository {
     }
 
 
-    public int countAll() {
+    public Long countAll() {
         logger.info("Retrieving news..");
         Connection connection = null;
         PreparedStatement preparedStatement = null;
-        int count = -1;
+        Long count = -1L;
         try {
             connection = dataSource.getConnection();
             preparedStatement = connection.prepareStatement(COUNT_ALL_NEWS);
             ResultSet resultSet = preparedStatement.executeQuery();
             resultSet.next();
-            count = resultSet.getInt(1);
+            count = resultSet.getLong(1);
             logger.info("Successfully retrieved news count");
         }
         catch (SQLException e) {

@@ -4,16 +4,16 @@ package com.epam.app.model;
  * Tag model.
  */
 public class Tag {
-    private int tagId;
+    private Long tagId;
     private String tagName;
 
     public Tag() {}
 
-    public int getTagId() {
+    public Long getTagId() {
         return tagId;
     }
 
-    public void setTagId(int tagId) {
+    public void setTagId(Long tagId) {
         this.tagId = tagId;
     }
 

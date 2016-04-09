@@ -4,24 +4,24 @@ package com.epam.app.model;
  * NewsAuthor model.
  */
 public class NewsAuthor {
-    private int newsId;
-    private int authorId;
+    private Long newsId;
+    private Long authorId;
 
     public NewsAuthor() {}
 
-    public int getNewsId() {
+    public Long getNewsId() {
         return newsId;
     }
 
-    public void setNewsId(int newsId) {
+    public void setNewsId(Long newsId) {
         this.newsId = newsId;
     }
 
-    public int getAuthorId() {
+    public Long getAuthorId() {
         return authorId;
     }
 
-    public void setAuthorId(int authorId) {
+    public void setAuthorId(Long authorId) {
         this.authorId = authorId;
     }
 }

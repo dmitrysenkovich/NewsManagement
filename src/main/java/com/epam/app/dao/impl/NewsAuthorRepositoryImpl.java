@@ -14,8 +14,8 @@ import java.sql.*;
 public class NewsAuthorRepositoryImpl implements NewsAuthorRepository {
     private static final Logger logger = Logger.getLogger(NewsAuthorRepositoryImpl.class.getName());
 
-    private static final String ADD = "INSERT INTO NewsAuthor(news_id, author_id) VALUES(?, ?);";
-    private static final String DELETE = "DELETE FROM NewsAuthor WHERE news_id = ? AND author_id = ?;";
+    private static final String ADD = "INSERT INTO News_Author(news_id, author_id) VALUES(?, ?);";
+    private static final String DELETE = "DELETE FROM News_Author WHERE news_id = ? AND author_id = ?;";
 
     @Autowired
     private DataSource dataSource;
@@ -28,8 +28,8 @@ public class NewsAuthorRepositoryImpl implements NewsAuthorRepository {
         try {
             connection = dataSource.getConnection();
             preparedStatement = connection.prepareStatement(ADD);
-            preparedStatement.setInt(1, newsAuthor.getNewsId());
-            preparedStatement.setInt(2, newsAuthor.getAuthorId());
+            preparedStatement.setLong(1, newsAuthor.getNewsId());
+            preparedStatement.setLong(2, newsAuthor.getAuthorId());
             preparedStatement.executeUpdate();
             logger.info("Successfully added news to author relation");
         }
@@ -71,8 +71,8 @@ public class NewsAuthorRepositoryImpl implements NewsAuthorRepository {
         try {
             connection = dataSource.getConnection();
             preparedStatement = connection.prepareStatement(DELETE);
-            preparedStatement.setInt(1, newsAuthor.getNewsId());
-            preparedStatement.setInt(1, newsAuthor.getAuthorId());
+            preparedStatement.setLong(1, newsAuthor.getNewsId());
+            preparedStatement.setLong(2, newsAuthor.getAuthorId());
             preparedStatement.executeUpdate();
             logger.info("Successfully deleted news to author relation");
         }

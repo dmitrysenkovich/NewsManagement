@@ -1,35 +1,34 @@
 package com.epam.app;
 
-import com.epam.app.dao.impl.NewsRepositoryImpl;
-import com.epam.app.model.News;
+import com.epam.app.dao.*;
+import com.epam.app.dao.UserRepository;
+import com.epam.app.model.*;
+import com.epam.app.service.NewsTagService;
+import com.epam.app.service.UserService;
+import com.epam.app.service.NewsService;
+import com.epam.app.service.UserService;
+import com.epam.app.utils.SearchCriteria;
+import com.epam.app.utils.SearchUtils;
 import org.apache.commons.dbcp2.BasicDataSource;
 import org.springframework.context.ApplicationContext;
 import org.springframework.context.support.ClassPathXmlApplicationContext;
 
 import java.sql.*;
+import java.util.LinkedList;
+import java.util.List;
 
 /**
  * Created by dmitry on 4/6/16.
  */
 public class Ololo {
-    private BasicDataSource dataSource;
-
     public void ololo() {
         ApplicationContext context = new ClassPathXmlApplicationContext("spring-configuration.xml");
-        NewsRepositoryImpl newsRepository = (NewsRepositoryImpl) context.getBean("newsRepository");
-        News news = new News();
-        news.setTitle("asd");
-        news.setShortText("asd");
-        news.setFullText("asd");
-        news.setCreationDate(new Timestamp(new java.util.Date().getTime()));
-        news.setModificationDate(new Date(new java.util.Date().getTime()));
-        newsRepository.add(news);
-        System.out.println(news.getNewsId());
-        System.out.println(newsRepository.find(news.getNewsId()));
-        news.setTitle("asdasdasdas");
-        newsRepository.update(news);
-        System.out.println(newsRepository.find(news.getNewsId()));
-        newsRepository.delete(news);
+        NewsTagService newsTagService = (NewsTagService) context.getBean("newsTagService");
+        NewsRepository newsRepository = (NewsRepository) context.getBean("newsRepository");
+        TagRepository tagRepository = (TagRepository) context.getBean("tagRepository");
+        News news = newsRepository.find(3L);
+        Tag tag = tagRepository.find(2L);
+        newsTagService.delete(news, tag);
     }
 
     public static void main(String... args) {

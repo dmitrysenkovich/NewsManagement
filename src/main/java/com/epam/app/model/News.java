@@ -7,7 +7,7 @@ import java.sql.Timestamp;
  * News model.
  */
 public class News {
-    private int newsId;
+    private Long newsId;
     private String title;
     private String shortText;
     private String fullText;
@@ -16,11 +16,11 @@ public class News {
 
     public News() {}
 
-    public int getNewsId() {
+    public Long getNewsId() {
         return newsId;
     }
 
-    public void setNewsId(int newsId) {
+    public void setNewsId(Long newsId) {
         this.newsId = newsId;
     }
 

@@ -31,14 +31,14 @@ public class UserRepositoryImpl implements UserRepository {
         try {
             connection = dataSource.getConnection();
             preparedStatement = connection.prepareStatement(ADD, Statement.RETURN_GENERATED_KEYS);
-            preparedStatement.setInt(1, user.getRoleId());
+            preparedStatement.setLong(1, user.getRoleId());
             preparedStatement.setString(2, user.getUserName());
             preparedStatement.setString(3, user.getLogin());
             preparedStatement.setString(4, user.getPassword());
             preparedStatement.executeUpdate();
             ResultSet resultSet = preparedStatement.getGeneratedKeys();
             resultSet.next();
-            int userId = resultSet.getInt(1);
+            Long userId = resultSet.getLong(1);
             user.setUserId(userId);
             logger.info("Successfully added user");
         }
@@ -69,7 +69,7 @@ public class UserRepositoryImpl implements UserRepository {
     }
 
 
-    public User find(int userId) {
+    public User find(Long userId) {
         logger.info("Retrieving user..");
         Connection connection = null;
         PreparedStatement preparedStatement = null;
@@ -77,15 +77,16 @@ public class UserRepositoryImpl implements UserRepository {
         try {
             connection = dataSource.getConnection();
             preparedStatement = connection.prepareStatement(FIND);
-            preparedStatement.setInt(1, userId);
+            preparedStatement.setLong(1, userId);
             ResultSet resultSet = preparedStatement.executeQuery();
             resultSet.next();
 
             user = new User();
             user.setUserId(userId);
-            user.setUserName(resultSet.getString(2));
-            user.setLogin(resultSet.getString(3));
-            user.setPassword(resultSet.getString(4));
+            user.setRoleId(resultSet.getLong(2));
+            user.setUserName(resultSet.getString(3));
+            user.setLogin(resultSet.getString(4));
+            user.setPassword(resultSet.getString(5));
             logger.info("Successfully retrieved user");
         }
         catch (SQLException e) {
@@ -126,11 +127,11 @@ public class UserRepositoryImpl implements UserRepository {
         try {
             connection = dataSource.getConnection();
             preparedStatement = connection.prepareStatement(UPDATE);
-            preparedStatement.setInt(1, user.getRoleId());
+            preparedStatement.setLong(1, user.getRoleId());
             preparedStatement.setString(2, user.getUserName());
             preparedStatement.setString(3, user.getLogin());
             preparedStatement.setString(4, user.getPassword());
-            preparedStatement.setInt(5, user.getUserId());
+            preparedStatement.setLong(5, user.getUserId());
             preparedStatement.executeUpdate();
             logger.info("Successfully updated user");
         }
@@ -172,7 +173,7 @@ public class UserRepositoryImpl implements UserRepository {
         try {
             connection = dataSource.getConnection();
             preparedStatement = connection.prepareStatement(DELETE);
-            preparedStatement.setInt(1, user.getUserId());
+            preparedStatement.setLong(1, user.getUserId());
             preparedStatement.executeUpdate();
             logger.info("Successfully deleted user");
         }

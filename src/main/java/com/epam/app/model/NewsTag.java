@@ -4,24 +4,24 @@ package com.epam.app.model;
  * NewsTag model.
  */
 public class NewsTag {
-    private int newsId;
-    private int tagId;
+    private Long newsId;
+    private Long tagId;
 
     public NewsTag() {}
 
-    public int getNewsId() {
+    public Long getNewsId() {
         return newsId;
     }
 
-    public void setNewsId(int newsId) {
+    public void setNewsId(Long newsId) {
         this.newsId = newsId;
     }
 
-    public int getTagId() {
+    public Long getTagId() {
         return tagId;
     }
 
-    public void setTagId(int tagId) {
+    public void setTagId(Long tagId) {
         this.tagId = tagId;
     }
 }

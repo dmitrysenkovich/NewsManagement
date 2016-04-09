@@ -29,7 +29,7 @@ public class UserServiceImpl implements UserService {
     }
 
 
-    public User find(int userId) {
+    public User find(Long userId) {
         logger.info("Reprieving user..");
         User user = userRepository.find(userId);
         if (user != null)

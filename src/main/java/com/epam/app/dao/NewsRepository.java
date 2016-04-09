@@ -30,5 +30,5 @@ public interface NewsRepository extends CrudRepository<News> {
      * @return news count. -1 if not
      * finished successfully.
      */
-    int countAll();
+    Long countAll();
 }

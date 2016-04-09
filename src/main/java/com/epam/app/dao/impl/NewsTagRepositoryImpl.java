@@ -16,8 +16,8 @@ import java.sql.SQLException;
 public class NewsTagRepositoryImpl implements NewsTagRepository {
     private static final Logger logger = Logger.getLogger(NewsTagRepositoryImpl.class.getName());
 
-    private static final String ADD = "INSERT INTO NewsTag(news_id, tag_id) VALUES(?, ?);";
-    private static final String DELETE = "DELETE FROM NewsTag WHERE news_id = ? AND tag_id = ?;";
+    private static final String ADD = "INSERT INTO News_Tag(news_id, tag_id) VALUES(?, ?);";
+    private static final String DELETE = "DELETE FROM News_Tag WHERE news_id = ? AND tag_id = ?;";
 
     @Autowired
     private DataSource dataSource;
@@ -30,8 +30,8 @@ public class NewsTagRepositoryImpl implements NewsTagRepository {
         try {
             connection = dataSource.getConnection();
             preparedStatement = connection.prepareStatement(ADD);
-            preparedStatement.setInt(1, newsTag.getNewsId());
-            preparedStatement.setInt(2, newsTag.getTagId());
+            preparedStatement.setLong(1, newsTag.getNewsId());
+            preparedStatement.setLong(2, newsTag.getTagId());
             preparedStatement.executeUpdate();
             logger.info("Successfully added news to tag relation");
         }
@@ -73,8 +73,8 @@ public class NewsTagRepositoryImpl implements NewsTagRepository {
         try {
             connection = dataSource.getConnection();
             preparedStatement = connection.prepareStatement(DELETE);
-            preparedStatement.setInt(1, newsTag.getNewsId());
-            preparedStatement.setInt(1, newsTag.getTagId());
+            preparedStatement.setLong(1, newsTag.getNewsId());
+            preparedStatement.setLong(2, newsTag.getTagId());
             preparedStatement.executeUpdate();
             logger.info("Successfully deleted news to tag relation");
         }

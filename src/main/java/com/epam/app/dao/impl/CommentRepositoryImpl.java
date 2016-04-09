@@ -13,7 +13,7 @@ import java.util.List;
  * Comment repository implementation.
  */
 public class CommentRepositoryImpl implements CommentRepository {
-    private static final Logger logger = Logger.getLogger(NewsRepositoryImpl.class.getName());
+    private static final Logger logger = Logger.getLogger(CommentRepositoryImpl.class.getName());
 
     private static final String ADD = "INSERT INTO Comments(news_id, comment_text, creation_date) VALUES(?, ?, ?);";
     private static final String FIND = "SELECT * FROM Comments WHERE comment_id = ?;";
@@ -31,14 +31,14 @@ public class CommentRepositoryImpl implements CommentRepository {
         try {
             connection = dataSource.getConnection();
             preparedStatement = connection.prepareStatement(ADD, Statement.RETURN_GENERATED_KEYS);
-            preparedStatement.setInt(1, comment.getNewsId());
+            preparedStatement.setLong(1, comment.getNewsId());
             preparedStatement.setString(2, comment.getCommentText());
             preparedStatement.setTimestamp(3, comment.getCreationDate());
             preparedStatement.executeUpdate();
             ResultSet resultSet = preparedStatement.getGeneratedKeys();
             resultSet.next();
-            int commentId = resultSet.getInt(1);
-            comment.setNewsId(commentId);
+            Long commentId = resultSet.getLong(1);
+            comment.setCommentId(commentId);
             logger.info("Successfully added comment");
         }
         catch (SQLException e) {
@@ -68,7 +68,7 @@ public class CommentRepositoryImpl implements CommentRepository {
     }
 
 
-    public Comment find(int commentId) {
+    public Comment find(Long commentId) {
         logger.info("Retrieving comment..");
         Connection connection = null;
         PreparedStatement preparedStatement = null;
@@ -76,13 +76,13 @@ public class CommentRepositoryImpl implements CommentRepository {
         try {
             connection = dataSource.getConnection();
             preparedStatement = connection.prepareStatement(FIND);
-            preparedStatement.setInt(1, commentId);
+            preparedStatement.setLong(1, commentId);
             ResultSet resultSet = preparedStatement.executeQuery();
             resultSet.next();
 
             comment = new Comment();
             comment.setCommentId(commentId);
-            comment.setNewsId(resultSet.getInt(2));
+            comment.setNewsId(resultSet.getLong(2));
             comment.setCommentText(resultSet.getString(3));
             comment.setCreationDate(resultSet.getTimestamp(4));
             logger.info("Successfully retrieved comment");
@@ -126,7 +126,7 @@ public class CommentRepositoryImpl implements CommentRepository {
             connection = dataSource.getConnection();
             preparedStatement = connection.prepareStatement(UPDATE);
             preparedStatement.setString(1, comment.getCommentText());
-            preparedStatement.setInt(2, comment.getCommentId());
+            preparedStatement.setLong(2, comment.getCommentId());
             preparedStatement.executeUpdate();
             logger.info("Successfully updated comment");
         }
@@ -168,7 +168,7 @@ public class CommentRepositoryImpl implements CommentRepository {
         try {
             connection = dataSource.getConnection();
             preparedStatement = connection.prepareStatement(DELETE);
-            preparedStatement.setInt(1, comment.getCommentId());
+            preparedStatement.setLong(1, comment.getCommentId());
             preparedStatement.executeUpdate();
             logger.info("Successfully deleted comment");
         }
@@ -210,7 +210,7 @@ public class CommentRepositoryImpl implements CommentRepository {
             connection = dataSource.getConnection();
             preparedStatement = connection.prepareStatement(ADD, Statement.RETURN_GENERATED_KEYS);
             for (Comment comment : comments) {
-                preparedStatement.setInt(1, comment.getNewsId());
+                preparedStatement.setLong(1, comment.getNewsId());
                 preparedStatement.setString(2, comment.getCommentText());
                 preparedStatement.setTimestamp(3, comment.getCreationDate());
                 preparedStatement.addBatch();
@@ -220,7 +220,7 @@ public class CommentRepositoryImpl implements CommentRepository {
             int i = 0;
             while (resultSet.next()) {
                 Comment comment = comments.get(i);
-                comment.setCommentId(resultSet.getInt(1));
+                comment.setCommentId(resultSet.getLong(1));
                 i++;
             }
             logger.info("Successfully added comments");
@@ -260,7 +260,7 @@ public class CommentRepositoryImpl implements CommentRepository {
             connection = dataSource.getConnection();
             preparedStatement = connection.prepareStatement(DELETE);
             for (Comment comment : comments) {
-                preparedStatement.setInt(1, comment.getCommentId());
+                preparedStatement.setLong(1, comment.getCommentId());
                 preparedStatement.addBatch();
             }
             preparedStatement.executeBatch();

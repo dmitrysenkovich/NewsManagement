@@ -10,6 +10,8 @@ import com.epam.app.utils.SearchUtils;
 import org.apache.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 
+import java.sql.Date;
+import java.sql.Timestamp;
 import java.util.List;
 
 /**
@@ -31,42 +33,50 @@ public class NewsServiceImpl implements NewsService {
 
     public News add(News news, Author author, List<Tag> tags) {
         logger.info("Adding news..");
+        news.setCreationDate(new Timestamp(new java.util.Date().getTime()));
+        news.setModificationDate(new Date(new java.util.Date().getTime()));
         news = newsRepository.add(news);
         if (news.getNewsId() == 0) {
             logger.error("Failed to add news");
             return news;
         }
 
-        logger.info("Adding new author to news..");
-        NewsAuthor newsAuthor = new NewsAuthor();
-        newsAuthor.setNewsId(news.getNewsId());
-        newsAuthor.setAuthorId(author.getAuthorId());
-        boolean addedNewsAuthorRelation = newsAuthorRepository.add(newsAuthor);
-        if (!addedNewsAuthorRelation) {
-            logger.error("Failed to add author to news");
-            logger.error("Failed to add news");
-            return news;
+        boolean addedNewsAuthorRelation = true;
+        if (author != null) {
+            logger.info("Adding new author to news..");
+            NewsAuthor newsAuthor = new NewsAuthor();
+            newsAuthor.setNewsId(news.getNewsId());
+            newsAuthor.setAuthorId(author.getAuthorId());
+            addedNewsAuthorRelation = newsAuthorRepository.add(newsAuthor);
+            if (!addedNewsAuthorRelation) {
+                logger.error("Failed to add author to news");
+                logger.error("Failed to add news");
+                return news;
+            }
         }
 
-        boolean addedAllNewsTagRelations = false;
-        for (Tag tag : tags) {
-            NewsTag newsTag = new NewsTag();
-            newsTag.setNewsId(news.getNewsId());
-            newsTag.setTagId(tag.getTagId());
-            addedAllNewsTagRelations = newsTagRepository.add(newsTag);
+        boolean addedAllNewsTagRelations = true;
+        if (tags != null) {
+            for (Tag tag : tags) {
+                NewsTag newsTag = new NewsTag();
+                newsTag.setNewsId(news.getNewsId());
+                newsTag.setTagId(tag.getTagId());
+                addedAllNewsTagRelations = newsTagRepository.add(newsTag);
+                if (!addedAllNewsTagRelations) {
+                    logger.error("Failed to add tags to news");
+                }
+            }
         }
-        if (!addedAllNewsTagRelations) {
-            logger.error("Failed to add tags to news");
-            logger.error("Failed to add news");
-        }
-        else
+        if (addedNewsAuthorRelation && addedAllNewsTagRelations)
             logger.info("Successfully added news");
+        else
+            logger.error("Failed to add news");
 
         return news;
     }
 
 
-    public News find(int newsId) {
+    public News find(Long newsId) {
         logger.info("Reprieving news..");
         News news = newsRepository.find(newsId);
         if (news != null)
@@ -122,9 +132,9 @@ public class NewsServiceImpl implements NewsService {
     }
 
 
-    public int countAll() {
+    public Long countAll() {
         logger.info("Counting all news..");
-        int newsCount = newsRepository.countAll();
+        Long newsCount = newsRepository.countAll();
         if (newsCount != -1)
             logger.info("Successfully counted all news");
         else

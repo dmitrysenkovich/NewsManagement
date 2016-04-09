@@ -27,7 +27,7 @@ public class AuthorServiceImpl implements AuthorService {
     }
 
 
-    public Author find(int authorId) {
+    public Author find(Long authorId) {
         logger.info("Reprieving author..");
         Author author = authorRepository.find(authorId);
         if (author != null)
