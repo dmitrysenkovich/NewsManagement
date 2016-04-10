@@ -14,7 +14,7 @@ import java.util.List;
  * Comment service implementation.
  */
 public class CommentServiceImpl implements CommentService {
-    private static final Logger logger = Logger.getLogger(CommentServiceImpl.class.getName());
+    private static Logger logger = Logger.getLogger(CommentServiceImpl.class.getName());
 
     @Autowired
     private CommentRepository commentRepository;
@@ -25,7 +25,7 @@ public class CommentServiceImpl implements CommentService {
         comment.setNewsId(news.getNewsId());
         comment.setCreationDate(new Timestamp(new java.util.Date().getTime()));
         comment = commentRepository.add(comment);
-        if (comment.getCommentId() != 0)
+        if (comment.getCommentId() != null)
             logger.info("Successfully added new comment");
         else
             logger.error("Failed to add new comment");
@@ -34,7 +34,7 @@ public class CommentServiceImpl implements CommentService {
 
 
     public Comment find(Long commentId) {
-        logger.info("Reprieving comment..");
+        logger.info("Retrieving comment..");
         Comment comment = commentRepository.find(commentId);
         if (comment != null)
             logger.info("Successfully found comment");
@@ -75,7 +75,7 @@ public class CommentServiceImpl implements CommentService {
         comments = commentRepository.addAll(comments);
         boolean allAdded = true;
         for (Comment comment : comments)
-            if (comment.getCommentId() == 0)
+            if (comment.getCommentId() == null)
                 allAdded = false;
         if (allAdded)
             logger.info("Successfully added comments");

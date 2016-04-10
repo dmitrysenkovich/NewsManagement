@@ -18,7 +18,7 @@ import java.util.List;
  * News service implementation.
  */
 public class NewsServiceImpl implements NewsService {
-    private static final Logger logger = Logger.getLogger(NewsServiceImpl.class.getName());
+    private static Logger logger = Logger.getLogger(NewsServiceImpl.class.getName());
 
     @Autowired
     private NewsRepository newsRepository;
@@ -36,14 +36,14 @@ public class NewsServiceImpl implements NewsService {
         news.setCreationDate(new Timestamp(new java.util.Date().getTime()));
         news.setModificationDate(new Date(new java.util.Date().getTime()));
         news = newsRepository.add(news);
-        if (news.getNewsId() == 0) {
+        if (news.getNewsId() == null) {
             logger.error("Failed to add news");
             return news;
         }
 
         boolean addedNewsAuthorRelation = true;
         if (author != null) {
-            logger.info("Adding new author to news..");
+            logger.info("Adding author to news..");
             NewsAuthor newsAuthor = new NewsAuthor();
             newsAuthor.setNewsId(news.getNewsId());
             newsAuthor.setAuthorId(author.getAuthorId());
@@ -53,10 +53,12 @@ public class NewsServiceImpl implements NewsService {
                 logger.error("Failed to add news");
                 return news;
             }
+            logger.info("Successfully added author to news");
         }
 
         boolean addedAllNewsTagRelations = true;
         if (tags != null) {
+            logger.info("Adding tags to news..");
             for (Tag tag : tags) {
                 NewsTag newsTag = new NewsTag();
                 newsTag.setNewsId(news.getNewsId());
@@ -64,8 +66,11 @@ public class NewsServiceImpl implements NewsService {
                 addedAllNewsTagRelations = newsTagRepository.add(newsTag);
                 if (!addedAllNewsTagRelations) {
                     logger.error("Failed to add tags to news");
+                    break;
                 }
             }
+            if (addedAllNewsTagRelations)
+                logger.info("Successfully added tags to news");
         }
         if (addedNewsAuthorRelation && addedAllNewsTagRelations)
             logger.info("Successfully added news");
@@ -77,7 +82,7 @@ public class NewsServiceImpl implements NewsService {
 
 
     public News find(Long newsId) {
-        logger.info("Reprieving news..");
+        logger.info("Retrieving news..");
         News news = newsRepository.find(newsId);
         if (news != null)
             logger.info("Successfully found news");

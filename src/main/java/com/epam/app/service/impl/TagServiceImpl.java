@@ -13,7 +13,7 @@ import java.util.List;
  * Tag service implementation.
  */
 public class TagServiceImpl implements TagService {
-    private static final Logger logger = Logger.getLogger(TagServiceImpl.class.getName());
+    private static Logger logger = Logger.getLogger(TagServiceImpl.class.getName());
 
     @Autowired
     private TagRepository tagRepository;
@@ -22,7 +22,7 @@ public class TagServiceImpl implements TagService {
     public Tag add(Tag tag) {
         logger.info("Adding new tag..");
         tag = tagRepository.add(tag);
-        if (tag.getTagId() != 0)
+        if (tag.getTagId() != null)
             logger.info("Successfully added new tag");
         else
             logger.error("Failed to add new tag");
@@ -31,7 +31,7 @@ public class TagServiceImpl implements TagService {
 
 
     public Tag find(Long tagId) {
-        logger.info("Reprieving tag..");
+        logger.info("Retrieving tag..");
         Tag tag = tagRepository.find(tagId);
         if (tag != null)
             logger.info("Successfully found tag");
@@ -68,7 +68,7 @@ public class TagServiceImpl implements TagService {
         tags = tagRepository.addAll(tags);
         boolean allAdded = true;
         for (Tag tag : tags)
-            if (tag.getTagId() == 0)
+            if (tag.getTagId() == null)
                 allAdded = false;
         if (allAdded)
             logger.info("Successfully added tags");

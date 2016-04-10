@@ -12,7 +12,7 @@ import org.springframework.beans.factory.annotation.Autowired;
  * NewsTag service implementation.
  */
 public class NewsTagServiceImpl implements NewsTagService {
-    private static final Logger logger = Logger.getLogger(NewsTagServiceImpl.class.getName());
+    private static Logger logger = Logger.getLogger(NewsTagServiceImpl.class.getName());
 
     @Autowired
     private NewsTagRepository newsTagRepository;

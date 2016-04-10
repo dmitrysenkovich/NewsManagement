@@ -11,7 +11,7 @@ import org.springframework.beans.factory.annotation.Autowired;
  * User service implementation.
  */
 public class UserServiceImpl implements UserService {
-    private static final Logger logger = Logger.getLogger(UserServiceImpl.class.getName());
+    private static Logger logger = Logger.getLogger(UserServiceImpl.class.getName());
 
     @Autowired
     private UserRepository userRepository;
@@ -21,7 +21,7 @@ public class UserServiceImpl implements UserService {
         logger.info("Adding new user..");
         user.setRoleId(role.getRoleId());
         user = userRepository.add(user);
-        if (user.getUserId() != 0)
+        if (user.getUserId() != null)
             logger.info("Successfully added new user");
         else
             logger.error("Failed to add new user");
@@ -30,7 +30,7 @@ public class UserServiceImpl implements UserService {
 
 
     public User find(Long userId) {
-        logger.info("Reprieving user..");
+        logger.info("Retrieving user..");
         User user = userRepository.find(userId);
         if (user != null)
             logger.info("Successfully found user");

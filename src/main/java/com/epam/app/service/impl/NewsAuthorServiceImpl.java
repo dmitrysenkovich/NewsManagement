@@ -12,7 +12,7 @@ import org.springframework.beans.factory.annotation.Autowired;
  * NewsAuthor service implementation.
  */
 public class NewsAuthorServiceImpl implements NewsAuthorService {
-    private static final Logger logger = Logger.getLogger(NewsAuthorServiceImpl.class.getName());
+    private static Logger logger = Logger.getLogger(NewsAuthorServiceImpl.class.getName());
 
     @Autowired
     private NewsAuthorRepository newsAuthorRepository;

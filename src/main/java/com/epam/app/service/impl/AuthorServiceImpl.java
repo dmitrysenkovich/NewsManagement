@@ -10,7 +10,7 @@ import org.springframework.beans.factory.annotation.Autowired;
  * Author service.
  */
 public class AuthorServiceImpl implements AuthorService {
-    private static final Logger logger = Logger.getLogger(AuthorServiceImpl.class.getName());
+    private static Logger logger = Logger.getLogger(AuthorServiceImpl.class.getName());
 
     @Autowired
     private AuthorRepository authorRepository;
@@ -19,7 +19,7 @@ public class AuthorServiceImpl implements AuthorService {
     public Author add(Author author) {
         logger.info("Adding new author..");
         author = authorRepository.add(author);
-        if (author.getAuthorId() != 0)
+        if (author.getAuthorId() != null)
             logger.info("Successfully added new author");
         else
             logger.error("Failed to add new author");
@@ -28,7 +28,7 @@ public class AuthorServiceImpl implements AuthorService {
 
 
     public Author find(Long authorId) {
-        logger.info("Reprieving author..");
+        logger.info("Retrieving author..");
         Author author = authorRepository.find(authorId);
         if (author != null)
             logger.info("Successfully found author");

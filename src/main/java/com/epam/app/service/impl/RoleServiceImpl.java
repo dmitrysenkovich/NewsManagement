@@ -10,7 +10,7 @@ import org.springframework.beans.factory.annotation.Autowired;
  * Role service implementation.
  */
 public class RoleServiceImpl implements RoleService {
-    private static final Logger logger = Logger.getLogger(RoleServiceImpl.class.getName());
+    private static Logger logger = Logger.getLogger(RoleServiceImpl.class.getName());
 
     @Autowired
     private RoleRepository roleRepository;
@@ -19,7 +19,7 @@ public class RoleServiceImpl implements RoleService {
     public Role add(Role role) {
         logger.info("Adding new role..");
         role = roleRepository.add(role);
-        if (role.getRoleId() != 0)
+        if (role.getRoleId() != null)
             logger.info("Successfully added new role");
         else
             logger.error("Failed to add new role");
@@ -28,7 +28,7 @@ public class RoleServiceImpl implements RoleService {
 
 
     public Role find(Long roleId) {
-        logger.info("Reprieving role..");
+        logger.info("Retrieving role..");
         Role role = roleRepository.find(roleId);
         if (role != null)
             logger.info("Successfully found role");
