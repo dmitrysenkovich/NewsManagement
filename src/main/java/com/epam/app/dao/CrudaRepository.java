@@ -1,5 +1,7 @@
 package com.epam.app.dao;
 
+import com.epam.app.exception.DaoException;
+
 import java.util.List;
 
 /**
@@ -18,5 +20,5 @@ public interface CrudaRepository<T, E> extends CrudRepository<T, E> {
      * @return entities with set id
      * if successfully.
      */
-    List<T> addAll(List<T> entities);
+    List<T> addAll(List<T> entities) throws DaoException;
 }

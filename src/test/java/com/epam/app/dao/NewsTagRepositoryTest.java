@@ -1,5 +1,6 @@
 package com.epam.app.dao;
 
+import com.epam.app.exception.DaoException;
 import com.epam.app.model.NewsTag;
 import com.github.springtestdbunit.DbUnitTestExecutionListener;
 import com.github.springtestdbunit.annotation.DatabaseSetup;
@@ -23,9 +24,9 @@ import org.unitils.database.util.TransactionMode;
 import java.sql.Connection;
 import java.sql.DriverManager;
 
+import static com.googlecode.catchexception.CatchException.catchException;
+import static com.googlecode.catchexception.CatchException.caughtException;
 import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertTrue;
 
 /**
  * NewsTag repository test.
@@ -61,61 +62,64 @@ public class NewsTagRepositoryTest {
             connection.close();
     }
 
+
     @Test
     public void newsTagRelationAdded() throws Exception {
         NewsTag newsTag = new NewsTag();
         newsTag.setNewsId(2L);
         newsTag.setTagId(2L);
-        boolean added = newsTagRepository.add(newsTag);
+        newsTagRepository.add(newsTag);
         connection = DriverManager.getConnection(testDbUrl, testDbUsername, testDbPassword);
         IDataSet actualDataSet = getActualDataSet(connection);
         ITable newsTagTable = actualDataSet.getTable("News_Tag");
 
         assertEquals(6, newsTagTable.getRowCount());
-        assertTrue(added);
     }
+
 
     @Test
     public void newsTagRelationNotAddedInvalidNews() throws Exception {
         NewsTag newsTag = new NewsTag();
         newsTag.setNewsId(-1L);
         newsTag.setTagId(2L);
-        boolean added = newsTagRepository.add(newsTag);
+        catchException(() -> newsTagRepository.add(newsTag));
+        assert caughtException() instanceof DaoException;
         connection = DriverManager.getConnection(testDbUrl, testDbUsername, testDbPassword);
         IDataSet actualDataSet = getActualDataSet(connection);
         ITable newsTagTable = actualDataSet.getTable("News_Tag");
 
         assertEquals(5, newsTagTable.getRowCount());
-        assertFalse(added);
     }
+
 
     @Test
     public void newsTagRelationNotAddedInvalidTag() throws Exception {
         NewsTag newsTag = new NewsTag();
         newsTag.setNewsId(2L);
         newsTag.setTagId(-1L);
-        boolean added = newsTagRepository.add(newsTag);
+        catchException(() -> newsTagRepository.add(newsTag));
+        assert caughtException() instanceof DaoException;
         connection = DriverManager.getConnection(testDbUrl, testDbUsername, testDbPassword);
         IDataSet actualDataSet = getActualDataSet(connection);
         ITable newsTagTable = actualDataSet.getTable("News_Tag");
 
         assertEquals(5, newsTagTable.getRowCount());
-        assertFalse(added);
     }
+
 
     @Test
     public void newsTagRelationDeleted() throws Exception {
         NewsTag newsTag = new NewsTag();
         newsTag.setNewsId(1L);
         newsTag.setTagId(1L);
-        boolean deleted = newsTagRepository.delete(newsTag);
+        newsTagRepository.delete(newsTag);
         connection = DriverManager.getConnection(testDbUrl, testDbUsername, testDbPassword);
         IDataSet actualDataSet = getActualDataSet(connection);
         ITable newsTagTable = actualDataSet.getTable("News_Tag");
 
         assertEquals(4, newsTagTable.getRowCount());
-        assertTrue(deleted);
     }
+
 
     @Test
     public void newsTagRelationNotDeletedInvalidNews() throws Exception {
@@ -129,6 +133,7 @@ public class NewsTagRepositoryTest {
 
         assertEquals(5, newsTagTable.getRowCount());
     }
+
 
     @Test
     public void newsTagRelationNotDeletedInvalidTag() throws Exception {

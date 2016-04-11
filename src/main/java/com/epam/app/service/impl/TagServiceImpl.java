@@ -1,6 +1,8 @@
 package com.epam.app.service.impl;
 
 import com.epam.app.dao.TagRepository;
+import com.epam.app.exception.DaoException;
+import com.epam.app.exception.ServiceException;
 import com.epam.app.model.Tag;
 import com.epam.app.service.TagService;
 import org.apache.log4j.Logger;
@@ -20,67 +22,74 @@ public class TagServiceImpl implements TagService {
 
 
     @Override
-    @Transactional
-    public Tag add(Tag tag) {
+    @Transactional(rollbackFor = DaoException.class)
+    public Tag add(Tag tag) throws ServiceException {
         logger.info("Adding new tag..");
-        tag = tagRepository.add(tag);
-        if (tag.getTagId() != null)
-            logger.info("Successfully added new tag");
-        else
+        try {
+            tag = tagRepository.add(tag);
+        } catch (DaoException e) {
             logger.error("Failed to add new tag");
+            throw new ServiceException(e);
+        }
+        logger.info("Successfully added new tag");
         return tag;
     }
 
 
     @Override
-    public Tag find(Long tagId) {
+    public Tag find(Long tagId) throws ServiceException {
         logger.info("Retrieving tag..");
-        Tag tag = tagRepository.find(tagId);
-        if (tag != null)
-            logger.info("Successfully found tag");
-        else
+        Tag tag;
+        try {
+            tag = tagRepository.find(tagId);
+        } catch (DaoException e) {
             logger.error("Failed to find tag");
+            throw new ServiceException(e);
+        }
+        logger.info("Successfully found tag");
         return tag;
     }
 
 
     @Override
-    @Transactional
-    public boolean update(Tag tag) {
+    @Transactional(rollbackFor = DaoException.class)
+    public void update(Tag tag) throws ServiceException {
         logger.info("Updating tag..");
-        boolean updated = tagRepository.update(tag);
-        if (updated)
-            logger.info("Successfully updated tag");
-        else
+        try {
+            tagRepository.update(tag);
+        } catch (DaoException e) {
             logger.error("Failed to update tag");
-        return updated;
+            throw new ServiceException(e);
+        }
+        logger.info("Successfully updated tag");
     }
 
 
-    @Transactional
-    public boolean delete(Tag tag) {
+    @Override
+    @Transactional(rollbackFor = DaoException.class)
+    public void delete(Tag tag) throws ServiceException {
         logger.info("Deleting tag..");
-        boolean deleted = tagRepository.delete(tag);
-        if (deleted)
-            logger.info("Successfully deleted tag");
-        else
+        try {
+            tagRepository.delete(tag);
+        } catch (DaoException e) {
             logger.error("Failed to delete tag");
-        return deleted;
+            throw new ServiceException(e);
+        }
+        logger.info("Successfully deleted tag");
     }
 
 
-    @Transactional
-    public List<Tag> addAll(List<Tag> tags) {
+    @Override
+    @Transactional(rollbackFor = DaoException.class)
+    public List<Tag> addAll(List<Tag> tags) throws ServiceException {
         logger.info("Adding tags..");
-        tags = tagRepository.addAll(tags);
-        boolean allAdded = true;
-        for (Tag tag : tags)
-            if (tag.getTagId() == null)
-                allAdded = false;
-        if (allAdded)
-            logger.info("Successfully added tags");
-        else
+        try {
+            tags = tagRepository.addAll(tags);
+        } catch (DaoException e) {
             logger.error("Failed to add tags");
+            throw new ServiceException(e);
+        }
+        logger.info("Successfully added tags");
         return tags;
     }
 }

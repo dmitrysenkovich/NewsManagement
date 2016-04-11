@@ -41,7 +41,7 @@ public class SearchUtilsTest {
                 TEST_AUTHOR_AND_TAGS_SEARCH_SCRIPT_FILE_NAME, null, null);
         SearchCriteria searchCriteria = new SearchCriteria();
         searchCriteria.setAuthorId(1L);
-        List<Long> tagIds = new LinkedList<Long>();
+        List<Long> tagIds = new LinkedList<>();
         tagIds.add(1L);
         tagIds.add(2L);
         searchCriteria.setTagIds(tagIds);
@@ -66,7 +66,7 @@ public class SearchUtilsTest {
         String testTagsOnlySearchScript = scriptFileUtils.getScriptPart(TEST_SEARCH_SCRIPT_DIRECTORY,
                 TEST_TAGS_ONLY_SEARCH_SCRIPT_FILE_NAME, null, null);
         SearchCriteria searchCriteria = new SearchCriteria();
-        List<Long> tagIds = new LinkedList<Long>();
+        List<Long> tagIds = new LinkedList<>();
         tagIds.add(1L);
         tagIds.add(2L);
         searchCriteria.setTagIds(tagIds);
@@ -105,7 +105,7 @@ public class SearchUtilsTest {
     public void searchCriteriaAuthorIsNullAndNoTags() {
         SearchCriteria searchCriteria = new SearchCriteria();
         searchCriteria.setAuthorId(null);
-        searchCriteria.setTagIds(new LinkedList<Long>());
+        searchCriteria.setTagIds(new LinkedList<>());
         String searchQuery = searchUtils.getSearchQuery(searchCriteria);
 
         assertNull(searchQuery);

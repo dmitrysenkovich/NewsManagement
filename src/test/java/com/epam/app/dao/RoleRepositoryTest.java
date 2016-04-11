@@ -1,5 +1,6 @@
 package com.epam.app.dao;
 
+import com.epam.app.exception.DaoException;
 import com.epam.app.model.Role;
 import com.github.springtestdbunit.DbUnitTestExecutionListener;
 import com.github.springtestdbunit.annotation.DatabaseSetup;
@@ -21,11 +22,11 @@ import org.springframework.test.context.support.DependencyInjectionTestExecution
 import java.sql.Connection;
 import java.sql.DriverManager;
 
+import static com.googlecode.catchexception.CatchException.catchException;
+import static com.googlecode.catchexception.CatchException.caughtException;
 import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertNull;
-import static org.junit.Assert.assertTrue;
 
 /**
  * Role repository test.
@@ -60,6 +61,7 @@ public class RoleRepositoryTest {
             connection.close();
     }
 
+
     @Test
     public void roleAdded() throws Exception {
         Role role = new Role();
@@ -73,10 +75,12 @@ public class RoleRepositoryTest {
         assertNotNull(role.getRoleId());
     }
 
+
     @Test
     public void roleNotAdded() throws Exception {
         Role role = new Role();
-        role = roleRepository.add(role);
+        catchException(() -> roleRepository.add(role));
+        assert caughtException() instanceof DaoException;
         connection = DriverManager.getConnection(testDbUrl, testDbUsername, testDbPassword);
         IDataSet actualDataSet = getActualDataSet(connection);
         ITable rolesTable = actualDataSet.getTable("Roles");
@@ -85,49 +89,51 @@ public class RoleRepositoryTest {
         assertNull(role.getRoleId());
     }
 
+
     @Test
-    public void roleFound() {
+    public void roleFound() throws Exception {
         Role role = roleRepository.find(1L);
 
         assertNotNull(role);
     }
 
-    @Test
-    public void roleNotFound() {
-        Role role = roleRepository.find(-1L);
 
-        assertNull(role);
+    @Test(expected = DaoException.class)
+    public void roleNotFound() throws Exception {
+        roleRepository.find(-1L);
     }
 
+
     @Test
-    public void roleUpdated() {
+    public void roleUpdated() throws Exception {
         Role role = new Role();
         role.setRoleId(1L);
         role.setRoleName("test1");
-        boolean updated = roleRepository.update(role);
+        roleRepository.update(role);
         Role foundRole = roleRepository.find(role.getRoleId());
 
         assertEquals("test1", foundRole.getRoleName());
-        assertTrue(updated);
     }
 
+
     @Test
-    public void roleNotUpdated() {
+    public void roleNotUpdated() throws Exception {
         Role role = new Role();
         role.setRoleId(1L);
         role.setRoleName(null);
-        boolean updated = roleRepository.update(role);
+        catchException(() -> roleRepository.update(role));
+        assert caughtException() instanceof DaoException;
         Role foundRole = roleRepository.find(role.getRoleId());
 
         assertEquals("test", foundRole.getRoleName());
-        assertFalse(updated);
     }
+
 
     @Test
     public void roleDeleted() throws Exception {
         Role role = new Role();
         role.setRoleId(1L);
-        boolean deleted = roleRepository.delete(role);
+        roleRepository.delete(role);
         connection = DriverManager.getConnection(testDbUrl, testDbUsername, testDbPassword);
         IDataSet actualDataSet = getActualDataSet(connection);
         ITable rolesTable = actualDataSet.getTable("Roles");
@@ -135,8 +141,8 @@ public class RoleRepositoryTest {
 
         assertEquals(1, rolesTable.getRowCount());
         assertEquals(0, usersTable.getRowCount());
-        assertTrue(deleted);
     }
+
 
     @Test
     public void roleNotDeleted() throws Exception {

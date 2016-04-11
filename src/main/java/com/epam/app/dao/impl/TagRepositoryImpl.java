@@ -1,7 +1,9 @@
 package com.epam.app.dao.impl;
 
 import com.epam.app.dao.TagRepository;
+import com.epam.app.exception.DaoException;
 import com.epam.app.model.Tag;
+import com.epam.app.utils.DatabaseUtils;
 import org.apache.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 
@@ -27,8 +29,11 @@ public class TagRepositoryImpl implements TagRepository {
     @Autowired
     private DataSource dataSource;
 
+    @Autowired
+    private DatabaseUtils databaseUtils;
 
-    public Tag add(Tag tag) {
+
+    public Tag add(Tag tag) throws DaoException {
         logger.info("Adding tag..");
         Connection connection = null;
         PreparedStatement preparedStatement = null;
@@ -45,32 +50,17 @@ public class TagRepositoryImpl implements TagRepository {
         }
         catch (SQLException e) {
             logger.error("Error while adding tag: ", e);
+            throw new DaoException(e);
         }
         finally {
-            if (preparedStatement != null) {
-                try {
-                    preparedStatement.close();
-                } catch (SQLException e) {
-                    logger.error("Error while trying to close prepared " +
-                            "statement after adding tag", e);
-                }
-            }
-
-            if (connection != null) {
-                try {
-                    connection.close();
-                } catch (SQLException e) {
-                    logger.error("Error while trying to close connection " +
-                            "after adding tag", e);
-                }
-            }
-
-            return tag;
+            databaseUtils.closeConnectionAndStatement(logger, "Error while adding tag: ",
+                    preparedStatement, connection);
         }
+        return tag;
     }
 
 
-    public Tag find(Long tagId) {
+    public Tag find(Long tagId) throws DaoException {
         logger.info("Retrieving tag..");
         Connection connection = null;
         PreparedStatement preparedStatement = null;
@@ -89,39 +79,20 @@ public class TagRepositoryImpl implements TagRepository {
         }
         catch (SQLException e) {
             logger.error("Error while retrieving tag: ", e);
-            tag = null;
+            throw new DaoException(e);
         }
         finally {
-            if (preparedStatement != null) {
-                try {
-                    preparedStatement.close();
-                } catch (SQLException e) {
-                    logger.error("Error while trying to close prepared " +
-                            "statement after retrieving tag", e);
-                    tag = null;
-                }
-            }
-
-            if (connection != null) {
-                try {
-                    connection.close();
-                } catch (SQLException e) {
-                    logger.error("Error while trying to close connection " +
-                            "after retrieving tag", e);
-                    tag = null;
-                }
-            }
-
-            return tag;
+            databaseUtils.closeConnectionAndStatement(logger, "Error while retrieving tag: ",
+                    preparedStatement, connection);
         }
+        return tag;
     }
 
 
-    public boolean update(Tag tag) {
+    public void update(Tag tag) throws DaoException {
         logger.info("Updating tag..");
         Connection connection = null;
         PreparedStatement preparedStatement = null;
-        boolean result = true;
         try {
             connection = dataSource.getConnection();
             preparedStatement = connection.prepareStatement(UPDATE);
@@ -132,39 +103,19 @@ public class TagRepositoryImpl implements TagRepository {
         }
         catch (SQLException e) {
             logger.error("Error while updating tag: ", e);
-            result = false;
+            throw new DaoException(e);
         }
         finally {
-            if (preparedStatement != null) {
-                try {
-                    preparedStatement.close();
-                } catch (SQLException e) {
-                    logger.error("Error while trying to close prepared " +
-                            "statement after updating tag", e);
-                    result = false;
-                }
-            }
-
-            if (connection != null) {
-                try {
-                    connection.close();
-                } catch (SQLException e) {
-                    logger.error("Error while trying to close connection " +
-                            "after updating tag", e);
-                    result = false;
-                }
-            }
-
-            return result;
+            databaseUtils.closeConnectionAndStatement(logger, "Error while updating tag: ",
+                    preparedStatement, connection);
         }
     }
 
 
-    public boolean delete(Tag tag) {
+    public void delete(Tag tag) throws DaoException {
         logger.info("Deleting tag..");
         Connection connection = null;
         PreparedStatement preparedStatement = null;
-        boolean result = true;
         try {
             connection = dataSource.getConnection();
             preparedStatement = connection.prepareStatement(DELETE);
@@ -174,35 +125,16 @@ public class TagRepositoryImpl implements TagRepository {
         }
         catch (SQLException e) {
             logger.error("Error while deleting tag: ", e);
-            result = false;
+            throw new DaoException(e);
         }
         finally {
-            if (preparedStatement != null) {
-                try {
-                    preparedStatement.close();
-                } catch (SQLException e) {
-                    logger.error("Error while trying to close prepared " +
-                            "statement after deleting tag", e);
-                    result = false;
-                }
-            }
-
-            if (connection != null) {
-                try {
-                    connection.close();
-                } catch (SQLException e) {
-                    logger.error("Error while trying to close connection " +
-                            "after deleting tag", e);
-                    result = false;
-                }
-            }
-
-            return result;
+            databaseUtils.closeConnectionAndStatement(logger, "Error while deleting tag: ",
+                    preparedStatement, connection);
         }
     }
 
 
-    public List<Tag> addAll(List<Tag> tags) {
+    public List<Tag> addAll(List<Tag> tags) throws DaoException {
         logger.info("Adding tags..");
         Connection connection = null;
         PreparedStatement preparedStatement = null;
@@ -225,27 +157,12 @@ public class TagRepositoryImpl implements TagRepository {
         }
         catch (SQLException e) {
             logger.error("Error while adding tags: ", e);
+            throw new DaoException(e);
         }
         finally {
-            if (preparedStatement != null) {
-                try {
-                    preparedStatement.close();
-                } catch (SQLException e) {
-                    logger.error("Error while trying to close prepared " +
-                            "statement after adding tags: ", e);
-                }
-            }
-
-            if (connection != null) {
-                try {
-                    connection.close();
-                } catch (SQLException e) {
-                    logger.error("Error while trying to close connection " +
-                            "after adding tags: ", e);
-                }
-            }
-
-            return tags;
+            databaseUtils.closeConnectionAndStatement(logger, "Error while adding tags: ",
+                    preparedStatement, connection);
         }
+        return tags;
     }
 }

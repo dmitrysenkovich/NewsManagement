@@ -1,7 +1,9 @@
 package com.epam.app.dao.impl;
 
 import com.epam.app.dao.CommentRepository;
+import com.epam.app.exception.DaoException;
 import com.epam.app.model.Comment;
+import com.epam.app.utils.DatabaseUtils;
 import org.apache.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 
@@ -27,9 +29,12 @@ public class CommentRepositoryImpl implements CommentRepository {
     @Autowired
     private DataSource dataSource;
 
+    @Autowired
+    private DatabaseUtils databaseUtils;
+
 
     @Override
-    public Comment add(Comment comment) {
+    public Comment add(Comment comment) throws DaoException {
         logger.info("Adding comment..");
         Connection connection = null;
         PreparedStatement preparedStatement = null;
@@ -48,33 +53,18 @@ public class CommentRepositoryImpl implements CommentRepository {
         }
         catch (SQLException e) {
             logger.error("Error while adding comment: ", e);
+            throw new DaoException(e);
         }
         finally {
-            if (preparedStatement != null) {
-                try {
-                    preparedStatement.close();
-                } catch (SQLException e) {
-                    logger.error("Error while trying to close prepared " +
-                            "statement after adding comment", e);
-                }
-            }
-
-            if (connection != null) {
-                try {
-                    connection.close();
-                } catch (SQLException e) {
-                    logger.error("Error while trying to close connection " +
-                            "after adding comment", e);
-                }
-            }
-
-            return comment;
+            databaseUtils.closeConnectionAndStatement(logger, "Error while adding comment: ",
+                    preparedStatement, connection);
         }
+        return comment;
     }
 
 
     @Override
-    public Comment find(Long commentId) {
+    public Comment find(Long commentId) throws DaoException {
         logger.info("Retrieving comment..");
         Connection connection = null;
         PreparedStatement preparedStatement = null;
@@ -95,40 +85,21 @@ public class CommentRepositoryImpl implements CommentRepository {
         }
         catch (SQLException e) {
             logger.error("Error while retrieving comment: ", e);
-            comment = null;
+            throw new DaoException(e);
         }
         finally {
-            if (preparedStatement != null) {
-                try {
-                    preparedStatement.close();
-                } catch (SQLException e) {
-                    logger.error("Error while trying to close prepared " +
-                            "statement after retrieving comment", e);
-                    comment = null;
-                }
-            }
-
-            if (connection != null) {
-                try {
-                    connection.close();
-                } catch (SQLException e) {
-                    logger.error("Error while trying to close connection " +
-                            "after retrieving comment", e);
-                    comment = null;
-                }
-            }
-
-            return comment;
+            databaseUtils.closeConnectionAndStatement(logger, "Error while retrieving comment: ",
+                    preparedStatement, connection);
         }
+        return comment;
     }
 
 
     @Override
-    public boolean update(Comment comment) {
+    public void update(Comment comment) throws DaoException {
         logger.info("Updating comment..");
         Connection connection = null;
         PreparedStatement preparedStatement = null;
-        boolean result = true;
         try {
             connection = dataSource.getConnection();
             preparedStatement = connection.prepareStatement(UPDATE);
@@ -139,40 +110,20 @@ public class CommentRepositoryImpl implements CommentRepository {
         }
         catch (SQLException e) {
             logger.error("Error while updating comment: ", e);
-            result = false;
+            throw new DaoException(e);
         }
         finally {
-            if (preparedStatement != null) {
-                try {
-                    preparedStatement.close();
-                } catch (SQLException e) {
-                    logger.error("Error while trying to close prepared " +
-                            "statement after updating comment", e);
-                    result = false;
-                }
-            }
-
-            if (connection != null) {
-                try {
-                    connection.close();
-                } catch (SQLException e) {
-                    logger.error("Error while trying to close connection " +
-                            "after updating comment", e);
-                    result = false;
-                }
-            }
-
-            return result;
+            databaseUtils.closeConnectionAndStatement(logger, "Error while updating comment: ",
+                    preparedStatement, connection);
         }
     }
 
 
     @Override
-    public boolean delete(Comment comment) {
+    public void delete(Comment comment) throws DaoException {
         logger.info("Deleting comment..");
         Connection connection = null;
         PreparedStatement preparedStatement = null;
-        boolean result = true;
         try {
             connection = dataSource.getConnection();
             preparedStatement = connection.prepareStatement(DELETE);
@@ -182,36 +133,17 @@ public class CommentRepositoryImpl implements CommentRepository {
         }
         catch (SQLException e) {
             logger.error("Error while deleting comment: ", e);
-            result = false;
+            throw new DaoException(e);
         }
         finally {
-            if (preparedStatement != null) {
-                try {
-                    preparedStatement.close();
-                } catch (SQLException e) {
-                    logger.error("Error while trying to close prepared " +
-                            "statement after deleting comment", e);
-                    result = false;
-                }
-            }
-
-            if (connection != null) {
-                try {
-                    connection.close();
-                } catch (SQLException e) {
-                    logger.error("Error while trying to close connection " +
-                            "after deleting comment", e);
-                    result = false;
-                }
-            }
-
-            return result;
+            databaseUtils.closeConnectionAndStatement(logger, "Error while deleting comment: ",
+                    preparedStatement, connection);
         }
     }
 
 
     @Override
-    public List<Comment> addAll(List<Comment> comments) {
+    public List<Comment> addAll(List<Comment> comments) throws DaoException {
         logger.info("Adding comments..");
         Connection connection = null;
         PreparedStatement preparedStatement = null;
@@ -236,37 +168,21 @@ public class CommentRepositoryImpl implements CommentRepository {
         }
         catch (SQLException e) {
             logger.error("Error while adding comments: ", e);
+            throw new DaoException(e);
         }
         finally {
-            if (preparedStatement != null) {
-                try {
-                    preparedStatement.close();
-                } catch (SQLException e) {
-                    logger.error("Error while trying to close prepared " +
-                            "statement after adding comments: ", e);
-                }
-            }
-
-            if (connection != null) {
-                try {
-                    connection.close();
-                } catch (SQLException e) {
-                    logger.error("Error while trying to close connection " +
-                            "after adding comments: ", e);
-                }
-            }
-
-            return comments;
+            databaseUtils.closeConnectionAndStatement(logger, "Error while adding comments: ",
+                    preparedStatement, connection);
         }
+        return comments;
     }
 
 
     @Override
-    public boolean deleteAll(List<Comment> comments) {
+    public void deleteAll(List<Comment> comments) throws DaoException {
         logger.info("Deleting comments..");
         Connection connection = null;
         PreparedStatement preparedStatement = null;
-        boolean result = true;
         try {
             connection = dataSource.getConnection();
             preparedStatement = connection.prepareStatement(DELETE);
@@ -279,30 +195,11 @@ public class CommentRepositoryImpl implements CommentRepository {
         }
         catch (SQLException e) {
             logger.error("Error while deleting comments: ", e);
-            result = false;
+            throw new DaoException(e);
         }
         finally {
-            if (preparedStatement != null) {
-                try {
-                    preparedStatement.close();
-                } catch (SQLException e) {
-                    logger.error("Error while trying to close prepared " +
-                            "statement after deleting comments: ", e);
-                    result = false;
-                }
-            }
-
-            if (connection != null) {
-                try {
-                    connection.close();
-                } catch (SQLException e) {
-                    logger.error("Error while trying to close connection " +
-                            "after deleting comments: ", e);
-                    result = false;
-                }
-            }
-
-            return result;
+            databaseUtils.closeConnectionAndStatement(logger, "Error while deleting comments: ",
+                    preparedStatement, connection);
         }
     }
 }

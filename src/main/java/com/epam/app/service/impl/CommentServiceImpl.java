@@ -1,6 +1,8 @@
 package com.epam.app.service.impl;
 
 import com.epam.app.dao.CommentRepository;
+import com.epam.app.exception.DaoException;
+import com.epam.app.exception.ServiceException;
 import com.epam.app.model.Comment;
 import com.epam.app.model.News;
 import com.epam.app.service.CommentService;
@@ -15,95 +17,101 @@ import java.util.List;
  * Comment service implementation.
  */
 public class CommentServiceImpl implements CommentService {
-    private static Logger logger = Logger.getLogger(CommentServiceImpl.class.getName());
+    private static final Logger logger = Logger.getLogger(CommentServiceImpl.class.getName());
 
     @Autowired
     private CommentRepository commentRepository;
 
 
     @Override
-    @Transactional
-    public Comment add(News news, Comment comment) {
+    @Transactional(rollbackFor = DaoException.class)
+    public Comment add(News news, Comment comment) throws ServiceException {
         logger.info("Adding new comment..");
         comment.setNewsId(news.getNewsId());
         comment.setCreationDate(new Timestamp(new java.util.Date().getTime()));
-        comment = commentRepository.add(comment);
-        if (comment.getCommentId() != null)
-            logger.info("Successfully added new comment");
-        else
+        try {
+            comment = commentRepository.add(comment);
+        } catch (DaoException e) {
             logger.error("Failed to add new comment");
+            throw new ServiceException(e);
+        }
+        logger.info("Successfully added new comment");
         return comment;
     }
 
 
     @Override
-    public Comment find(Long commentId) {
+    public Comment find(Long commentId) throws ServiceException {
         logger.info("Retrieving comment..");
-        Comment comment = commentRepository.find(commentId);
-        if (comment != null)
-            logger.info("Successfully found comment");
-        else
+        Comment comment;
+        try {
+            comment = commentRepository.find(commentId);
+        } catch (DaoException e) {
             logger.error("Failed to find comment");
+            throw new ServiceException(e);
+        }
+        logger.info("Successfully found comment");
         return comment;
     }
 
 
     @Override
-    @Transactional
-    public boolean update(Comment comment) {
+    @Transactional(rollbackFor = DaoException.class)
+    public void update(Comment comment) throws ServiceException {
         logger.info("Updating comment..");
-        boolean updated = commentRepository.update(comment);
-        if (updated)
-            logger.info("Successfully updated comment");
-        else
+        try {
+            commentRepository.update(comment);
+        } catch (DaoException e) {
             logger.error("Failed to update comment");
-        return updated;
+            throw new ServiceException(e);
+        }
+        logger.info("Successfully updated comment");
     }
 
 
     @Override
-    @Transactional
-    public boolean delete(Comment comment) {
+    @Transactional(rollbackFor = DaoException.class)
+    public void delete(Comment comment) throws ServiceException {
         logger.info("Deleting comment..");
-        boolean deleted = commentRepository.delete(comment);
-        if (deleted)
-            logger.info("Successfully deleted comment");
-        else
+        try {
+            commentRepository.delete(comment);
+        } catch (DaoException e) {
             logger.error("Failed to delete comment");
-        return deleted;
+            throw new ServiceException(e);
+        }
+        logger.info("Successfully deleted comment");
     }
 
 
     @Override
-    @Transactional
-    public List<Comment> addAll(News news, List<Comment> comments) {
+    @Transactional(rollbackFor = DaoException.class)
+    public List<Comment> addAll(News news, List<Comment> comments) throws ServiceException {
         logger.info("Adding comments..");
         for (Comment comment : comments) {
             comment.setNewsId(news.getNewsId());
             comment.setCreationDate(new Timestamp(new java.util.Date().getTime()));
         }
-        comments = commentRepository.addAll(comments);
-        boolean allAdded = true;
-        for (Comment comment : comments)
-            if (comment.getCommentId() == null)
-                allAdded = false;
-        if (allAdded)
-            logger.info("Successfully added comments");
-        else
+        try {
+            comments = commentRepository.addAll(comments);
+        } catch (DaoException e) {
             logger.error("Failed to add comments");
+            throw new ServiceException(e);
+        }
+        logger.info("Successfully added comments");
         return comments;
     }
 
 
     @Override
-    @Transactional
-    public boolean deleteAll(List<Comment> comments) {
+    @Transactional(rollbackFor = DaoException.class)
+    public void deleteAll(List<Comment> comments) throws ServiceException {
         logger.info("Deleting comments..");
-        boolean deleted = commentRepository.deleteAll(comments);
-        if (deleted)
-            logger.info("Successfully deleted comments");
-        else
+        try {
+            commentRepository.deleteAll(comments);
+        } catch (DaoException e) {
             logger.error("Failed to delete comments");
-        return deleted;
+            throw new ServiceException(e);
+        }
+        logger.info("Successfully deleted comments");
     }
 }

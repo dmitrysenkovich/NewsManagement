@@ -1,5 +1,6 @@
 package com.epam.app.dao;
 
+import com.epam.app.exception.DaoException;
 import com.epam.app.model.Author;
 import com.github.springtestdbunit.DbUnitTestExecutionListener;
 import com.github.springtestdbunit.annotation.DatabaseSetup;
@@ -23,11 +24,11 @@ import org.unitils.database.util.TransactionMode;
 import java.sql.Connection;
 import java.sql.DriverManager;
 
+import static com.googlecode.catchexception.CatchException.catchException;
+import static com.googlecode.catchexception.CatchException.caughtException;
 import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertNull;
-import static org.junit.Assert.assertTrue;
 
 /**
  * Author repository test.
@@ -63,6 +64,7 @@ public class AuthorRepositoryTest {
             connection.close();
     }
 
+
     @Test
     public void authorAdded() throws Exception {
         Author author = new Author();
@@ -76,10 +78,12 @@ public class AuthorRepositoryTest {
         assertNotNull(author.getAuthorId());
     }
 
+
     @Test
     public void authorNotAdded() throws Exception {
         Author author = new Author();
-        author = authorRepository.add(author);
+        catchException(() -> authorRepository.add(author));
+        assert caughtException() instanceof DaoException;
         connection = DriverManager.getConnection(testDbUrl, testDbUsername, testDbPassword);
         IDataSet actualDataSet = getActualDataSet(connection);
         ITable authorsTable = actualDataSet.getTable("Authors");
@@ -88,8 +92,9 @@ public class AuthorRepositoryTest {
         assertNull(author.getAuthorId());
     }
 
+
     @Test
-    public void authorFound() {
+    public void authorFound() throws Exception {
         Author author = new Author();
         author.setAuthorName("test");
         author = authorRepository.add(author);
@@ -98,42 +103,43 @@ public class AuthorRepositoryTest {
         assertNotNull(author);
     }
 
-    @Test
-    public void authorNotFound() {
-        Author author = authorRepository.find(-1L);
 
-        assertNull(author);
+    @Test(expected = DaoException.class)
+    public void authorNotFound() throws Exception {
+        authorRepository.find(-1L);
     }
 
+
     @Test
-    public void authorUpdated() {
+    public void authorUpdated() throws Exception {
         Author author = new Author();
         author.setAuthorId(1L);
         author.setAuthorName("test1");
-        boolean updated = authorRepository.update(author);
+        authorRepository.update(author);
         Author foundAuthor = authorRepository.find(author.getAuthorId());
 
         assertEquals("test1", foundAuthor.getAuthorName());
-        assertTrue(updated);
     }
 
+
     @Test
-    public void authorNotUpdated() {
+    public void authorNotUpdated() throws Exception {
         Author author = new Author();
         author.setAuthorId(1L);
         author.setAuthorName(null);
-        boolean updated = authorRepository.update(author);
+        catchException(() -> authorRepository.update(author));
+        assert caughtException() instanceof DaoException;
         Author foundAuthor = authorRepository.find(author.getAuthorId());
 
         assertEquals("test", foundAuthor.getAuthorName());
-        assertFalse(updated);
     }
+
 
     @Test
     public void authorDeleted() throws Exception {
         Author author = new Author();
         author.setAuthorId(1L);
-        boolean deleted = authorRepository.delete(author);
+        authorRepository.delete(author);
         connection = DriverManager.getConnection(testDbUrl, testDbUsername, testDbPassword);
         IDataSet actualDataSet = getActualDataSet(connection);
         ITable authorsTable = actualDataSet.getTable("Authors");
@@ -141,8 +147,8 @@ public class AuthorRepositoryTest {
 
         assertEquals(1, authorsTable.getRowCount());
         assertEquals(1, newsAuthorsTable.getRowCount());
-        assertTrue(deleted);
     }
+
 
     @Test
     public void authorNotDeleted() throws Exception {

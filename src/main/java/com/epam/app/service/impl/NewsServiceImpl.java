@@ -3,6 +3,8 @@ package com.epam.app.service.impl;
 import com.epam.app.dao.NewsAuthorRepository;
 import com.epam.app.dao.NewsRepository;
 import com.epam.app.dao.NewsTagRepository;
+import com.epam.app.exception.DaoException;
+import com.epam.app.exception.ServiceException;
 import com.epam.app.model.Author;
 import com.epam.app.model.News;
 import com.epam.app.model.NewsAuthor;
@@ -23,7 +25,7 @@ import java.util.List;
  * News service implementation.
  */
 public class NewsServiceImpl implements NewsService {
-    private static Logger logger = Logger.getLogger(NewsServiceImpl.class.getName());
+    private static final Logger logger = Logger.getLogger(NewsServiceImpl.class.getName());
 
     @Autowired
     private NewsRepository newsRepository;
@@ -37,128 +39,140 @@ public class NewsServiceImpl implements NewsService {
 
 
     @Override
-    @Transactional
-    public News add(News news, Author author, List<Tag> tags) {
+    @Transactional(rollbackFor = DaoException.class)
+    public News add(News news, Author author, List<Tag> tags) throws ServiceException {
         logger.info("Adding news..");
         news.setCreationDate(new Timestamp(new java.util.Date().getTime()));
         news.setModificationDate(new Date(new java.util.Date().getTime()));
-        news = newsRepository.add(news);
-        if (news.getNewsId() == null) {
+        try {
+            news = newsRepository.add(news);
+        } catch (DaoException e) {
             logger.error("Failed to add news");
-            return news;
+            throw new ServiceException(e);
         }
 
-        boolean addedNewsAuthorRelation = true;
         if (author != null) {
             logger.info("Adding author to news..");
             NewsAuthor newsAuthor = new NewsAuthor();
             newsAuthor.setNewsId(news.getNewsId());
             newsAuthor.setAuthorId(author.getAuthorId());
-            addedNewsAuthorRelation = newsAuthorRepository.add(newsAuthor);
-            if (!addedNewsAuthorRelation) {
+            try {
+                newsAuthorRepository.add(newsAuthor);
+            } catch (DaoException e) {
                 logger.error("Failed to add author to news");
                 logger.error("Failed to add news");
-                return news;
+                throw new ServiceException(e);
             }
             logger.info("Successfully added author to news");
         }
 
-        boolean addedAllNewsTagRelations = true;
         if (tags != null) {
             logger.info("Adding tags to news..");
             for (Tag tag : tags) {
                 NewsTag newsTag = new NewsTag();
                 newsTag.setNewsId(news.getNewsId());
                 newsTag.setTagId(tag.getTagId());
-                addedAllNewsTagRelations = newsTagRepository.add(newsTag);
-                if (!addedAllNewsTagRelations) {
+                try {
+                    newsTagRepository.add(newsTag);
+                } catch (DaoException e) {
                     logger.error("Failed to add tags to news");
-                    break;
+                    logger.error("Failed to add news");
+                    throw new ServiceException(e);
                 }
             }
-            if (addedAllNewsTagRelations)
-                logger.info("Successfully added tags to news");
+            logger.info("Successfully added tags to news");
         }
-        if (addedNewsAuthorRelation && addedAllNewsTagRelations)
-            logger.info("Successfully added news");
-        else
-            logger.error("Failed to add news");
 
+        logger.info("Successfully added news");
         return news;
     }
 
 
     @Override
-    public News find(Long newsId) {
+    public News find(Long newsId) throws ServiceException {
         logger.info("Retrieving news..");
-        News news = newsRepository.find(newsId);
-        if (news != null)
-            logger.info("Successfully found news");
-        else
+        News news;
+        try {
+            news = newsRepository.find(newsId);
+        } catch (DaoException e) {
             logger.error("Failed to find news");
+            throw new ServiceException(e);
+        }
+        logger.info("Successfully found news");
         return news;
     }
 
 
     @Override
-    @Transactional
-    public boolean update(News news) {
+    @Transactional(rollbackFor = DaoException.class)
+    public void update(News news) throws ServiceException {
         logger.info("Updating news..");
-        boolean updated = newsRepository.update(news);
-        if (updated)
-            logger.info("Successfully updated news");
-        else
+        try {
+            newsRepository.update(news);
+        } catch (DaoException e) {
             logger.error("Failed to update news");
-        return updated;
+            throw new ServiceException(e);
+        }
+        logger.info("Successfully updated news");
     }
 
 
     @Override
-    @Transactional
-    public boolean delete(News news) {
+    @Transactional(rollbackFor = DaoException.class)
+    public void delete(News news) throws ServiceException {
         logger.info("Deleting news..");
-        boolean deleted = newsRepository.delete(news);
-        if (deleted)
-            logger.info("Successfully deleted news");
-        else
+        try {
+            newsRepository.delete(news);
+        } catch (DaoException e) {
             logger.error("Failed to delete news");
-        return deleted;
+            throw new ServiceException(e);
+        }
+        logger.info("Successfully deleted news");
     }
 
 
     @Override
-    public List<News> search(SearchCriteria searchCriteria) {
+    public List<News> search(SearchCriteria searchCriteria) throws ServiceException {
         logger.info("Searching certain news..");
         final String SEARCH_CRITERIA_QUERY = searchUtils.getSearchQuery(searchCriteria);
-        List<News> fitNews = newsRepository.search(SEARCH_CRITERIA_QUERY);
-        if (fitNews != null)
-            logger.info("Successfully retrieved news by search criteria");
-        else
+        List<News> fitNews;
+        try {
+            fitNews = newsRepository.search(SEARCH_CRITERIA_QUERY);
+        } catch (DaoException e) {
             logger.error("Failed to find news by search criteria");
+            throw new ServiceException(e);
+        }
+        logger.info("Successfully retrieved news by search criteria");
         return fitNews;
     }
 
 
     @Override
-    public List<News> findAllSorted() {
+    public List<News> findAllSorted() throws ServiceException {
         logger.info("Retrieving all news sorted by comments count..");
-        List<News> sortedNews = newsRepository.findAllSorted();
-        if (sortedNews != null)
-            logger.info("Successfully retrieved all news sorted by comments count");
-        else
+        List<News> sortedNews;
+        try {
+            sortedNews = newsRepository.findAllSorted();
+        } catch (DaoException e) {
             logger.error("Failed to retrieve all news sorted by comments count");
+            throw new ServiceException(e);
+        }
+        logger.info("Successfully retrieved all news sorted by comments count");
         return sortedNews;
     }
 
 
     @Override
-    public Long countAll() {
+    public Long countAll() throws ServiceException {
         logger.info("Counting all news..");
-        Long newsCount = newsRepository.countAll();
-        if (newsCount != -1)
-            logger.info("Successfully counted all news");
-        else
+        Long newsCount;
+        try {
+            newsCount = newsRepository.countAll();
+        } catch (DaoException e) {
             logger.error("Failed to count all news");
+            throw new ServiceException(e);
+        }
+        logger.info("Successfully counted all news");
         return newsCount;
     }
 }

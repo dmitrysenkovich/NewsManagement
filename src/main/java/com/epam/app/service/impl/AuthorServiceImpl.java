@@ -1,6 +1,8 @@
 package com.epam.app.service.impl;
 
 import com.epam.app.dao.AuthorRepository;
+import com.epam.app.exception.DaoException;
+import com.epam.app.exception.ServiceException;
 import com.epam.app.model.Author;
 import com.epam.app.service.AuthorService;
 import org.apache.log4j.Logger;
@@ -11,59 +13,67 @@ import org.springframework.transaction.annotation.Transactional;
  * Author service.
  */
 public class AuthorServiceImpl implements AuthorService {
-    private static Logger logger = Logger.getLogger(AuthorServiceImpl.class.getName());
+    private static final Logger logger = Logger.getLogger(AuthorServiceImpl.class.getName());
 
     @Autowired
     private AuthorRepository authorRepository;
 
 
     @Override
-    @Transactional
-    public Author add(Author author) {
+    @Transactional(rollbackFor = DaoException.class)
+    public Author add(Author author) throws ServiceException {
         logger.info("Adding new author..");
-        author = authorRepository.add(author);
-        if (author.getAuthorId() != null)
-            logger.info("Successfully added new author");
-        else
+        try {
+            author = authorRepository.add(author);
+        } catch (DaoException e) {
             logger.error("Failed to add new author");
+            throw new ServiceException(e);
+        }
+        logger.info("Successfully added new author");
         return author;
     }
 
 
     @Override
-    public Author find(Long authorId) {
+    public Author find(Long authorId) throws ServiceException {
         logger.info("Retrieving author..");
-        Author author = authorRepository.find(authorId);
-        if (author != null)
-            logger.info("Successfully found author");
-        else
+        Author author;
+        try {
+            author = authorRepository.find(authorId);
+        } catch (DaoException e) {
             logger.error("Failed to find author");
+            throw new ServiceException(e);
+        }
+
+        logger.info("Successfully found author");
         return author;
     }
 
 
     @Override
-    @Transactional
-    public boolean update(Author author) {
+    @Transactional(rollbackFor = DaoException.class)
+    public void update(Author author) throws ServiceException {
         logger.info("Updating author..");
-        boolean updated = authorRepository.update(author);
-        if (updated)
-            logger.info("Successfully updated author");
-        else
+        try {
+            authorRepository.update(author);
+        } catch (DaoException e) {
             logger.error("Failed to update author");
-        return updated;
+            throw new ServiceException(e);
+        }
+        logger.info("Successfully updated author");
     }
 
 
     @Override
-    @Transactional
-    public boolean delete(Author author) {
+    @Transactional(rollbackFor = DaoException.class)
+    public void delete(Author author) throws ServiceException {
         logger.info("Deleting author..");
-        boolean deleted = authorRepository.delete(author);
-        if (deleted)
-            logger.info("Successfully deleted author");
-        else
+        try {
+            authorRepository.delete(author);
+        } catch (DaoException e) {
             logger.error("Failed to delete author");
-        return deleted;
+            throw new ServiceException(e);
+        }
+        logger.info("Successfully deleted author");
     }
 }

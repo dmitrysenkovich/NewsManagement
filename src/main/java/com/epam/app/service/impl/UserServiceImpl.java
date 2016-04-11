@@ -1,6 +1,8 @@
 package com.epam.app.service.impl;
 
 import com.epam.app.dao.UserRepository;
+import com.epam.app.exception.DaoException;
+import com.epam.app.exception.ServiceException;
 import com.epam.app.model.Role;
 import com.epam.app.model.User;
 import com.epam.app.service.UserService;
@@ -19,53 +21,60 @@ public class UserServiceImpl implements UserService {
 
 
     @Override
-    @Transactional
-    public User add(User user, Role role) {
+    @Transactional(rollbackFor = DaoException.class)
+    public User add(User user, Role role) throws ServiceException {
         logger.info("Adding new user..");
         user.setRoleId(role.getRoleId());
-        user = userRepository.add(user);
-        if (user.getUserId() != null)
-            logger.info("Successfully added new user");
-        else
+        try {
+            user = userRepository.add(user);
+        } catch (DaoException e) {
             logger.error("Failed to add new user");
+            throw new ServiceException(e);
+        }
+        logger.info("Successfully added new user");
         return user;
     }
 
 
     @Override
-    public User find(Long userId) {
+    public User find(Long userId) throws ServiceException {
         logger.info("Retrieving user..");
-        User user = userRepository.find(userId);
-        if (user != null)
-            logger.info("Successfully found user");
-        else
+        User user;
+        try {
+            user = userRepository.find(userId);
+        } catch (DaoException e) {
             logger.error("Failed to find user");
+            throw new ServiceException(e);
+        }
+        logger.info("Successfully found user");
         return user;
     }
 
 
     @Override
-    @Transactional
-    public boolean update(User user) {
+    @Transactional(rollbackFor = DaoException.class)
+    public void update(User user) throws ServiceException {
         logger.info("Updating user..");
-        boolean updated = userRepository.update(user);
-        if (updated)
-            logger.info("Successfully updated user");
-        else
+        try {
+            userRepository.update(user);
+        } catch (DaoException e) {
             logger.error("Failed to update user");
-        return updated;
+            throw new ServiceException(e);
+        }
+        logger.info("Successfully updated user");
     }
 
 
     @Override
-    @Transactional
-    public boolean delete(User user) {
+    @Transactional(rollbackFor = DaoException.class)
+    public void delete(User user) throws ServiceException {
         logger.info("Deleting user..");
-        boolean deleted = userRepository.delete(user);
-        if (deleted)
-            logger.info("Successfully deleted user");
-        else
+        try {
+            userRepository.delete(user);
+        } catch (DaoException e) {
             logger.error("Failed to delete user");
-        return deleted;
+            throw new ServiceException(e);
+        }
+        logger.info("Successfully deleted user");
     }
 }

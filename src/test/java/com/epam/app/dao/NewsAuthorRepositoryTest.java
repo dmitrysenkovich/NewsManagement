@@ -1,5 +1,6 @@
 package com.epam.app.dao;
 
+import com.epam.app.exception.DaoException;
 import com.epam.app.model.NewsAuthor;
 import com.github.springtestdbunit.DbUnitTestExecutionListener;
 import com.github.springtestdbunit.annotation.DatabaseSetup;
@@ -23,9 +24,9 @@ import org.unitils.database.util.TransactionMode;
 import java.sql.Connection;
 import java.sql.DriverManager;
 
+import static com.googlecode.catchexception.CatchException.catchException;
+import static com.googlecode.catchexception.CatchException.caughtException;
 import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertTrue;
 
 /**
  * NewsAuthor repository test.
@@ -61,61 +62,64 @@ public class NewsAuthorRepositoryTest {
             connection.close();
     }
 
+
     @Test
     public void newsAuthorRelationAdded() throws Exception {
         NewsAuthor newsAuthor = new NewsAuthor();
         newsAuthor.setNewsId(1L);
         newsAuthor.setAuthorId(2L);
-        boolean added = newsAuthorRepository.add(newsAuthor);
+        newsAuthorRepository.add(newsAuthor);
         connection = DriverManager.getConnection(testDbUrl, testDbUsername, testDbPassword);
         IDataSet actualDataSet = getActualDataSet(connection);
         ITable newsAuthorTable = actualDataSet.getTable("News_Author");
 
         assertEquals(4, newsAuthorTable.getRowCount());
-        assertTrue(added);
     }
+
 
     @Test
     public void newsAuthorRelationNotAddedInvalidNews() throws Exception {
         NewsAuthor newsAuthor = new NewsAuthor();
         newsAuthor.setNewsId(-1L);
         newsAuthor.setAuthorId(2L);
-        boolean added = newsAuthorRepository.add(newsAuthor);
+        catchException(() -> newsAuthorRepository.add(newsAuthor));
+        assert caughtException() instanceof DaoException;
         connection = DriverManager.getConnection(testDbUrl, testDbUsername, testDbPassword);
         IDataSet actualDataSet = getActualDataSet(connection);
         ITable newsAuthorTable = actualDataSet.getTable("News_Author");
 
         assertEquals(3, newsAuthorTable.getRowCount());
-        assertFalse(added);
     }
+
 
     @Test
     public void newsAuthorRelationNotAddedInvalidAuthor() throws Exception {
         NewsAuthor newsAuthor = new NewsAuthor();
         newsAuthor.setNewsId(2L);
         newsAuthor.setAuthorId(-1L);
-        boolean added = newsAuthorRepository.add(newsAuthor);
+        catchException(() -> newsAuthorRepository.add(newsAuthor));
+        assert caughtException() instanceof DaoException;
         connection = DriverManager.getConnection(testDbUrl, testDbUsername, testDbPassword);
         IDataSet actualDataSet = getActualDataSet(connection);
         ITable newsAuthorTable = actualDataSet.getTable("News_Author");
 
         assertEquals(3, newsAuthorTable.getRowCount());
-        assertFalse(added);
     }
+
 
     @Test
     public void newsAuthorRelationDeleted() throws Exception {
         NewsAuthor newsAuthor = new NewsAuthor();
         newsAuthor.setNewsId(1L);
         newsAuthor.setAuthorId(1L);
-        boolean deleted = newsAuthorRepository.delete(newsAuthor);
+        newsAuthorRepository.delete(newsAuthor);
         connection = DriverManager.getConnection(testDbUrl, testDbUsername, testDbPassword);
         IDataSet actualDataSet = getActualDataSet(connection);
         ITable newsAuthorTable = actualDataSet.getTable("News_Author");
 
         assertEquals(2, newsAuthorTable.getRowCount());
-        assertTrue(deleted);
     }
+
 
     @Test
     public void newsAuthorRelationNotDeletedInvalidNews() throws Exception {
@@ -129,6 +133,7 @@ public class NewsAuthorRepositoryTest {
 
         assertEquals(3, newsAuthorTable.getRowCount());
     }
+
 
     @Test
     public void newsAuthorRelationNotDeletedInvalidAuthor() throws Exception {

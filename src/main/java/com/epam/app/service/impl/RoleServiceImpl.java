@@ -1,6 +1,8 @@
 package com.epam.app.service.impl;
 
 import com.epam.app.dao.RoleRepository;
+import com.epam.app.exception.DaoException;
+import com.epam.app.exception.ServiceException;
 import com.epam.app.model.Role;
 import com.epam.app.service.RoleService;
 import org.apache.log4j.Logger;
@@ -18,52 +20,59 @@ public class RoleServiceImpl implements RoleService {
 
 
     @Override
-    @Transactional
-    public Role add(Role role) {
+    @Transactional(rollbackFor = DaoException.class)
+    public Role add(Role role) throws ServiceException {
         logger.info("Adding new role..");
-        role = roleRepository.add(role);
-        if (role.getRoleId() != null)
-            logger.info("Successfully added new role");
-        else
+        try {
+            role = roleRepository.add(role);
+        } catch (DaoException e) {
             logger.error("Failed to add new role");
+            throw new ServiceException(e);
+        }
+        logger.info("Successfully added new role");
         return role;
     }
 
 
     @Override
-    public Role find(Long roleId) {
+    public Role find(Long roleId) throws ServiceException {
         logger.info("Retrieving role..");
-        Role role = roleRepository.find(roleId);
-        if (role != null)
-            logger.info("Successfully found role");
-        else
+        Role role;
+        try {
+            role = roleRepository.find(roleId);
+        } catch (DaoException e) {
             logger.error("Failed to find role");
+            throw new ServiceException(e);
+        }
+        logger.info("Successfully found role");
         return role;
     }
 
 
     @Override
-    @Transactional
-    public boolean update(Role role) {
+    @Transactional(rollbackFor = DaoException.class)
+    public void update(Role role) throws ServiceException {
         logger.info("Updating role..");
-        boolean updated = roleRepository.update(role);
-        if (updated)
-            logger.info("Successfully updated role");
-        else
+        try {
+            roleRepository.update(role);
+        } catch (DaoException e) {
             logger.error("Failed to update role");
-        return updated;
+            throw new ServiceException(e);
+        }
+        logger.info("Successfully updated role");
     }
 
 
     @Override
-    @Transactional
-    public boolean delete(Role role) {
+    @Transactional(rollbackFor = DaoException.class)
+    public void delete(Role role) throws ServiceException {
         logger.info("Deleting role..");
-        boolean deleted = roleRepository.delete(role);
-        if (deleted)
-            logger.info("Successfully deleted role");
-        else
+        try {
+            roleRepository.delete(role);
+        } catch (DaoException e) {
             logger.error("Failed to delete role");
-        return deleted;
+            throw new ServiceException(e);
+        }
+        logger.info("Successfully deleted role");
     }
 }

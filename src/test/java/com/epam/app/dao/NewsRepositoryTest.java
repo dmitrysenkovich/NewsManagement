@@ -1,5 +1,6 @@
 package com.epam.app.dao;
 
+import com.epam.app.exception.DaoException;
 import com.epam.app.model.News;
 import com.epam.app.utils.SearchCriteria;
 import com.epam.app.utils.SearchUtils;
@@ -28,8 +29,9 @@ import java.sql.DriverManager;
 import java.util.LinkedList;
 import java.util.List;
 
+import static com.googlecode.catchexception.CatchException.catchException;
+import static com.googlecode.catchexception.CatchException.caughtException;
 import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertTrue;
@@ -71,6 +73,7 @@ public class NewsRepositoryTest {
             connection.close();
     }
 
+
     @Test
     public void newsAdded() throws Exception {
         News news = new News();
@@ -87,10 +90,12 @@ public class NewsRepositoryTest {
         assertNotNull(news.getNewsId());
     }
 
+
     @Test
     public void newsNotAdded() throws Exception {
-        News news = new News();
-        news = newsRepository.add(news);
+        final News news = new News();
+        catchException(() -> newsRepository.add(news));
+        assert caughtException() instanceof DaoException;
         connection = DriverManager.getConnection(testDbUrl, testDbUsername, testDbPassword);
         IDataSet actualDataSet = getActualDataSet(connection);
         ITable newsTable = actualDataSet.getTable("News");
@@ -99,54 +104,56 @@ public class NewsRepositoryTest {
         assertNull(news.getNewsId());
     }
 
+
     @Test
-    public void newsFound() {
+    public void newsFound() throws Exception {
         News news = newsRepository.find(1L);
 
         assertNotNull(news);
     }
 
-    @Test
-    public void newsNotFound() {
-        News news = newsRepository.find(-1L);
 
-        assertNull(news);
+    @Test(expected = DaoException.class)
+    public void newsNotFound() throws Exception {
+        newsRepository.find(-1L);
     }
 
+
     @Test
-    public void newsUpdated() {
+    public void newsUpdated() throws Exception {
         News news = new News();
         news.setNewsId(1L);
         news.setTitle("test1");
         news.setShortText("test1");
         news.setFullText("test1");
         news.setModificationDate(new Date(new java.util.Date().getTime()));
-        boolean updated = newsRepository.update(news);
+        newsRepository.update(news);
         News foundNews = newsRepository.find(news.getNewsId());
 
         assertEquals("test1", foundNews.getTitle());
         assertEquals("test1", foundNews.getShortText());
         assertEquals("test1", foundNews.getFullText());
-        assertTrue(updated);
     }
 
+
     @Test
-    public void newsNotUpdated() {
+    public void newsNotUpdated() throws Exception {
         News news = new News();
         news.setNewsId(1L);
         news.setTitle(null);
-        boolean updated = newsRepository.update(news);
+        catchException(()->newsRepository.update(news));
+        assert caughtException() instanceof DaoException;
         News foundNews = newsRepository.find(news.getNewsId());
 
         assertEquals("title1", foundNews.getTitle());
-        assertFalse(updated);
     }
+
 
     @Test
     public void newsDeleted() throws Exception {
         News news = new News();
         news.setNewsId(1L);
-        boolean deleted = newsRepository.delete(news);
+        newsRepository.delete(news);
         connection = DriverManager.getConnection(testDbUrl, testDbUsername, testDbPassword);
         IDataSet actualDataSet = getActualDataSet(connection);
         ITable newsTable = actualDataSet.getTable("News");
@@ -158,8 +165,8 @@ public class NewsRepositoryTest {
         assertEquals(2, newsAuthorTable.getRowCount());
         assertEquals(3, newsTagTable.getRowCount());
         assertEquals(3, commentTable.getRowCount());
-        assertTrue(deleted);
     }
+
 
     @Test
     public void newsNotDeleted() throws Exception {
@@ -179,24 +186,9 @@ public class NewsRepositoryTest {
         assertEquals(5, commentTable.getRowCount());
     }
 
-    @Test
-    public void searchNothingFoundInvalidSearchQuery() {
-        String searchQuery = "test";
-        List<News> foundNews = newsRepository.search(searchQuery);
-
-        assertNull(foundNews);
-    }
 
     @Test
-    public void searchNothingFoundSearchQueryIsNull() {
-        String searchQuery = null;
-        List<News> foundNews = newsRepository.search(searchQuery);
-
-        assertNull(foundNews);
-    }
-
-    @Test
-    public void searchSuccessfulNoTags() {
+    public void searchSuccessfulNoTags() throws Exception {
         SearchCriteria searchCriteria = new SearchCriteria();
         searchCriteria.setAuthorId(2L);
         String searchQuery = searchUtils.getSearchQuery(searchCriteria);
@@ -206,10 +198,11 @@ public class NewsRepositoryTest {
         assertEquals("title2", foundNews.get(0).getTitle());
     }
 
+
     @Test
-    public void searchSuccessfulNoAuthor() {
+    public void searchSuccessfulNoAuthor() throws Exception {
         SearchCriteria searchCriteria = new SearchCriteria();
-        List<Long> tagIds = new LinkedList<Long>();
+        List<Long> tagIds = new LinkedList<>();
         tagIds.add(1L);
         searchCriteria.setTagIds(tagIds);
         String searchQuery = searchUtils.getSearchQuery(searchCriteria);
@@ -221,11 +214,12 @@ public class NewsRepositoryTest {
         assertEquals("title2", foundNews.get(2).getTitle());
     }
 
+
     @Test
-    public void searchSuccessful() {
+    public void searchSuccessful() throws Exception {
         SearchCriteria searchCriteria = new SearchCriteria();
         searchCriteria.setAuthorId(1L);
-        List<Long> tagIds = new LinkedList<Long>();
+        List<Long> tagIds = new LinkedList<>();
         tagIds.add(2L);
         searchCriteria.setTagIds(tagIds);
         String searchQuery = searchUtils.getSearchQuery(searchCriteria);
@@ -236,8 +230,23 @@ public class NewsRepositoryTest {
         assertEquals("title1", foundNews.get(1).getTitle());
     }
 
+
+    @Test(expected = DaoException.class)
+    public void searchNothingFoundInvalidSearchQuery() throws Exception {
+        String searchQuery = "test";
+        newsRepository.search(searchQuery);
+    }
+
+
+    @Test(expected = DaoException.class)
+    public void searchNothingFoundSearchQueryIsNull() throws Exception {
+        String searchQuery = null;
+        newsRepository.search(searchQuery);
+    }
+
+
     @Test
-    public void searchNothingFound() {
+    public void searchNothingFound() throws Exception {
         SearchCriteria searchCriteria = new SearchCriteria();
         searchCriteria.setAuthorId(3L);
         String searchQuery = searchUtils.getSearchQuery(searchCriteria);
@@ -246,8 +255,9 @@ public class NewsRepositoryTest {
         assertTrue(foundNews.isEmpty());
     }
 
+
     @Test
-    public void foundAllNewsSorted() {
+    public void foundAllNewsSorted() throws Exception {
         List<News> foundNews = newsRepository.findAllSorted();
 
         assertEquals(3L, foundNews.size());
@@ -256,8 +266,9 @@ public class NewsRepositoryTest {
         assertEquals("title2", foundNews.get(2).getTitle());
     }
 
+
     @Test
-    public void countedAllNews() {
+    public void countedAllNews() throws Exception {
         Long newsCount = newsRepository.countAll();
 
         assertEquals((Long) 3L, newsCount);

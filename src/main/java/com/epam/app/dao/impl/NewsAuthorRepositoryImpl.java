@@ -1,7 +1,9 @@
 package com.epam.app.dao.impl;
 
 import com.epam.app.dao.NewsAuthorRepository;
+import com.epam.app.exception.DaoException;
 import com.epam.app.model.NewsAuthor;
+import com.epam.app.utils.DatabaseUtils;
 import org.apache.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 
@@ -22,13 +24,15 @@ public class NewsAuthorRepositoryImpl implements NewsAuthorRepository {
     @Autowired
     private DataSource dataSource;
 
+    @Autowired
+    private DatabaseUtils databaseUtils;
+
 
     @Override
-    public boolean add(NewsAuthor newsAuthor) {
+    public void add(NewsAuthor newsAuthor) throws DaoException {
         logger.info("Adding news to author relation..");
         Connection connection = null;
         PreparedStatement preparedStatement = null;
-        boolean result = true;
         try {
             connection = dataSource.getConnection();
             preparedStatement = connection.prepareStatement(ADD);
@@ -39,40 +43,20 @@ public class NewsAuthorRepositoryImpl implements NewsAuthorRepository {
         }
         catch (SQLException e) {
             logger.error("Error while adding news to author relation: ", e);
-            result = false;
+            throw new DaoException(e);
         }
         finally {
-            if (preparedStatement != null) {
-                try {
-                    preparedStatement.close();
-                } catch (SQLException e) {
-                    logger.error("Error while trying to close prepared " +
-                            "statement after adding news to author relation", e);
-                    result = false;
-                }
-            }
-
-            if (connection != null) {
-                try {
-                    connection.close();
-                } catch (SQLException e) {
-                    logger.error("Error while trying to close connection " +
-                            "after adding news to author relation", e);
-                    result = false;
-                }
-            }
-
-            return result;
+            databaseUtils.closeConnectionAndStatement(logger, "Error while adding news to author relation: ",
+                    preparedStatement, connection);
         }
     }
 
 
     @Override
-    public boolean delete(NewsAuthor newsAuthor) {
+    public void delete(NewsAuthor newsAuthor) throws DaoException {
         logger.info("Deleting news to author relation..");
         Connection connection = null;
         PreparedStatement preparedStatement = null;
-        boolean result = true;
         try {
             connection = dataSource.getConnection();
             preparedStatement = connection.prepareStatement(DELETE);
@@ -83,30 +67,11 @@ public class NewsAuthorRepositoryImpl implements NewsAuthorRepository {
         }
         catch (SQLException e) {
             logger.error("Error while deleting news to author relation: ", e);
-            result = false;
+            throw new DaoException(e);
         }
         finally {
-            if (preparedStatement != null) {
-                try {
-                    preparedStatement.close();
-                } catch (SQLException e) {
-                    logger.error("Error while trying to close prepared " +
-                            "statement after deleting news to author relation", e);
-                    result = false;
-                }
-            }
-
-            if (connection != null) {
-                try {
-                    connection.close();
-                } catch (SQLException e) {
-                    logger.error("Error while trying to close connection " +
-                            "after deleting news to author relation", e);
-                    result = false;
-                }
-            }
-
-            return result;
+            databaseUtils.closeConnectionAndStatement(logger, "Error while deleting news to author relation: ",
+                    preparedStatement, connection);
         }
     }
 }

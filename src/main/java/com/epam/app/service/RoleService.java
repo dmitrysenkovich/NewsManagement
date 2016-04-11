@@ -1,5 +1,6 @@
 package com.epam.app.service;
 
+import com.epam.app.exception.ServiceException;
 import com.epam.app.model.Role;
 
 /**
@@ -12,5 +13,5 @@ public interface RoleService extends RudService<Role> {
      * @return this new role with id set
      * if added successfully.
      */
-    Role add(Role role);
+    Role add(Role role) throws ServiceException;
 }

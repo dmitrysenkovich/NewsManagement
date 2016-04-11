@@ -1,5 +1,6 @@
 package com.epam.app.service;
 
+import com.epam.app.exception.ServiceException;
 import com.epam.app.model.Author;
 
 /**
@@ -12,5 +13,5 @@ public interface AuthorService extends RudService<Author> {
      * @return this new author with id set
      * if added successfully.
      */
-    Author add(Author author);
+    Author add(Author author) throws ServiceException;
 }

@@ -1,5 +1,6 @@
 package com.epam.app.dao;
 
+import com.epam.app.exception.DaoException;
 import com.epam.app.model.Comment;
 import com.github.springtestdbunit.DbUnitTestExecutionListener;
 import com.github.springtestdbunit.annotation.DatabaseSetup;
@@ -25,11 +26,11 @@ import java.sql.DriverManager;
 import java.util.LinkedList;
 import java.util.List;
 
+import static com.googlecode.catchexception.CatchException.catchException;
+import static com.googlecode.catchexception.CatchException.caughtException;
 import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertNull;
-import static org.junit.Assert.assertTrue;
 
 /**
  * Comment repository test.
@@ -65,6 +66,7 @@ public class CommentRepositoryTest {
             connection.close();
     }
 
+
     @Test
     public void commentAdded() throws Exception {
         Comment comment = new Comment();
@@ -79,10 +81,13 @@ public class CommentRepositoryTest {
         assertNotNull(comment.getCommentId());
     }
 
+
     @Test
     public void commentNotAddedInvalidField() throws Exception {
         Comment comment = new Comment();
-        comment = commentRepository.add(comment);
+        comment.setNewsId(1L);
+        catchException(() -> commentRepository.add(comment));
+        assert caughtException() instanceof DaoException;
         connection = DriverManager.getConnection(testDbUrl, testDbUsername, testDbPassword);
         IDataSet actualDataSet = getActualDataSet(connection);
         ITable commentsTable = actualDataSet.getTable("Comments");
@@ -90,13 +95,15 @@ public class CommentRepositoryTest {
         assertEquals(5, commentsTable.getRowCount());
         assertNull(comment.getCommentId());
     }
+
 
     @Test
     public void commentNotAddedNewsAreInvalid() throws Exception {
         Comment comment = new Comment();
         comment.setNewsId(-1L);
         comment.setCommentText("test");
-        comment = commentRepository.add(comment);
+        catchException(() -> commentRepository.add(comment));
+        assert caughtException() instanceof DaoException;
         connection = DriverManager.getConnection(testDbUrl, testDbUsername, testDbPassword);
         IDataSet actualDataSet = getActualDataSet(connection);
         ITable commentsTable = actualDataSet.getTable("Comments");
@@ -105,70 +112,73 @@ public class CommentRepositoryTest {
         assertNull(comment.getCommentId());
     }
 
+
     @Test
-    public void commentFound() {
+    public void commentFound() throws Exception {
         Comment comment = commentRepository.find(1L);
 
         assertNotNull(comment);
     }
 
-    @Test
-    public void commentNotFound() {
-        Comment comment = commentRepository.find(-1L);
-
-        assertNull(comment);
+    @Test(expected = DaoException.class)
+    public void commentNotFound() throws Exception {
+        commentRepository.find(-1L);
     }
 
+
     @Test
-    public void commentUpdated() {
+    public void commentUpdated() throws Exception {
         Comment comment = new Comment();
         comment.setCommentId(1L);
         comment.setNewsId(2L);
         comment.setCommentText("test1");
-        boolean updated = commentRepository.update(comment);
+        commentRepository.update(comment);
         Comment foundComment = commentRepository.find(comment.getCommentId());
 
         assertEquals((Long) 1L, foundComment.getNewsId());
         assertEquals("test1", foundComment.getCommentText());
-        assertTrue(updated);
     }
 
+
     @Test
-    public void commentNotUpdated() {
-        Comment comment = new Comment();
+    public void commentNotUpdated() throws Exception {
+        final Comment comment = new Comment();
         comment.setCommentId(1L);
         comment.setNewsId(1L);
         comment.setCommentText(null);
-        boolean updated = commentRepository.update(comment);
+        catchException(() -> commentRepository.update(comment));
+        assert caughtException() instanceof DaoException;
         Comment foundComment = commentRepository.find(comment.getCommentId());
 
         assertEquals("test", foundComment.getCommentText());
-        assertFalse(updated);
     }
+
 
     @Test
     public void commentDeleted() throws Exception {
         Comment comment = new Comment();
         comment.setCommentId(1L);
-        boolean deleted = commentRepository.delete(comment);
+        commentRepository.delete(comment);
         connection = DriverManager.getConnection(testDbUrl, testDbUsername, testDbPassword);
         IDataSet actualDataSet = getActualDataSet(connection);
         ITable commentsTable = actualDataSet.getTable("Comments");
 
         assertEquals(4, commentsTable.getRowCount());
-        assertTrue(deleted);
     }
+
 
     @Test
     public void commentNotDeleted() throws Exception {
         Comment comment = new Comment();
         comment.setCommentId(-1L);
+        commentRepository.delete(comment);
         connection = DriverManager.getConnection(testDbUrl, testDbUsername, testDbPassword);
         IDataSet actualDataSet = getActualDataSet(connection);
         ITable commentsTable = actualDataSet.getTable("Comments");
 
         assertEquals(5, commentsTable.getRowCount());
     }
+
 
     @Test
     public void allCommentsAdded() throws Exception {
@@ -178,7 +188,7 @@ public class CommentRepositoryTest {
         Comment comment2 = new Comment();
         comment2.setNewsId(1L);
         comment2.setCommentText("test");
-        List<Comment> comments = new LinkedList<Comment>();
+        List<Comment> comments = new LinkedList<>();
         comments.add(comment1);
         comments.add(comment2);
         comments = commentRepository.addAll(comments);
@@ -191,6 +201,7 @@ public class CommentRepositoryTest {
             assertNotNull(comment.getCommentId());
     }
 
+
     @Test
     public void notAllCommentsAdded() throws Exception {
         Comment comment1 = new Comment();
@@ -198,10 +209,11 @@ public class CommentRepositoryTest {
         comment1.setCommentText("test");
         Comment comment2 = new Comment();
         comment2.setNewsId(1L);
-        List<Comment> comments = new LinkedList<Comment>();
+        List<Comment> comments = new LinkedList<>();
         comments.add(comment1);
         comments.add(comment2);
-        comments = commentRepository.addAll(comments);
+        catchException(() -> commentRepository.addAll(comments));
+        assert caughtException() instanceof DaoException;
         connection = DriverManager.getConnection(testDbUrl, testDbUsername, testDbPassword);
         IDataSet actualDataSet = getActualDataSet(connection);
         ITable commentsTable = actualDataSet.getTable("Comments");
@@ -211,16 +223,18 @@ public class CommentRepositoryTest {
             assertNull(comment.getCommentId());
     }
 
+
     @Test
     public void allCommentsNotAdded() throws Exception {
         Comment comment1 = new Comment();
         comment1.setNewsId(1L);
         Comment comment2 = new Comment();
         comment2.setNewsId(1L);
-        List<Comment> comments = new LinkedList<Comment>();
+        List<Comment> comments = new LinkedList<>();
         comments.add(comment1);
         comments.add(comment2);
-        comments = commentRepository.addAll(comments);
+        catchException(() -> commentRepository.addAll(comments));
+        assert caughtException() instanceof DaoException;
         connection = DriverManager.getConnection(testDbUrl, testDbUsername, testDbPassword);
         IDataSet actualDataSet = getActualDataSet(connection);
         ITable commentsTable = actualDataSet.getTable("Comments");
@@ -230,23 +244,24 @@ public class CommentRepositoryTest {
             assertNull(comment.getCommentId());
     }
 
+
     @Test
     public void allCommentsDeleted() throws Exception {
         Comment comment1 = new Comment();
         comment1.setCommentId(1L);
         Comment comment2 = new Comment();
         comment2.setCommentId(2L);
-        List<Comment> comments = new LinkedList<Comment>();
+        List<Comment> comments = new LinkedList<>();
         comments.add(comment1);
         comments.add(comment2);
-        boolean deletedAll = commentRepository.deleteAll(comments);
+        commentRepository.deleteAll(comments);
         connection = DriverManager.getConnection(testDbUrl, testDbUsername, testDbPassword);
         IDataSet actualDataSet = getActualDataSet(connection);
         ITable commentsTable = actualDataSet.getTable("Comments");
 
         assertEquals(3, commentsTable.getRowCount());
-        assertTrue(deletedAll);
     }
+
 
     @Test
     public void notAllCommentsDeleted() throws Exception {
@@ -254,7 +269,7 @@ public class CommentRepositoryTest {
         comment1.setCommentId(1L);
         Comment comment2 = new Comment();
         comment2.setCommentId(-1L);
-        List<Comment> comments = new LinkedList<Comment>();
+        List<Comment> comments = new LinkedList<>();
         comments.add(comment1);
         comments.add(comment2);
         commentRepository.deleteAll(comments);
@@ -265,13 +280,14 @@ public class CommentRepositoryTest {
         assertEquals(4, commentsTable.getRowCount());
     }
 
+
     @Test
     public void allCommentsNotDeleted() throws Exception {
         Comment comment1 = new Comment();
         comment1.setCommentId(-1L);
         Comment comment2 = new Comment();
         comment2.setCommentId(-1L);
-        List<Comment> comments = new LinkedList<Comment>();
+        List<Comment> comments = new LinkedList<>();
         comments.add(comment1);
         comments.add(comment2);
         commentRepository.deleteAll(comments);

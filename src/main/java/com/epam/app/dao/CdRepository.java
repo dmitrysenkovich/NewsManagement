@@ -1,5 +1,7 @@
 package com.epam.app.dao;
 
+import com.epam.app.exception.DaoException;
+
 /**
  * CD repository interface. Just
  * like CRUD but CD:) I don't
@@ -9,14 +11,12 @@ public interface CdRepository<T> {
     /**
      * Adds new entity.
      * @param t new entity.
-     * @return true if added successfully.
      */
-    boolean add(T t);
+    void add(T t) throws DaoException;
 
     /**
      * Deletes an entity.
      * @param t the entity to be deleted.
-     * @return true if deleted successfully.
      */
-    boolean delete(T t);
+    void delete(T t) throws DaoException;
 }

@@ -1,5 +1,6 @@
 package com.epam.app.service;
 
+import com.epam.app.exception.ServiceException;
 import com.epam.app.model.Author;
 import com.epam.app.model.News;
 import com.epam.app.model.Tag;
@@ -19,7 +20,7 @@ public interface NewsService extends RudService<News> {
      * @return this news with id set
      * if added successfully.
      */
-    News add(News news, Author author, List<Tag> tags);
+    News add(News news, Author author, List<Tag> tags) throws ServiceException;
 
     /**
      * Retrieves all news specified
@@ -27,7 +28,7 @@ public interface NewsService extends RudService<News> {
      * @param searchCriteria search criteria.
      * @return all fit news.
      */
-    List<News> search(SearchCriteria searchCriteria);
+    List<News> search(SearchCriteria searchCriteria) throws ServiceException;
 
     /**
      * Retrieves all news
@@ -35,12 +36,12 @@ public interface NewsService extends RudService<News> {
      * comments count.
      * @return all news sorted by comments count.
      */
-    List<News> findAllSorted();
+    List<News> findAllSorted() throws ServiceException;
 
     /**
      * Counts all news.
      * @return news count. -1 if not
      * finished successfully.
      */
-    Long countAll();
+    Long countAll() throws ServiceException;
 }

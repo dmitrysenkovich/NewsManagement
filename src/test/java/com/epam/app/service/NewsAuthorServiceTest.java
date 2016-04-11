@@ -1,24 +1,21 @@
 package com.epam.app.service;
 
 import com.epam.app.dao.NewsAuthorRepository;
+import com.epam.app.exception.DaoException;
+import com.epam.app.exception.ServiceException;
 import com.epam.app.model.Author;
 import com.epam.app.model.News;
 import com.epam.app.model.NewsAuthor;
 import com.epam.app.service.impl.NewsAuthorServiceImpl;
-import org.apache.log4j.Logger;
 import org.junit.Before;
 import org.junit.Test;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
-import org.powermock.reflect.Whitebox;
 
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertTrue;
 import static org.mockito.Matchers.any;
-import static org.mockito.Matchers.eq;
-import static org.mockito.Mockito.verify;
-import static org.mockito.Mockito.when;
+import static org.mockito.Mockito.doNothing;
+import static org.mockito.Mockito.doThrow;
 
 /**
  * NewsAuthor service test.
@@ -30,56 +27,44 @@ public class NewsAuthorServiceTest {
     @Mock
     private NewsAuthorRepository newsAuthorRepository;
 
-    @Mock
-    private Logger logger;
-
     @Before
     public void setupMock() {
         MockitoAnnotations.initMocks(this);
-        Whitebox.setInternalState(NewsAuthorServiceImpl.class, "logger", logger);
     }
 
+
     @Test
-    public void added() {
+    public void added() throws Exception {
         News news = new News();
         Author author = new Author();
-        when(newsAuthorRepository.add(any(NewsAuthor.class))).thenReturn(true);
-        boolean added = newsAuthorService.add(news, author);
-
-        assertTrue(added);
-        verify(logger).info(eq("Successfully added new author to news"));
+        doNothing().when(newsAuthorRepository).add(any(NewsAuthor.class));
+        newsAuthorService.add(news, author);
     }
 
-    @Test
-    public void notAdded() {
+
+    @Test(expected = ServiceException.class)
+    public void notAdded() throws Exception {
         News news = new News();
         Author author = new Author();
-        when(newsAuthorRepository.add(any(NewsAuthor.class))).thenReturn(false);
-        boolean added = newsAuthorService.add(news, author);
-
-        assertFalse(added);
-        verify(logger).error(eq("Failed to add author to news"));
+        doThrow(new DaoException()).when(newsAuthorRepository).add(any(NewsAuthor.class));
+        newsAuthorService.add(news, author);
     }
 
+
     @Test
-    public void deleted() {
+    public void deleted() throws Exception {
         News news = new News();
         Author author = new Author();
-        when(newsAuthorRepository.delete(any(NewsAuthor.class))).thenReturn(true);
-        boolean deleted = newsAuthorService.delete(news, author);
-
-        assertTrue(deleted);
-        verify(logger).info(eq("Successfully deleted author from news"));
+        doNothing().when(newsAuthorRepository).delete(any(NewsAuthor.class));
+        newsAuthorService.add(news, author);
     }
 
-    @Test
-    public void notDeleted() {
+
+    @Test(expected = ServiceException.class)
+    public void notDeleted() throws Exception {
         News news = new News();
         Author author = new Author();
-        when(newsAuthorRepository.delete(any(NewsAuthor.class))).thenReturn(false);
-        boolean deleted = newsAuthorService.delete(news, author);
-
-        assertFalse(deleted);
-        verify(logger).error(eq("Failed to delete author from news"));
+        doThrow(new DaoException()).when(newsAuthorRepository).delete(any(NewsAuthor.class));
+        newsAuthorService.delete(news, author);
     }
 }

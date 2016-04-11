@@ -1,6 +1,8 @@
 package com.epam.app.service.impl;
 
 import com.epam.app.dao.NewsTagRepository;
+import com.epam.app.exception.DaoException;
+import com.epam.app.exception.ServiceException;
 import com.epam.app.model.Tag;
 import com.epam.app.model.News;
 import com.epam.app.model.NewsTag;
@@ -13,40 +15,42 @@ import org.springframework.transaction.annotation.Transactional;
  * NewsTag service implementation.
  */
 public class NewsTagServiceImpl implements NewsTagService {
-    private static Logger logger = Logger.getLogger(NewsTagServiceImpl.class.getName());
+    private static final Logger logger = Logger.getLogger(NewsTagServiceImpl.class.getName());
 
     @Autowired
     private NewsTagRepository newsTagRepository;
 
 
     @Override
-    @Transactional
-    public boolean add(News news, Tag tag) {
+    @Transactional(rollbackFor = DaoException.class)
+    public void add(News news, Tag tag) throws ServiceException {
         logger.info("Adding new tag to news..");
         NewsTag newsTag = new NewsTag();
         newsTag.setNewsId(news.getNewsId());
         newsTag.setTagId(tag.getTagId());
-        boolean added = newsTagRepository.add(newsTag);
-        if (added)
-            logger.info("Successfully added new tag to news");
-        else
+        try {
+            newsTagRepository.add(newsTag);
+        } catch (DaoException e) {
             logger.error("Failed to add tag to news");
-        return added;
+            throw new ServiceException(e);
+        }
+        logger.info("Successfully added new tag to news");
     }
 
 
     @Override
-    @Transactional
-    public boolean delete(News news, Tag tag) {
+    @Transactional(rollbackFor = DaoException.class)
+    public void delete(News news, Tag tag) throws ServiceException {
         logger.info("Deleting tag from news..");
         NewsTag newsTag = new NewsTag();
         newsTag.setNewsId(news.getNewsId());
         newsTag.setTagId(tag.getTagId());
-        boolean deleted = newsTagRepository.delete(newsTag);
-        if (deleted)
-            logger.info("Successfully deleted tag from news");
-        else
+        try {
+            newsTagRepository.delete(newsTag);
+        } catch (DaoException e) {
             logger.error("Failed to delete tag from news");
-        return deleted;
+            throw new ServiceException(e);
+        }
+        logger.info("Successfully deleted tag from news");
     }
 }

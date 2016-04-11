@@ -1,26 +1,24 @@
 package com.epam.app.service;
 
 import com.epam.app.dao.CommentRepository;
+import com.epam.app.exception.DaoException;
+import com.epam.app.exception.ServiceException;
 import com.epam.app.model.Comment;
 import com.epam.app.model.News;
 import com.epam.app.service.impl.CommentServiceImpl;
-import org.apache.log4j.Logger;
 import org.junit.Before;
 import org.junit.Test;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
-import org.powermock.reflect.Whitebox;
 
 import java.util.LinkedList;
 import java.util.List;
 
 import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertNull;
-import static org.junit.Assert.assertTrue;
-import static org.mockito.Matchers.eq;
-import static org.mockito.Mockito.verify;
+import static org.mockito.Matchers.any;
+import static org.mockito.Mockito.doNothing;
+import static org.mockito.Mockito.doThrow;
 import static org.mockito.Mockito.when;
 
 /**
@@ -33,17 +31,14 @@ public class CommentServiceTest {
     @Mock
     private CommentRepository commentRepository;
 
-    @Mock
-    private Logger logger;
-
     @Before
     public void setupMock() {
         MockitoAnnotations.initMocks(this);
-        Whitebox.setInternalState(CommentServiceImpl.class, "logger", logger);
     }
 
+
     @Test
-    public void added() {
+    public void added() throws Exception {
         News news = new News();
         news.setNewsId(1L);
         Comment comment = new Comment();
@@ -53,85 +48,69 @@ public class CommentServiceTest {
 
         assertEquals((Long) 1L, comment.getCommentId());
         assertEquals((Long) 1L, comment.getNewsId());
-        verify(logger).info(eq("Successfully added new comment"));
     }
 
-    @Test
-    public void notAdded() {
+
+    @Test(expected = ServiceException.class)
+    public void notAdded() throws Exception {
         News news = new News();
-        Comment comment = new Comment();
-        when(commentRepository.add(comment)).thenReturn(comment);
-        comment = commentService.add(news, comment);
-
-        assertNull(comment.getCommentId());
-        verify(logger).error(eq("Failed to add new comment"));
+        news.setNewsId(1L);
+        doThrow(new DaoException()).when(commentRepository).add(any(Comment.class));
+        commentService.add(news, new Comment());
     }
 
+
     @Test
-    public void found() {
+    public void found() throws Exception {
         Comment comment = new Comment();
         comment.setCommentId(1L);
         when(commentRepository.find(1L)).thenReturn(comment);
         comment = commentService.find(1L);
 
         assertEquals((Long) 1L, comment.getCommentId());
-        verify(logger).info(eq("Successfully found comment"));
     }
 
-    @Test
-    public void notFound() {
-        when(commentRepository.find(1L)).thenReturn(null);
-        Comment comment = commentService.find(1L);
 
-        assertNull(comment);
-        verify(logger).error(eq("Failed to find comment"));
+    @Test(expected = ServiceException.class)
+    public void notFound() throws Exception {
+        doThrow(new DaoException()).when(commentRepository).find(any(Long.class));
+        commentService.find(1L);
     }
 
-    @Test
-    public void updated() {
-        Comment comment = new Comment();
-        comment.setCommentId(1L);
-        when(commentRepository.update(comment)).thenReturn(true);
-        boolean updated = commentService.update(comment);
 
-        assertTrue(updated);
-        verify(logger).info(eq("Successfully updated comment"));
+    @Test
+    public void updated() throws Exception {
+        doNothing().when(commentRepository).update(any(Comment.class));
+        commentService.update(new Comment());
     }
 
-    @Test
-    public void notUpdated() {
-        when(commentRepository.update(null)).thenReturn(false);
-        boolean updated = commentService.update(null);
 
-        assertFalse(updated);
-        verify(logger).error(eq("Failed to update comment"));
+    @Test(expected = ServiceException.class)
+    public void notUpdated() throws Exception {
+        doThrow(new DaoException()).when(commentRepository).update(any(Comment.class));
+        commentService.update(new Comment());
     }
 
-    @Test
-    public void deleted() {
-        Comment comment = new Comment();
-        comment.setCommentId(1L);
-        when(commentRepository.delete(comment)).thenReturn(true);
-        boolean deleted = commentService.delete(comment);
 
-        assertTrue(deleted);
-        verify(logger).info(eq("Successfully deleted comment"));
+    @Test
+    public void deleted() throws Exception {
+        doNothing().when(commentRepository).delete(any(Comment.class));
+        commentService.delete(new Comment());
     }
 
-    @Test
-    public void notDeleted() {
-        when(commentRepository.delete(null)).thenReturn(false);
-        boolean deleted = commentService.delete(null);
 
-        assertFalse(deleted);
-        verify(logger).error(eq("Failed to delete comment"));
+    @Test(expected = ServiceException.class)
+    public void notDeleted() throws Exception {
+        doThrow(new DaoException()).when(commentRepository).delete(any(Comment.class));
+        commentService.delete(new Comment());
     }
 
+
     @Test
-    public void addedAll() {
+    public void addedAll() throws Exception {
         News news = new News();
         news.setNewsId(1L);
-        List<Comment> comments = new LinkedList<Comment>();
+        List<Comment> comments = new LinkedList<>();
         Comment comment1 = new Comment();
         comment1.setCommentId(1L);
         comments.add(comment1);
@@ -143,42 +122,37 @@ public class CommentServiceTest {
 
         for (Comment comment : returnedComments)
             assertEquals((Long) 1L, comment.getNewsId());
-        verify(logger).info(eq("Successfully added comments"));
     }
 
-    @Test
-    public void notAddedAll() {
+
+    @Test(expected = ServiceException.class)
+    public void notAddedAll() throws Exception {
         News news = new News();
-        List<Comment> comments = new LinkedList<Comment>();
+        news.setNewsId(1L);
+        List<Comment> comments = new LinkedList<>();
         comments.add(new Comment());
         comments.add(new Comment());
-        when(commentRepository.addAll(comments)).thenReturn(comments);
+        doThrow(new DaoException()).when(commentRepository).addAll(any(List.class));
         commentService.addAll(news, comments);
-
-        verify(logger).error(eq("Failed to add comments"));
     }
 
-    @Test
-    public void deletedAll() {
-        List<Comment> comments = new LinkedList<Comment>();
-        comments.add(new Comment());
-        comments.add(new Comment());
-        when(commentRepository.deleteAll(comments)).thenReturn(true);
-        boolean deletedAll = commentService.deleteAll(comments);
 
-        assertTrue(deletedAll);
-        verify(logger).info(eq("Successfully deleted comments"));
+    @Test
+    public void deletedAll() throws Exception {
+        List<Comment> comments = new LinkedList<>();
+        comments.add(new Comment());
+        comments.add(new Comment());
+        doNothing().when(commentRepository).deleteAll(any(List.class));
+        commentService.deleteAll(comments);
     }
 
-    @Test
-    public void notDeletedAll() {
-        List<Comment> comments = new LinkedList<Comment>();
-        comments.add(new Comment());
-        comments.add(new Comment());
-        when(commentRepository.deleteAll(comments)).thenReturn(false);
-        boolean deletedAll = commentService.deleteAll(comments);
 
-        assertFalse(deletedAll);
-        verify(logger).error(eq("Failed to delete comments"));
+    @Test(expected = ServiceException.class)
+    public void notDeletedAll() throws Exception {
+        List<Comment> comments = new LinkedList<>();
+        comments.add(new Comment());
+        comments.add(new Comment());
+        doThrow(new DaoException()).when(commentRepository).deleteAll(any(List.class));
+        commentService.deleteAll(comments);
     }
 }

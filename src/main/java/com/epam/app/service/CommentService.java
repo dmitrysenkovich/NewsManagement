@@ -1,5 +1,6 @@
 package com.epam.app.service;
 
+import com.epam.app.exception.ServiceException;
 import com.epam.app.model.Comment;
 import com.epam.app.model.News;
 
@@ -16,7 +17,7 @@ public interface CommentService extends RudService<Comment> {
      * @return comment with set id
      * if added successfully.
      */
-    Comment add(News news, Comment comment);
+    Comment add(News news, Comment comment) throws ServiceException;
 
     /**
      * Adds all comments from list to news.
@@ -25,12 +26,11 @@ public interface CommentService extends RudService<Comment> {
      * @return comments with set id
      * if successfully.
      */
-    List<Comment> addAll(News news, List<Comment> comments);
+    List<Comment> addAll(News news, List<Comment> comments) throws ServiceException;
 
     /**
      * Deletes all comments from list.
      * @param comments comments to be deleted.
-     * @return true if deleted successfully.
      */
-    boolean deleteAll(List<Comment> comments);
+    void deleteAll(List<Comment> comments) throws ServiceException;
 }

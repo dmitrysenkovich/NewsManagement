@@ -1,7 +1,9 @@
 package com.epam.app.dao.impl;
 
 import com.epam.app.dao.UserRepository;
+import com.epam.app.exception.DaoException;
 import com.epam.app.model.User;
+import com.epam.app.utils.DatabaseUtils;
 import org.apache.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 
@@ -27,8 +29,11 @@ public class UserRepositoryImpl implements UserRepository {
     @Autowired
     private DataSource dataSource;
 
+    @Autowired
+    private DatabaseUtils databaseUtils;
 
-    public User add(User user) {
+
+    public User add(User user) throws DaoException {
         logger.info("Adding user..");
         Connection connection = null;
         PreparedStatement preparedStatement = null;
@@ -48,32 +53,17 @@ public class UserRepositoryImpl implements UserRepository {
         }
         catch (SQLException e) {
             logger.error("Error while adding user: ", e);
+            throw new DaoException(e);
         }
         finally {
-            if (preparedStatement != null) {
-                try {
-                    preparedStatement.close();
-                } catch (SQLException e) {
-                    logger.error("Error while trying to close prepared " +
-                            "statement after adding user", e);
-                }
-            }
-
-            if (connection != null) {
-                try {
-                    connection.close();
-                } catch (SQLException e) {
-                    logger.error("Error while trying to close connection " +
-                            "after adding user", e);
-                }
-            }
-
-            return user;
+            databaseUtils.closeConnectionAndStatement(logger, "Error while adding user: ",
+                    preparedStatement, connection);
         }
+        return user;
     }
 
 
-    public User find(Long userId) {
+    public User find(Long userId) throws DaoException {
         logger.info("Retrieving user..");
         Connection connection = null;
         PreparedStatement preparedStatement = null;
@@ -95,39 +85,20 @@ public class UserRepositoryImpl implements UserRepository {
         }
         catch (SQLException e) {
             logger.error("Error while retrieving user: ", e);
-            user = null;
+            throw new DaoException(e);
         }
         finally {
-            if (preparedStatement != null) {
-                try {
-                    preparedStatement.close();
-                } catch (SQLException e) {
-                    logger.error("Error while trying to close prepared " +
-                            "statement after retrieving user", e);
-                    user = null;
-                }
-            }
-
-            if (connection != null) {
-                try {
-                    connection.close();
-                } catch (SQLException e) {
-                    logger.error("Error while trying to close connection " +
-                            "after retrieving user", e);
-                    user = null;
-                }
-            }
-
-            return user;
+            databaseUtils.closeConnectionAndStatement(logger, "Error while retrieving user: ",
+                    preparedStatement, connection);
         }
+        return user;
     }
 
 
-    public boolean update(User user) {
+    public void update(User user) throws DaoException {
         logger.info("Updating user..");
         Connection connection = null;
         PreparedStatement preparedStatement = null;
-        boolean result = true;
         try {
             connection = dataSource.getConnection();
             preparedStatement = connection.prepareStatement(UPDATE);
@@ -141,39 +112,19 @@ public class UserRepositoryImpl implements UserRepository {
         }
         catch (SQLException e) {
             logger.error("Error while updating user: ", e);
-            result = false;
+            throw new DaoException(e);
         }
         finally {
-            if (preparedStatement != null) {
-                try {
-                    preparedStatement.close();
-                } catch (SQLException e) {
-                    logger.error("Error while trying to close prepared " +
-                            "statement after updating user", e);
-                    result = false;
-                }
-            }
-
-            if (connection != null) {
-                try {
-                    connection.close();
-                } catch (SQLException e) {
-                    logger.error("Error while trying to close connection " +
-                            "after updating user", e);
-                    result = false;
-                }
-            }
-
-            return result;
+            databaseUtils.closeConnectionAndStatement(logger, "Error while updating user: ",
+                    preparedStatement, connection);
         }
     }
 
 
-    public boolean delete(User user) {
+    public void delete(User user) throws DaoException {
         logger.info("Deleting user..");
         Connection connection = null;
         PreparedStatement preparedStatement = null;
-        boolean result = true;
         try {
             connection = dataSource.getConnection();
             preparedStatement = connection.prepareStatement(DELETE);
@@ -183,30 +134,11 @@ public class UserRepositoryImpl implements UserRepository {
         }
         catch (SQLException e) {
             logger.error("Error while deleting user: ", e);
-            result = false;
+            throw new DaoException(e);
         }
         finally {
-            if (preparedStatement != null) {
-                try {
-                    preparedStatement.close();
-                } catch (SQLException e) {
-                    logger.error("Error while trying to close prepared " +
-                            "statement after deleting user", e);
-                    result = false;
-                }
-            }
-
-            if (connection != null) {
-                try {
-                    connection.close();
-                } catch (SQLException e) {
-                    logger.error("Error while trying to close connection " +
-                            "after deleting user", e);
-                    result = false;
-                }
-            }
-
-            return result;
+            databaseUtils.closeConnectionAndStatement(logger, "Error while deleting user: ",
+                    preparedStatement, connection);
         }
     }
 }

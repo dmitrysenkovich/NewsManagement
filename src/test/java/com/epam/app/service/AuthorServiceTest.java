@@ -1,22 +1,20 @@
 package com.epam.app.service;
 
 import com.epam.app.dao.AuthorRepository;
+import com.epam.app.exception.DaoException;
+import com.epam.app.exception.ServiceException;
 import com.epam.app.model.Author;
 import com.epam.app.service.impl.AuthorServiceImpl;
-import org.apache.log4j.Logger;
 import org.junit.Before;
 import org.junit.Test;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
-import org.powermock.reflect.Whitebox;
 
 import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertNull;
-import static org.junit.Assert.assertTrue;
-import static org.mockito.Matchers.eq;
-import static org.mockito.Mockito.verify;
+import static org.mockito.Matchers.any;
+import static org.mockito.Mockito.doNothing;
+import static org.mockito.Mockito.doThrow;
 import static org.mockito.Mockito.when;
 
 /**
@@ -29,93 +27,72 @@ public class AuthorServiceTest {
     @Mock
     private AuthorRepository authorRepository;
 
-    @Mock
-    private Logger logger;
-
     @Before
     public void setupMock() {
         MockitoAnnotations.initMocks(this);
-        Whitebox.setInternalState(AuthorServiceImpl.class, "logger", logger);
     }
 
+
     @Test
-    public void added() {
+    public void added() throws Exception {
         Author author = new Author();
         author.setAuthorId(1L);
         when(authorRepository.add(author)).thenReturn(author);
         author = authorService.add(author);
 
         assertEquals((Long) 1L, author.getAuthorId());
-        verify(logger).info(eq("Successfully added new author"));
     }
 
-    @Test
-    public void notAdded() {
-        Author author = new Author();
-        when(authorRepository.add(author)).thenReturn(author);
-        author = authorService.add(author);
 
-        assertNull(author.getAuthorId());
-        verify(logger).error(eq("Failed to add new author"));
+    @Test(expected = ServiceException.class)
+    public void notAdded() throws Exception {
+        doThrow(new DaoException()).when(authorRepository).add(any(Author.class));
+        authorService.add(new Author());
     }
 
+
     @Test
-    public void found() {
+    public void found() throws Exception {
         Author author = new Author();
         author.setAuthorId(1L);
         when(authorRepository.find(1L)).thenReturn(author);
         author = authorService.find(1L);
 
         assertEquals((Long) 1L, author.getAuthorId());
-        verify(logger).info(eq("Successfully found author"));
     }
 
-    @Test
-    public void notFound() {
-        when(authorRepository.find(1L)).thenReturn(null);
-        Author author = authorService.find(1L);
 
-        assertNull(author);
-        verify(logger).error(eq("Failed to find author"));
+    @Test(expected = ServiceException.class)
+    public void notFound() throws Exception {
+        doThrow(new DaoException()).when(authorRepository).find(any(Long.class));
+        authorService.find(1L);
     }
 
-    @Test
-    public void updated() {
-        Author author = new Author();
-        author.setAuthorId(1L);
-        when(authorRepository.update(author)).thenReturn(true);
-        boolean updated = authorService.update(author);
 
-        assertTrue(updated);
-        verify(logger).info(eq("Successfully updated author"));
+    @Test
+    public void updated() throws Exception {
+        doNothing().when(authorRepository).update(any(Author.class));
+        authorService.update(new Author());
     }
 
-    @Test
-    public void notUpdated() {
-        when(authorRepository.update(null)).thenReturn(false);
-        boolean updated = authorService.update(null);
 
-        assertFalse(updated);
-        verify(logger).error(eq("Failed to update author"));
+    @Test(expected = ServiceException.class)
+    public void notUpdated() throws Exception {
+        doThrow(new DaoException()).when(authorRepository).update(any(Author.class));
+        authorService.update(new Author());
     }
 
-    @Test
-    public void deleted() {
-        Author author = new Author();
-        author.setAuthorId(1L);
-        when(authorRepository.delete(author)).thenReturn(true);
-        boolean deleted = authorService.delete(author);
 
-        assertTrue(deleted);
-        verify(logger).info(eq("Successfully deleted author"));
+    @Test
+    public void deleted() throws Exception {
+        doNothing().when(authorRepository).delete(any(Author.class));
+        authorService.delete(new Author());
     }
 
-    @Test
-    public void notDeleted() {
-        when(authorRepository.delete(null)).thenReturn(false);
-        boolean deleted = authorService.delete(null);
 
-        assertFalse(deleted);
-        verify(logger).error(eq("Failed to delete author"));
+    @Test(expected = ServiceException.class)
+    public void notDeleted() throws Exception {
+        doThrow(new DaoException()).when(authorRepository).delete(any(Author.class));
+        authorService.delete(new Author());
     }
 }

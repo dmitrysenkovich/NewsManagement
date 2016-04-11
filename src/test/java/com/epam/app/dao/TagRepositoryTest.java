@@ -1,5 +1,6 @@
 package com.epam.app.dao;
 
+import com.epam.app.exception.DaoException;
 import com.epam.app.model.Tag;
 import com.github.springtestdbunit.DbUnitTestExecutionListener;
 import com.github.springtestdbunit.annotation.DatabaseSetup;
@@ -25,11 +26,11 @@ import java.sql.DriverManager;
 import java.util.LinkedList;
 import java.util.List;
 
+import static com.googlecode.catchexception.CatchException.catchException;
+import static com.googlecode.catchexception.CatchException.caughtException;
 import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertNull;
-import static org.junit.Assert.assertTrue;
 
 /**
  * Tag repository test.
@@ -65,6 +66,7 @@ public class TagRepositoryTest {
             connection.close();
     }
 
+
     @Test
     public void tagAdded() throws Exception {
         Tag tag = new Tag();
@@ -78,10 +80,12 @@ public class TagRepositoryTest {
         assertNotNull(tag.getTagId());
     }
 
+
     @Test
     public void tagNotAdded() throws Exception {
         Tag tag = new Tag();
-        tag = tagRepository.add(tag);
+        catchException(() -> tagRepository.add(tag));
+        assert caughtException() instanceof DaoException;
         connection = DriverManager.getConnection(testDbUrl, testDbUsername, testDbPassword);
         IDataSet actualDataSet = getActualDataSet(connection);
         ITable tagsTable = actualDataSet.getTable("Tags");
@@ -90,49 +94,51 @@ public class TagRepositoryTest {
         assertNull(tag.getTagId());
     }
 
+
     @Test
-    public void tagFound() {
+    public void tagFound() throws Exception {
         Tag tag = tagRepository.find(1L);
 
         assertNotNull(tag);
     }
 
-    @Test
-    public void tagNotFound() {
-        Tag tag = tagRepository.find(-1L);
 
-        assertNull(tag);
+    @Test(expected = DaoException.class)
+    public void tagNotFound() throws Exception {
+        tagRepository.find(-1L);
     }
 
+
     @Test
-    public void tagUpdated() {
+    public void tagUpdated() throws Exception {
         Tag tag = new Tag();
         tag.setTagId(1L);
         tag.setTagName("test1");
-        boolean updated = tagRepository.update(tag);
+        tagRepository.update(tag);
         Tag foundTag = tagRepository.find(tag.getTagId());
 
         assertEquals("test1", foundTag.getTagName());
-        assertTrue(updated);
     }
 
+
     @Test
-    public void tagNotUpdated() {
+    public void tagNotUpdated() throws Exception {
         Tag tag = new Tag();
         tag.setTagId(1L);
         tag.setTagName(null);
-        boolean updated = tagRepository.update(tag);
+        catchException(() -> tagRepository.update(tag));
+        assert caughtException() instanceof DaoException;
         Tag foundTag = tagRepository.find(tag.getTagId());
 
         assertEquals("test", foundTag.getTagName());
-        assertFalse(updated);
     }
+
 
     @Test
     public void tagDeleted() throws Exception {
         Tag tag = new Tag();
         tag.setTagId(1L);
-        boolean deleted = tagRepository.delete(tag);
+        tagRepository.delete(tag);
         connection = DriverManager.getConnection(testDbUrl, testDbUsername, testDbPassword);
         IDataSet actualDataSet = getActualDataSet(connection);
         ITable tagsTable = actualDataSet.getTable("Tags");
@@ -140,8 +146,8 @@ public class TagRepositoryTest {
 
         assertEquals(1, tagsTable.getRowCount());
         assertEquals(2, newsTagTable.getRowCount());
-        assertTrue(deleted);
     }
+
 
     @Test
     public void tagNotDeleted() throws Exception {
@@ -157,13 +163,14 @@ public class TagRepositoryTest {
         assertEquals(5, newsTagTable.getRowCount());
     }
 
+
     @Test
     public void allTagsAdded() throws Exception {
         Tag tag1 = new Tag();
         tag1.setTagName("test");
         Tag tag2 = new Tag();
         tag2.setTagName("test");
-        List<Tag> tags = new LinkedList<Tag>();
+        List<Tag> tags = new LinkedList<>();
         tags.add(tag1);
         tags.add(tag2);
         tags = tagRepository.addAll(tags);
@@ -176,15 +183,17 @@ public class TagRepositoryTest {
             assertNotNull(tag.getTagId());
     }
 
+
     @Test
     public void notAllTagsAdded() throws Exception {
         Tag tag1 = new Tag();
         tag1.setTagName("test");
         Tag tag2 = new Tag();
-        List<Tag> tags = new LinkedList<Tag>();
+        List<Tag> tags = new LinkedList<>();
         tags.add(tag1);
         tags.add(tag2);
-        tags = tagRepository.addAll(tags);
+        catchException(() -> tagRepository.addAll(tags));
+        assert caughtException() instanceof DaoException;
         connection = DriverManager.getConnection(testDbUrl, testDbUsername, testDbPassword);
         IDataSet actualDataSet = getActualDataSet(connection);
         ITable tagsTable = actualDataSet.getTable("Tags");
@@ -194,14 +203,16 @@ public class TagRepositoryTest {
             assertNull(tag.getTagId());
     }
 
+
     @Test
     public void allTagsNotAdded() throws Exception {
         Tag tag1 = new Tag();
         Tag tag2 = new Tag();
-        List<Tag> tags = new LinkedList<Tag>();
+        List<Tag> tags = new LinkedList<>();
         tags.add(tag1);
         tags.add(tag2);
-        tags = tagRepository.addAll(tags);
+        catchException(() -> tagRepository.addAll(tags));
+        assert caughtException() instanceof DaoException;
         connection = DriverManager.getConnection(testDbUrl, testDbUsername, testDbPassword);
         IDataSet actualDataSet = getActualDataSet(connection);
         ITable tagsTable = actualDataSet.getTable("Tags");

@@ -35,7 +35,8 @@
     <bean id="tagRepository" class="com.epam.app.dao.impl.TagRepositoryImpl" />
     <bean id="userRepository" class="com.epam.app.dao.impl.UserRepositoryImpl" />
 
-    <bean id="scriptFileUtils" class="com.epam.app.utils.ScriptFileUtils" />
     <bean id="searchUtils" class="com.epam.app.utils.SearchUtils" init-method="init" />
+    <bean id="scriptFileUtils" class="com.epam.app.utils.ScriptFileUtils" />
+    <bean id="databaseUtils" class="com.epam.app.utils.DatabaseUtils"/>
 
 </beans>

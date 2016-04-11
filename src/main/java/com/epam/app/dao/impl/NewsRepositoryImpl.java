@@ -1,7 +1,9 @@
 package com.epam.app.dao.impl;
 
 import com.epam.app.dao.NewsRepository;
+import com.epam.app.exception.DaoException;
 import com.epam.app.model.News;
+import com.epam.app.utils.DatabaseUtils;
 import org.apache.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 
@@ -43,9 +45,12 @@ public class NewsRepositoryImpl implements NewsRepository {
     @Autowired
     private DataSource dataSource;
 
+    @Autowired
+    private DatabaseUtils databaseUtils;
+
 
     @Override
-    public News add(News news) {
+    public News add(News news) throws DaoException {
         logger.info("Adding news..");
         Connection connection = null;
         PreparedStatement preparedStatement = null;
@@ -66,33 +71,18 @@ public class NewsRepositoryImpl implements NewsRepository {
         }
         catch (SQLException e) {
             logger.error("Error while adding news: ", e);
+            throw new DaoException(e);
         }
         finally {
-            if (preparedStatement != null) {
-                try {
-                    preparedStatement.close();
-                } catch (SQLException e) {
-                    logger.error("Error while trying to close prepared " +
-                            "statement after adding news", e);
-                }
-            }
-
-            if (connection != null) {
-                try {
-                    connection.close();
-                } catch (SQLException e) {
-                    logger.error("Error while trying to close connection " +
-                            "after adding news", e);
-                }
-            }
-
-            return news;
+            databaseUtils.closeConnectionAndStatement(logger, "Error while adding news: ",
+                    preparedStatement, connection);
         }
+        return news;
     }
 
 
     @Override
-    public News find(Long newsId) {
+    public News find(Long newsId) throws DaoException {
         logger.info("Retrieving news..");
         Connection connection = null;
         PreparedStatement preparedStatement = null;
@@ -115,40 +105,21 @@ public class NewsRepositoryImpl implements NewsRepository {
         }
         catch (SQLException e) {
             logger.error("Error while retrieving news: ", e);
-            news = null;
+            throw new DaoException(e);
         }
         finally {
-            if (preparedStatement != null) {
-                try {
-                    preparedStatement.close();
-                } catch (SQLException e) {
-                    logger.error("Error while trying to close prepared " +
-                            "statement after retrieving news", e);
-                    news = null;
-                }
-            }
-
-            if (connection != null) {
-                try {
-                    connection.close();
-                } catch (SQLException e) {
-                    logger.error("Error while trying to close connection " +
-                            "after retrieving news", e);
-                    news = null;
-                }
-            }
-
-            return news;
+            databaseUtils.closeConnectionAndStatement(logger, "Error while retrieving news: ",
+                    preparedStatement, connection);
         }
+        return news;
     }
 
 
     @Override
-    public boolean update(News news) {
+    public void update(News news) throws DaoException {
         logger.info("Updating news..");
         Connection connection = null;
         PreparedStatement preparedStatement = null;
-        boolean result = true;
         try {
             connection = dataSource.getConnection();
             preparedStatement = connection.prepareStatement(UPDATE);
@@ -162,40 +133,20 @@ public class NewsRepositoryImpl implements NewsRepository {
         }
         catch (SQLException e) {
             logger.error("Error while updating news: ", e);
-            result = false;
+            throw new DaoException(e);
         }
         finally {
-            if (preparedStatement != null) {
-                try {
-                    preparedStatement.close();
-                } catch (SQLException e) {
-                    logger.error("Error while trying to close prepared " +
-                            "statement after updating news", e);
-                    result = false;
-                }
-            }
-
-            if (connection != null) {
-                try {
-                    connection.close();
-                } catch (SQLException e) {
-                    logger.error("Error while trying to close connection " +
-                            "after updating news", e);
-                    result = false;
-                }
-            }
-
-            return result;
+            databaseUtils.closeConnectionAndStatement(logger, "Error while updating news: ",
+                    preparedStatement, connection);
         }
     }
 
 
     @Override
-    public boolean delete(News news) {
+    public void delete(News news) throws DaoException {
         logger.info("Deleting news..");
         Connection connection = null;
         PreparedStatement preparedStatement = null;
-        boolean result = true;
         try {
             connection = dataSource.getConnection();
             preparedStatement = connection.prepareStatement(DELETE);
@@ -205,36 +156,17 @@ public class NewsRepositoryImpl implements NewsRepository {
         }
         catch (SQLException e) {
             logger.error("Error while deleting news: ", e);
-            result = false;
+            throw new DaoException(e);
         }
         finally {
-            if (preparedStatement != null) {
-                try {
-                    preparedStatement.close();
-                } catch (SQLException e) {
-                    logger.error("Error while trying to close prepared " +
-                            "statement after deleting news", e);
-                    result = false;
-                }
-            }
-
-            if (connection != null) {
-                try {
-                    connection.close();
-                } catch (SQLException e) {
-                    logger.error("Error while trying to close connection " +
-                            "after deleting news", e);
-                    result = false;
-                }
-            }
-
-            return result;
+            databaseUtils.closeConnectionAndStatement(logger, "Error while deleting news: ",
+                    preparedStatement, connection);
         }
     }
 
 
     @Override
-    public List<News> search(final String SEARCH_CRITERIA_QUERY) {
+    public List<News> search(final String SEARCH_CRITERIA_QUERY) throws DaoException {
         logger.info("Retrieving news according to search criteria..");
         Connection connection = null;
         PreparedStatement preparedStatement = null;
@@ -244,7 +176,7 @@ public class NewsRepositoryImpl implements NewsRepository {
             preparedStatement = connection.prepareStatement(SEARCH_CRITERIA_QUERY);
             ResultSet resultSet = preparedStatement.executeQuery();
 
-            fitNews = new LinkedList<News>();
+            fitNews = new LinkedList<>();
             while (resultSet.next()) {
                 News news = new News();
                 news.setNewsId(resultSet.getLong(1));
@@ -259,36 +191,18 @@ public class NewsRepositoryImpl implements NewsRepository {
         }
         catch (SQLException e) {
             logger.error("Error while retrieving news: ", e);
-            fitNews = null;
+            throw new DaoException(e);
         }
         finally {
-            if (preparedStatement != null) {
-                try {
-                    preparedStatement.close();
-                } catch (SQLException e) {
-                    logger.error("Error while trying to close prepared " +
-                            "statement after retrieving new according to search criteria", e);
-                    fitNews = null;
-                }
-            }
-
-            if (connection != null) {
-                try {
-                    connection.close();
-                } catch (SQLException e) {
-                    logger.error("Error while trying to close connection " +
-                            "after retrieving news according to search criteria", e);
-                    fitNews = null;
-                }
-            }
-
-            return fitNews;
+            databaseUtils.closeConnectionAndStatement(logger, "Error while retrieving news: ",
+                    preparedStatement, connection);
         }
+        return fitNews;
     }
 
 
     @Override
-    public List<News> findAllSorted() {
+    public List<News> findAllSorted() throws DaoException {
         logger.info("Retrieving all news..");
         Connection connection = null;
         Statement statement = null;
@@ -298,7 +212,7 @@ public class NewsRepositoryImpl implements NewsRepository {
             statement = connection.createStatement();
             ResultSet resultSet = statement.executeQuery(FIND_ALL_SORTED);
 
-            allNews = new LinkedList<News>();
+            allNews = new LinkedList<>();
             while (resultSet.next()) {
                 News news = new News();
                 news.setNewsId(resultSet.getLong(1));
@@ -313,36 +227,18 @@ public class NewsRepositoryImpl implements NewsRepository {
         }
         catch (SQLException e) {
             logger.error("Error while retrieving news: ", e);
-            allNews = null;
+            throw new DaoException(e);
         }
         finally {
-            if (statement != null) {
-                try {
-                    statement.close();
-                } catch (SQLException e) {
-                    logger.error("Error while trying to close prepared " +
-                            "statement after all retrieving news", e);
-                    allNews = null;
-                }
-            }
-
-            if (connection != null) {
-                try {
-                    connection.close();
-                } catch (SQLException e) {
-                    logger.error("Error while trying to close connection " +
-                            "after all retrieving news", e);
-                    allNews = null;
-                }
-            }
-
-            return allNews;
+            databaseUtils.closeConnectionAndStatement(logger, "Error while retrieving news: ",
+                    statement, connection);
         }
+        return allNews;
     }
 
 
     @Override
-    public Long countAll() {
+    public Long countAll() throws DaoException {
         logger.info("Retrieving news..");
         Connection connection = null;
         PreparedStatement preparedStatement = null;
@@ -357,27 +253,12 @@ public class NewsRepositoryImpl implements NewsRepository {
         }
         catch (SQLException e) {
             logger.error("Error while retrieving news count: ", e);
+            throw new DaoException(e);
         }
         finally {
-            if (preparedStatement != null) {
-                try {
-                    preparedStatement.close();
-                } catch (SQLException e) {
-                    logger.error("Error while trying to close prepared " +
-                            "statement after retrieving news count", e);
-                }
-            }
-
-            if (connection != null) {
-                try {
-                    connection.close();
-                } catch (SQLException e) {
-                    logger.error("Error while trying to close connection " +
-                            "after retrieving news count", e);
-                }
-            }
-
-            return count;
+            databaseUtils.closeConnectionAndStatement(logger, "Error while retrieving news count: ",
+                    preparedStatement, connection);
         }
+        return count;
     }
 }

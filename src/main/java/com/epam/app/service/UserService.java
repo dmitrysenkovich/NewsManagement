@@ -1,5 +1,6 @@
 package com.epam.app.service;
 
+import com.epam.app.exception.ServiceException;
 import com.epam.app.model.Role;
 import com.epam.app.model.User;
 
@@ -14,5 +15,5 @@ public interface UserService extends RudService<User> {
      * @return user with set id
      * if added successfully.
      */
-    User add(User user, Role role);
+    User add(User user, Role role) throws ServiceException;
 }

@@ -1,11 +1,14 @@
 package com.epam.app.dao.impl;
 
 import com.epam.app.dao.AuthorRepository;
+import com.epam.app.exception.DaoException;
 import com.epam.app.model.Author;
+import com.epam.app.utils.DatabaseUtils;
 import org.apache.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 
 import javax.sql.DataSource;
+import javax.xml.crypto.Data;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
@@ -27,9 +30,12 @@ public class AuthorRepositoryImpl implements AuthorRepository {
     @Autowired
     private DataSource dataSource;
 
+    @Autowired
+    private DatabaseUtils databaseUtils;
+
 
     @Override
-    public Author add(Author author) {
+    public Author add(Author author) throws DaoException {
         logger.info("Adding author..");
         Connection connection = null;
         PreparedStatement preparedStatement = null;
@@ -47,33 +53,18 @@ public class AuthorRepositoryImpl implements AuthorRepository {
         }
         catch (SQLException e) {
             logger.error("Error while adding author: ", e);
+            throw new DaoException(e);
         }
         finally {
-            if (preparedStatement != null) {
-                try {
-                    preparedStatement.close();
-                } catch (SQLException e) {
-                    logger.error("Error while trying to close prepared " +
-                            "statement after adding author", e);
-                }
-            }
-
-            if (connection != null) {
-                try {
-                    connection.close();
-                } catch (SQLException e) {
-                    logger.error("Error while trying to close connection " +
-                            "after adding author", e);
-                }
-            }
-
-            return author;
+            databaseUtils.closeConnectionAndStatement(logger, "Error while adding author: ",
+                    preparedStatement, connection);
         }
+        return author;
     }
 
 
     @Override
-    public Author find(Long authorId) {
+    public Author find(Long authorId) throws DaoException {
         logger.info("Retrieving author..");
         Connection connection = null;
         PreparedStatement preparedStatement = null;
@@ -93,40 +84,21 @@ public class AuthorRepositoryImpl implements AuthorRepository {
         }
         catch (SQLException e) {
             logger.error("Error while retrieving author: ", e);
-            author = null;
+            throw new DaoException(e);
         }
         finally {
-            if (preparedStatement != null) {
-                try {
-                    preparedStatement.close();
-                } catch (SQLException e) {
-                    logger.error("Error while trying to close prepared " +
-                            "statement after retrieving author", e);
-                    author = null;
-                }
-            }
-
-            if (connection != null) {
-                try {
-                    connection.close();
-                } catch (SQLException e) {
-                    logger.error("Error while trying to close connection " +
-                            "after retrieving author", e);
-                    author = null;
-                }
-            }
-
-            return author;
+            databaseUtils.closeConnectionAndStatement(logger, "Error while retrieving author: ",
+                    preparedStatement, connection);
         }
+        return author;
     }
 
 
     @Override
-    public boolean update(Author author) {
+    public void update(Author author) throws DaoException {
         logger.info("Updating author..");
         Connection connection = null;
         PreparedStatement preparedStatement = null;
-        boolean result = true;
         try {
             connection = dataSource.getConnection();
             preparedStatement = connection.prepareStatement(UPDATE);
@@ -138,40 +110,20 @@ public class AuthorRepositoryImpl implements AuthorRepository {
         }
         catch (SQLException e) {
             logger.error("Error while updating author: ", e);
-            result = false;
+            throw new DaoException(e);
         }
         finally {
-            if (preparedStatement != null) {
-                try {
-                    preparedStatement.close();
-                } catch (SQLException e) {
-                    logger.error("Error while trying to close prepared " +
-                            "statement after updating author", e);
-                    result = false;
-                }
-            }
-
-            if (connection != null) {
-                try {
-                    connection.close();
-                } catch (SQLException e) {
-                    logger.error("Error while trying to close connection " +
-                            "after updating author", e);
-                    result = false;
-                }
-            }
-
-            return result;
+            databaseUtils.closeConnectionAndStatement(logger, "Error while updating author: ",
+                    preparedStatement, connection);
         }
     }
 
 
     @Override
-    public boolean delete(Author author) {
+    public void delete(Author author) throws DaoException {
         logger.info("Deleting author..");
         Connection connection = null;
         PreparedStatement preparedStatement = null;
-        boolean result = true;
         try {
             connection = dataSource.getConnection();
             preparedStatement = connection.prepareStatement(DELETE);
@@ -181,30 +133,11 @@ public class AuthorRepositoryImpl implements AuthorRepository {
         }
         catch (SQLException e) {
             logger.error("Error while deleting author: ", e);
-            result = false;
+            throw new DaoException(e);
         }
         finally {
-            if (preparedStatement != null) {
-                try {
-                    preparedStatement.close();
-                } catch (SQLException e) {
-                    logger.error("Error while trying to close prepared " +
-                            "statement after deleting author", e);
-                    result = false;
-                }
-            }
-
-            if (connection != null) {
-                try {
-                    connection.close();
-                } catch (SQLException e) {
-                    logger.error("Error while trying to close connection " +
-                            "after deleting author", e);
-                    result = false;
-                }
-            }
-
-            return result;
+            databaseUtils.closeConnectionAndStatement(logger, "Error while deleting author: ",
+                    preparedStatement, connection);
         }
     }
 }

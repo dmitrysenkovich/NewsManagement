@@ -1,5 +1,6 @@
 package com.epam.app.service;
 
+import com.epam.app.exception.ServiceException;
 import com.epam.app.model.Tag;
 
 import java.util.List;
@@ -14,7 +15,7 @@ public interface TagService extends RudService<Tag> {
      * @return tag with set id
      * if added successfully.
      */
-    Tag add(Tag tag);
+    Tag add(Tag tag) throws ServiceException;
 
     /**
      * Adds all tags from list to news.
@@ -22,5 +23,5 @@ public interface TagService extends RudService<Tag> {
      * @return tags with set id
      * if successfully.
      */
-    List<Tag> addAll(List<Tag> tags);
+    List<Tag> addAll(List<Tag> tags) throws ServiceException;
 }
