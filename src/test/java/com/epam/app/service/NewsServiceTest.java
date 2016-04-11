@@ -3,25 +3,31 @@ package com.epam.app.service;
 import com.epam.app.dao.NewsAuthorRepository;
 import com.epam.app.dao.NewsRepository;
 import com.epam.app.dao.NewsTagRepository;
-import com.epam.app.dao.impl.NewsAuthorRepositoryImpl;
-import com.epam.app.dao.impl.NewsTagRepositoryImpl;
-import com.epam.app.model.*;
+import com.epam.app.model.Author;
+import com.epam.app.model.News;
+import com.epam.app.model.NewsAuthor;
+import com.epam.app.model.NewsTag;
+import com.epam.app.model.Tag;
 import com.epam.app.service.impl.NewsServiceImpl;
 import com.epam.app.utils.SearchCriteria;
 import com.epam.app.utils.SearchUtils;
 import org.apache.log4j.Logger;
 import org.junit.Before;
 import org.junit.Test;
+import org.junit.runner.RunWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
+import org.powermock.modules.junit4.PowerMockRunner;
 import org.powermock.reflect.Whitebox;
 
 import java.util.LinkedList;
 import java.util.List;
 
-import static org.junit.Assert.*;
+import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertTrue;
 import static org.mockito.Matchers.any;
 import static org.mockito.Matchers.eq;
@@ -32,6 +38,7 @@ import static org.mockito.Mockito.when;
 /**
  * News service test.
  */
+@RunWith(PowerMockRunner.class)
 public class NewsServiceTest {
     @InjectMocks
     private NewsServiceImpl newsService;
@@ -304,11 +311,11 @@ public class NewsServiceTest {
     @Test
     public void foundNewsBySearchCriteria() {
         when(newsRepository.search(any(String.class))).thenReturn(new LinkedList<News>());
-        when(searchUtils.getSearchQuery(any(SearchCriteria.class))).thenReturn("test");
+        when(searchUtils.getSearchQuery(new SearchCriteria())).thenReturn("test");
         List<News> foundNews = newsService.search(new SearchCriteria());
 
         assertNotNull(foundNews);
-        verify(logger).info(eq("Successfully retrieved news ny search criteria"));
+        verify(logger).info(eq("Successfully retrieved news by search criteria"));
     }
 
     @Test

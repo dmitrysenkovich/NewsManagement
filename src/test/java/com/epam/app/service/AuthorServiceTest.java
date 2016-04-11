@@ -1,7 +1,6 @@
 package com.epam.app.service;
 
 import com.epam.app.dao.AuthorRepository;
-import com.epam.app.dao.impl.AuthorRepositoryImpl;
 import com.epam.app.model.Author;
 import com.epam.app.service.impl.AuthorServiceImpl;
 import org.apache.log4j.Logger;
@@ -10,13 +9,15 @@ import org.junit.Test;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
+import org.powermock.reflect.Whitebox;
 
-import static org.junit.Assert.*;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertNull;
+import static org.junit.Assert.assertTrue;
 import static org.mockito.Matchers.eq;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
-
-import org.powermock.reflect.Whitebox;
 
 /**
  * Author service test.

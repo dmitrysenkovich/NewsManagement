@@ -6,7 +6,11 @@ import org.apache.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 
 import javax.sql.DataSource;
-import java.sql.*;
+import java.sql.Connection;
+import java.sql.PreparedStatement;
+import java.sql.ResultSet;
+import java.sql.SQLException;
+import java.sql.Statement;
 
 /**
  * Author repository implementation.
@@ -24,6 +28,7 @@ public class AuthorRepositoryImpl implements AuthorRepository {
     private DataSource dataSource;
 
 
+    @Override
     public Author add(Author author) {
         logger.info("Adding author..");
         Connection connection = null;
@@ -67,6 +72,7 @@ public class AuthorRepositoryImpl implements AuthorRepository {
     }
 
 
+    @Override
     public Author find(Long authorId) {
         logger.info("Retrieving author..");
         Connection connection = null;
@@ -115,6 +121,7 @@ public class AuthorRepositoryImpl implements AuthorRepository {
     }
 
 
+    @Override
     public boolean update(Author author) {
         logger.info("Updating author..");
         Connection connection = null;
@@ -159,6 +166,7 @@ public class AuthorRepositoryImpl implements AuthorRepository {
     }
 
 
+    @Override
     public boolean delete(Author author) {
         logger.info("Deleting author..");
         Connection connection = null;

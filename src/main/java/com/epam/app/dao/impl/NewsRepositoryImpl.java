@@ -6,7 +6,11 @@ import org.apache.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 
 import javax.sql.DataSource;
-import java.sql.*;
+import java.sql.Connection;
+import java.sql.PreparedStatement;
+import java.sql.ResultSet;
+import java.sql.SQLException;
+import java.sql.Statement;
 import java.util.LinkedList;
 import java.util.List;
 
@@ -40,6 +44,7 @@ public class NewsRepositoryImpl implements NewsRepository {
     private DataSource dataSource;
 
 
+    @Override
     public News add(News news) {
         logger.info("Adding news..");
         Connection connection = null;
@@ -86,6 +91,7 @@ public class NewsRepositoryImpl implements NewsRepository {
     }
 
 
+    @Override
     public News find(Long newsId) {
         logger.info("Retrieving news..");
         Connection connection = null;
@@ -137,6 +143,7 @@ public class NewsRepositoryImpl implements NewsRepository {
     }
 
 
+    @Override
     public boolean update(News news) {
         logger.info("Updating news..");
         Connection connection = null;
@@ -183,6 +190,7 @@ public class NewsRepositoryImpl implements NewsRepository {
     }
 
 
+    @Override
     public boolean delete(News news) {
         logger.info("Deleting news..");
         Connection connection = null;
@@ -225,6 +233,7 @@ public class NewsRepositoryImpl implements NewsRepository {
     }
 
 
+    @Override
     public List<News> search(final String SEARCH_CRITERIA_QUERY) {
         logger.info("Retrieving news according to search criteria..");
         Connection connection = null;
@@ -278,6 +287,7 @@ public class NewsRepositoryImpl implements NewsRepository {
     }
 
 
+    @Override
     public List<News> findAllSorted() {
         logger.info("Retrieving all news..");
         Connection connection = null;
@@ -331,6 +341,7 @@ public class NewsRepositoryImpl implements NewsRepository {
     }
 
 
+    @Override
     public Long countAll() {
         logger.info("Retrieving news..");
         Connection connection = null;

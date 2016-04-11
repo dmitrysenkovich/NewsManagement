@@ -22,6 +22,8 @@ public class NewsTagRepositoryImpl implements NewsTagRepository {
     @Autowired
     private DataSource dataSource;
 
+
+    @Override
     public boolean add(NewsTag newsTag) {
         logger.info("Adding news to tag relation..");
         Connection connection = null;
@@ -65,6 +67,7 @@ public class NewsTagRepositoryImpl implements NewsTagRepository {
     }
 
 
+    @Override
     public boolean delete(NewsTag newsTag) {
         logger.info("Deleting news to tag relation..");
         Connection connection = null;

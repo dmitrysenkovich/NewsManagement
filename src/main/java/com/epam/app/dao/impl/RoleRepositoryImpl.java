@@ -6,7 +6,11 @@ import org.apache.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 
 import javax.sql.DataSource;
-import java.sql.*;
+import java.sql.Connection;
+import java.sql.PreparedStatement;
+import java.sql.ResultSet;
+import java.sql.SQLException;
+import java.sql.Statement;
 
 /**
  * Role repository implementation.
@@ -23,6 +27,7 @@ public class RoleRepositoryImpl implements RoleRepository {
     private DataSource dataSource;
 
 
+    @Override
     public Role add(Role role) {
         logger.info("Adding role..");
         Connection connection = null;
@@ -65,6 +70,7 @@ public class RoleRepositoryImpl implements RoleRepository {
     }
 
 
+    @Override
     public Role find(Long roleId) {
         logger.info("Retrieving role..");
         Connection connection = null;
@@ -112,6 +118,7 @@ public class RoleRepositoryImpl implements RoleRepository {
     }
 
 
+    @Override
     public boolean update(Role role) {
         logger.info("Updating role..");
         Connection connection = null;
@@ -155,6 +162,7 @@ public class RoleRepositoryImpl implements RoleRepository {
     }
 
 
+    @Override
     public boolean delete(Role role) {
         logger.info("Deleting role..");
         Connection connection = null;

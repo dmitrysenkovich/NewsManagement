@@ -21,6 +21,7 @@ public class CommentServiceImpl implements CommentService {
     private CommentRepository commentRepository;
 
 
+    @Override
     @Transactional
     public Comment add(News news, Comment comment) {
         logger.info("Adding new comment..");
@@ -35,6 +36,7 @@ public class CommentServiceImpl implements CommentService {
     }
 
 
+    @Override
     public Comment find(Long commentId) {
         logger.info("Retrieving comment..");
         Comment comment = commentRepository.find(commentId);
@@ -46,6 +48,7 @@ public class CommentServiceImpl implements CommentService {
     }
 
 
+    @Override
     @Transactional
     public boolean update(Comment comment) {
         logger.info("Updating comment..");
@@ -58,6 +61,7 @@ public class CommentServiceImpl implements CommentService {
     }
 
 
+    @Override
     @Transactional
     public boolean delete(Comment comment) {
         logger.info("Deleting comment..");
@@ -70,7 +74,8 @@ public class CommentServiceImpl implements CommentService {
     }
 
 
-    @Transactional()
+    @Override
+    @Transactional
     public List<Comment> addAll(News news, List<Comment> comments) {
         logger.info("Adding comments..");
         for (Comment comment : comments) {
@@ -90,6 +95,7 @@ public class CommentServiceImpl implements CommentService {
     }
 
 
+    @Override
     @Transactional
     public boolean deleteAll(List<Comment> comments) {
         logger.info("Deleting comments..");

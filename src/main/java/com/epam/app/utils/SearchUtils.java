@@ -1,6 +1,8 @@
 package com.epam.app.utils;
 
-import org.apache.commons.io.FileUtils;
+import org.apache.log4j.Logger;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Component;
 
 import java.text.MessageFormat;
 import java.util.List;
@@ -9,26 +11,34 @@ import java.util.List;
  * Search utils.
  */
 public class SearchUtils {
-    private static final String mainPart = "SELECT * FROM ((SELECT news_id, title, short_text, " +
-            "                                   full_text, creation_date, modification_date, comments_count " +
-            "                               FROM News JOIN (SELECT news_id, COUNT(*) AS comments_count " +
-            "                                               FROM Comments " +
-            "                                               GROUP BY news_id) AS News_Stat USING(news_id))" +
-            "                               UNION " +
-            "                               (SELECT news_id, title, short_text, " +
-            "                                    full_text, creation_date, modification_date, 0 AS comments_count " +
-            "                                FROM News " +
-            "                                WHERE news_id NOT IN(SELECT news_id " +
-            "                                                    FROM Comments))) All_News_Stat " +
-            "                               WHERE {0} {1} {2}" +
-            "                               ORDER BY comments_count DESC";
-    private static final String authorPart = "EXISTS(SELECT * FROM News_Author NA " +
-            "                                        WHERE NA.news_id = All_News_Stat.news_id AND author_id = {0})";
-    private static final String tagsPart = "news_id IN (SELECT news_id " +
-            "                                           FROM News_Tag" +
-            "                                           WHERE tag_id IN {0}" +
-            "                                           GROUP BY news_id" +
-            "                                           HAVING COUNT(*) = {1})";
+    private static final Logger logger = Logger.getLogger(SearchUtils.class.getName());
+
+    private static final String MAIN_PART_FILE_NAME = "search-main.sql";
+    private static final String AUTHOR_PART_FILE_NAME = "search-author-part.sql";
+    private static final String TAGS_PART_FILE_NAME = "search-tags-part.sql";
+
+    private String MAIN_PART;
+    private String AUTHOR_PART;
+    private String TAGS_PART;
+
+    @Autowired
+    private ScriptFileUtils scriptFileUtils;
+
+
+    /**
+     * Initializes script parts.
+     */
+    public void init() {
+        String searchScriptDirectoryPath = scriptFileUtils.getSearchScriptDirectoryPath();
+        MAIN_PART = scriptFileUtils.getScriptPart(searchScriptDirectoryPath, MAIN_PART_FILE_NAME, logger,
+                "Error reading main part of search script");
+        AUTHOR_PART = scriptFileUtils.getScriptPart(searchScriptDirectoryPath, AUTHOR_PART_FILE_NAME, logger,
+                "Error reading author part of search script");
+        TAGS_PART = scriptFileUtils.getScriptPart(searchScriptDirectoryPath, TAGS_PART_FILE_NAME, logger,
+                "Error reading tags part of search script");
+        if (!MAIN_PART.equals("") && !AUTHOR_PART.equals("") && !TAGS_PART.equals(""))
+            logger.info("Successfully read all search script parts");
+    }
 
 
     /**
@@ -47,7 +57,7 @@ public class SearchUtils {
 
         String authorMatchingChecking = "";
         if (searchCriteria.getAuthorId() != null)
-            authorMatchingChecking = MessageFormat.format(authorPart, searchCriteria.getAuthorId());
+            authorMatchingChecking = MessageFormat.format(AUTHOR_PART, searchCriteria.getAuthorId());
 
         String tagsMatchingChecking = "";
         if (searchCriteria.getTagIds() != null && !searchCriteria.getTagIds().isEmpty()) {
@@ -58,14 +68,14 @@ public class SearchUtils {
             tagIdsInString.insert(0, "(");
             tagIdsInString.deleteCharAt(tagIdsInString.length() - 1);
             tagIdsInString.setCharAt(tagIdsInString.length() - 1, ')');
-            tagsMatchingChecking = MessageFormat.format(tagsPart, tagIdsInString, tagIds.size());
+            tagsMatchingChecking = MessageFormat.format(TAGS_PART, tagIdsInString, tagIds.size());
         }
 
         String and = "";
         if (!authorMatchingChecking.equals("") && !tagsMatchingChecking.equals(""))
-            and = " AND ";
+            and = "\n    AND ";
 
-        String searchQuery = MessageFormat.format(mainPart, authorMatchingChecking, and, tagsMatchingChecking);
+        String searchQuery = MessageFormat.format(MAIN_PART, authorMatchingChecking, and, tagsMatchingChecking);
         return searchQuery;
     }
 }

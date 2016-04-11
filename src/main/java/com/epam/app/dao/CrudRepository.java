@@ -5,7 +5,7 @@ package com.epam.app.dao;
  * the contract of a repository with all
  * basic operations.
  */
-public interface CrudRepository<T> {
+public interface CrudRepository<T, E> {
     /**
      * Adds new entity.
      * @param t new entity.
@@ -20,7 +20,7 @@ public interface CrudRepository<T> {
      * @return the entity if the needed
      * entity was found, otherwise null.
      */
-    T find(Long id);
+    T find(E id);
 
     /**
      * Updates an entity.

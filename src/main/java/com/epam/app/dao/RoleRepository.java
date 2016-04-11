@@ -5,5 +5,5 @@ import com.epam.app.model.Role;
 /**
  * Role repository interface.
  */
-public interface RoleRepository extends CrudRepository<Role> {
+public interface RoleRepository extends CrudRepository<Role, Long> {
 }

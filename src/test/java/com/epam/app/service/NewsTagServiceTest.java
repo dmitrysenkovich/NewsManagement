@@ -1,7 +1,6 @@
 package com.epam.app.service;
 
 import com.epam.app.dao.NewsTagRepository;
-import com.epam.app.dao.impl.NewsTagRepositoryImpl;
 import com.epam.app.model.News;
 import com.epam.app.model.NewsTag;
 import com.epam.app.model.Tag;

@@ -19,6 +19,7 @@ public class NewsTagServiceImpl implements NewsTagService {
     private NewsTagRepository newsTagRepository;
 
 
+    @Override
     @Transactional
     public boolean add(News news, Tag tag) {
         logger.info("Adding new tag to news..");
@@ -34,6 +35,7 @@ public class NewsTagServiceImpl implements NewsTagService {
     }
 
 
+    @Override
     @Transactional
     public boolean delete(News news, Tag tag) {
         logger.info("Deleting tag from news..");

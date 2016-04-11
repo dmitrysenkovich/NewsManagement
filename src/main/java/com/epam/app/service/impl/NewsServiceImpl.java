@@ -3,7 +3,11 @@ package com.epam.app.service.impl;
 import com.epam.app.dao.NewsAuthorRepository;
 import com.epam.app.dao.NewsRepository;
 import com.epam.app.dao.NewsTagRepository;
-import com.epam.app.model.*;
+import com.epam.app.model.Author;
+import com.epam.app.model.News;
+import com.epam.app.model.NewsAuthor;
+import com.epam.app.model.NewsTag;
+import com.epam.app.model.Tag;
 import com.epam.app.service.NewsService;
 import com.epam.app.utils.SearchCriteria;
 import com.epam.app.utils.SearchUtils;
@@ -32,6 +36,7 @@ public class NewsServiceImpl implements NewsService {
     private SearchUtils searchUtils;
 
 
+    @Override
     @Transactional
     public News add(News news, Author author, List<Tag> tags) {
         logger.info("Adding news..");
@@ -83,6 +88,7 @@ public class NewsServiceImpl implements NewsService {
     }
 
 
+    @Override
     public News find(Long newsId) {
         logger.info("Retrieving news..");
         News news = newsRepository.find(newsId);
@@ -94,6 +100,7 @@ public class NewsServiceImpl implements NewsService {
     }
 
 
+    @Override
     @Transactional
     public boolean update(News news) {
         logger.info("Updating news..");
@@ -106,6 +113,7 @@ public class NewsServiceImpl implements NewsService {
     }
 
 
+    @Override
     @Transactional
     public boolean delete(News news) {
         logger.info("Deleting news..");
@@ -118,18 +126,20 @@ public class NewsServiceImpl implements NewsService {
     }
 
 
+    @Override
     public List<News> search(SearchCriteria searchCriteria) {
         logger.info("Searching certain news..");
         final String SEARCH_CRITERIA_QUERY = searchUtils.getSearchQuery(searchCriteria);
         List<News> fitNews = newsRepository.search(SEARCH_CRITERIA_QUERY);
         if (fitNews != null)
-            logger.info("Successfully retrieved news ny search criteria");
+            logger.info("Successfully retrieved news by search criteria");
         else
             logger.error("Failed to find news by search criteria");
         return fitNews;
     }
 
 
+    @Override
     public List<News> findAllSorted() {
         logger.info("Retrieving all news sorted by comments count..");
         List<News> sortedNews = newsRepository.findAllSorted();
@@ -141,6 +151,7 @@ public class NewsServiceImpl implements NewsService {
     }
 
 
+    @Override
     public Long countAll() {
         logger.info("Counting all news..");
         Long newsCount = newsRepository.countAll();

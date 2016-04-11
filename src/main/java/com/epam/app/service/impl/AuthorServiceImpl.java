@@ -17,6 +17,7 @@ public class AuthorServiceImpl implements AuthorService {
     private AuthorRepository authorRepository;
 
 
+    @Override
     @Transactional
     public Author add(Author author) {
         logger.info("Adding new author..");
@@ -29,6 +30,7 @@ public class AuthorServiceImpl implements AuthorService {
     }
 
 
+    @Override
     public Author find(Long authorId) {
         logger.info("Retrieving author..");
         Author author = authorRepository.find(authorId);
@@ -40,6 +42,7 @@ public class AuthorServiceImpl implements AuthorService {
     }
 
 
+    @Override
     @Transactional
     public boolean update(Author author) {
         logger.info("Updating author..");
@@ -52,6 +55,7 @@ public class AuthorServiceImpl implements AuthorService {
     }
 
 
+    @Override
     @Transactional
     public boolean delete(Author author) {
         logger.info("Deleting author..");

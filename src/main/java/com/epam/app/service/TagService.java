@@ -1,6 +1,5 @@
 package com.epam.app.service;
 
-import com.epam.app.model.News;
 import com.epam.app.model.Tag;
 
 import java.util.List;

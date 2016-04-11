@@ -1,7 +1,6 @@
 package com.epam.app.service;
 
 import com.epam.app.dao.UserRepository;
-import com.epam.app.dao.impl.UserRepositoryImpl;
 import com.epam.app.model.Role;
 import com.epam.app.model.User;
 import com.epam.app.service.impl.UserServiceImpl;
@@ -13,8 +12,9 @@ import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
 import org.powermock.reflect.Whitebox;
 
-import static org.junit.Assert.*;
+import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertTrue;
 import static org.mockito.Matchers.eq;
 import static org.mockito.Mockito.verify;

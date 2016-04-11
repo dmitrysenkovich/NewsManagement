@@ -1,7 +1,6 @@
 package com.epam.app.service.impl;
 
 import com.epam.app.dao.TagRepository;
-import com.epam.app.model.News;
 import com.epam.app.model.Tag;
 import com.epam.app.service.TagService;
 import org.apache.log4j.Logger;
@@ -20,6 +19,7 @@ public class TagServiceImpl implements TagService {
     private TagRepository tagRepository;
 
 
+    @Override
     @Transactional
     public Tag add(Tag tag) {
         logger.info("Adding new tag..");
@@ -32,6 +32,7 @@ public class TagServiceImpl implements TagService {
     }
 
 
+    @Override
     public Tag find(Long tagId) {
         logger.info("Retrieving tag..");
         Tag tag = tagRepository.find(tagId);
@@ -43,6 +44,7 @@ public class TagServiceImpl implements TagService {
     }
 
 
+    @Override
     @Transactional
     public boolean update(Tag tag) {
         logger.info("Updating tag..");

@@ -11,7 +11,7 @@ import java.util.List;
  * to add list of entities in
  * database.
  */
-public interface CrudaRepository<T> extends CrudRepository<T> {
+public interface CrudaRepository<T, E> extends CrudRepository<T, E> {
     /**
      * Adds all entities from list.
      * @param entities entities to be added.

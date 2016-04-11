@@ -1,5 +1,6 @@
 package com.epam.app.utils;
 
+import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -9,18 +10,70 @@ import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 import java.util.LinkedList;
 import java.util.List;
 
-import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNull;
-import static org.junit.Assert.assertTrue;
 
 /**
  * Search utils test.
  */
 @RunWith(SpringJUnit4ClassRunner.class)
-@ContextConfiguration(locations = {"classpath:META-INF/utils-test-context.xml"})
+@ContextConfiguration(locations = {"classpath:META-INF/repository-test-context.xml"})
 public class SearchUtilsTest {
+    private static final String TEST_AUTHOR_AND_TAGS_SEARCH_SCRIPT_FILE_NAME = "author-and-tags-test-search-query.sql";
+    private static final String TEST_AUTHOR_ONLY_SEARCH_SCRIPT_FILE_NAME = "author-only-test-search-query.sql";
+    private static final String TEST_TAGS_ONLY_SEARCH_SCRIPT_FILE_NAME = "tags-only-test-search-query.sql";
+
     @Autowired
-    SearchUtils searchUtils;
+    private SearchUtils searchUtils;
+    @Autowired
+    private ScriptFileUtils scriptFileUtils;
+    private String TEST_SEARCH_SCRIPT_DIRECTORY;
+
+    @Before
+    public void asd() {
+        TEST_SEARCH_SCRIPT_DIRECTORY = scriptFileUtils.getTestSearchScriptDirectoryPath();
+    }
+
+
+    @Test
+    public void searchCriteriaIsValidAuthorIsNotNullTagsAreNotNull() throws Exception {
+        String testAuthorAndTagsSearchScript = scriptFileUtils.getScriptPart(TEST_SEARCH_SCRIPT_DIRECTORY,
+                TEST_AUTHOR_AND_TAGS_SEARCH_SCRIPT_FILE_NAME, null, null);
+        SearchCriteria searchCriteria = new SearchCriteria();
+        searchCriteria.setAuthorId(1L);
+        List<Long> tagIds = new LinkedList<Long>();
+        tagIds.add(1L);
+        tagIds.add(2L);
+        searchCriteria.setTagIds(tagIds);
+        String generatedAuthorAndTagsSearchScript = searchUtils.getSearchQuery(searchCriteria);
+
+        assertEquals(testAuthorAndTagsSearchScript, generatedAuthorAndTagsSearchScript);
+    }
+
+    @Test
+    public void searchCriteriaIsValidAuthorIsNotNullTagsAreNull() throws Exception {
+        String testAuthorOnlySearchScript = scriptFileUtils.getScriptPart(TEST_SEARCH_SCRIPT_DIRECTORY,
+                TEST_AUTHOR_ONLY_SEARCH_SCRIPT_FILE_NAME, null, null);
+        SearchCriteria searchCriteria = new SearchCriteria();
+        searchCriteria.setAuthorId(1L);
+        String generatedAuthorOnlySearchScript = searchUtils.getSearchQuery(searchCriteria);
+
+        assertEquals(testAuthorOnlySearchScript, generatedAuthorOnlySearchScript);
+    }
+
+    @Test
+    public void searchCriteriaIsValidAuthorIsNullTagsAreNotNull() throws Exception {
+        String testTagsOnlySearchScript = scriptFileUtils.getScriptPart(TEST_SEARCH_SCRIPT_DIRECTORY,
+                TEST_TAGS_ONLY_SEARCH_SCRIPT_FILE_NAME, null, null);
+        SearchCriteria searchCriteria = new SearchCriteria();
+        List<Long> tagIds = new LinkedList<Long>();
+        tagIds.add(1L);
+        tagIds.add(2L);
+        searchCriteria.setTagIds(tagIds);
+        String generatedTagsOnlySearchScript = searchUtils.getSearchQuery(searchCriteria);
+
+        assertEquals(testTagsOnlySearchScript, generatedTagsOnlySearchScript);
+    }
 
     @Test
     public void searchCriteriaIsNull() {
@@ -56,21 +109,5 @@ public class SearchUtilsTest {
         String searchQuery = searchUtils.getSearchQuery(searchCriteria);
 
         assertNull(searchQuery);
-    }
-
-    @Test
-    public void searchCriteriaIsValid() {
-        SearchCriteria searchCriteria = new SearchCriteria();
-        searchCriteria.setAuthorId(1L);
-        List<Long> tags = new LinkedList<Long>();
-        tags.add(1L);
-        tags.add(2L);
-        searchCriteria.setTagIds(tags);
-        String searchQuery = searchUtils.getSearchQuery(searchCriteria);
-
-        assertNotNull(searchQuery);
-        assertTrue(searchQuery.contains("author_id = 1"));
-        assertTrue(searchQuery.contains("tag_id IN (1, 2)"));
-        assertTrue(searchQuery.contains("COUNT(*) = 2"));
     }
 }

@@ -7,7 +7,7 @@ import java.util.List;
 /**
  * News repository interface.
  */
-public interface NewsRepository extends CrudRepository<News> {
+public interface NewsRepository extends CrudRepository<News, Long> {
     /**
      * Retrieves all news specified
      * by SEARCH_CRITERIA_QUERY string

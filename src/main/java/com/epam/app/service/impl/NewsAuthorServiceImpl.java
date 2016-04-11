@@ -19,6 +19,7 @@ public class NewsAuthorServiceImpl implements NewsAuthorService {
     private NewsAuthorRepository newsAuthorRepository;
 
 
+    @Override
     @Transactional
     public boolean add(News news, Author author) {
         logger.info("Adding new author to news..");
@@ -34,6 +35,7 @@ public class NewsAuthorServiceImpl implements NewsAuthorService {
     }
 
 
+    @Override
     @Transactional
     public boolean delete(News news, Author author) {
         logger.info("Deleting author from news..");

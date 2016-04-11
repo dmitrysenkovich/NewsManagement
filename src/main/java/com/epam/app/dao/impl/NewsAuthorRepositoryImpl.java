@@ -6,7 +6,9 @@ import org.apache.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 
 import javax.sql.DataSource;
-import java.sql.*;
+import java.sql.Connection;
+import java.sql.PreparedStatement;
+import java.sql.SQLException;
 
 /**
  * NewsAuthor repository implementation.
@@ -20,6 +22,8 @@ public class NewsAuthorRepositoryImpl implements NewsAuthorRepository {
     @Autowired
     private DataSource dataSource;
 
+
+    @Override
     public boolean add(NewsAuthor newsAuthor) {
         logger.info("Adding news to author relation..");
         Connection connection = null;
@@ -63,6 +67,7 @@ public class NewsAuthorRepositoryImpl implements NewsAuthorRepository {
     }
 
 
+    @Override
     public boolean delete(NewsAuthor newsAuthor) {
         logger.info("Deleting news to author relation..");
         Connection connection = null;

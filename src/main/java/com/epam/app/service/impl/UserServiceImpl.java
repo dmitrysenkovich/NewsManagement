@@ -18,6 +18,7 @@ public class UserServiceImpl implements UserService {
     private UserRepository userRepository;
 
 
+    @Override
     @Transactional
     public User add(User user, Role role) {
         logger.info("Adding new user..");
@@ -31,6 +32,7 @@ public class UserServiceImpl implements UserService {
     }
 
 
+    @Override
     public User find(Long userId) {
         logger.info("Retrieving user..");
         User user = userRepository.find(userId);
@@ -42,6 +44,7 @@ public class UserServiceImpl implements UserService {
     }
 
 
+    @Override
     @Transactional
     public boolean update(User user) {
         logger.info("Updating user..");
@@ -54,6 +57,7 @@ public class UserServiceImpl implements UserService {
     }
 
 
+    @Override
     @Transactional
     public boolean delete(User user) {
         logger.info("Deleting user..");

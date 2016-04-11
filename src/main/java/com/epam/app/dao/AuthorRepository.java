@@ -5,5 +5,5 @@ import com.epam.app.model.Author;
 /**
  * Author repository interface.
  */
-public interface AuthorRepository extends CrudRepository<Author> {
+public interface AuthorRepository extends CrudRepository<Author, Long> {
 }

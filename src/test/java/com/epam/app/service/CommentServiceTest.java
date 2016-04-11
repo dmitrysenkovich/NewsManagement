@@ -1,7 +1,6 @@
 package com.epam.app.service;
 
 import com.epam.app.dao.CommentRepository;
-import com.epam.app.dao.impl.CommentRepositoryImpl;
 import com.epam.app.model.Comment;
 import com.epam.app.model.News;
 import com.epam.app.service.impl.CommentServiceImpl;
@@ -16,8 +15,9 @@ import org.powermock.reflect.Whitebox;
 import java.util.LinkedList;
 import java.util.List;
 
-import static org.junit.Assert.*;
+import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertTrue;
 import static org.mockito.Matchers.eq;
 import static org.mockito.Mockito.verify;

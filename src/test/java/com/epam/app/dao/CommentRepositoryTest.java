@@ -25,8 +25,11 @@ import java.sql.DriverManager;
 import java.util.LinkedList;
 import java.util.List;
 
-import static org.junit.Assert.*;
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertNull;
+import static org.junit.Assert.assertTrue;
 
 /**
  * Comment repository test.
@@ -203,7 +206,7 @@ public class CommentRepositoryTest {
         IDataSet actualDataSet = getActualDataSet(connection);
         ITable commentsTable = actualDataSet.getTable("Comments");
 
-        assertEquals(5, commentsTable.getRowCount());
+        assertEquals(6, commentsTable.getRowCount());
         for (Comment comment : comments)
             assertNull(comment.getCommentId());
     }
@@ -259,7 +262,7 @@ public class CommentRepositoryTest {
         IDataSet actualDataSet = getActualDataSet(connection);
         ITable commentsTable = actualDataSet.getTable("Comments");
 
-        assertEquals(5, commentsTable.getRowCount());
+        assertEquals(4, commentsTable.getRowCount());
     }
 
     @Test

@@ -6,7 +6,11 @@ import org.apache.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 
 import javax.sql.DataSource;
-import java.sql.*;
+import java.sql.Connection;
+import java.sql.PreparedStatement;
+import java.sql.ResultSet;
+import java.sql.SQLException;
+import java.sql.Statement;
 import java.util.List;
 
 /**
@@ -24,6 +28,7 @@ public class CommentRepositoryImpl implements CommentRepository {
     private DataSource dataSource;
 
 
+    @Override
     public Comment add(Comment comment) {
         logger.info("Adding comment..");
         Connection connection = null;
@@ -68,6 +73,7 @@ public class CommentRepositoryImpl implements CommentRepository {
     }
 
 
+    @Override
     public Comment find(Long commentId) {
         logger.info("Retrieving comment..");
         Connection connection = null;
@@ -117,6 +123,7 @@ public class CommentRepositoryImpl implements CommentRepository {
     }
 
 
+    @Override
     public boolean update(Comment comment) {
         logger.info("Updating comment..");
         Connection connection = null;
@@ -160,6 +167,7 @@ public class CommentRepositoryImpl implements CommentRepository {
     }
 
 
+    @Override
     public boolean delete(Comment comment) {
         logger.info("Deleting comment..");
         Connection connection = null;
@@ -202,6 +210,7 @@ public class CommentRepositoryImpl implements CommentRepository {
     }
 
 
+    @Override
     public List<Comment> addAll(List<Comment> comments) {
         logger.info("Adding comments..");
         Connection connection = null;
@@ -251,6 +260,8 @@ public class CommentRepositoryImpl implements CommentRepository {
         }
     }
 
+
+    @Override
     public boolean deleteAll(List<Comment> comments) {
         logger.info("Deleting comments..");
         Connection connection = null;

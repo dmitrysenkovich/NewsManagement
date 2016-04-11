@@ -6,7 +6,7 @@ FROM ((SELECT news_id, title, short_text,
                        GROUP BY news_id) AS News_Stat USING(news_id))
 UNION
 (SELECT news_id, title, short_text,
-            full_text, creation_date, modification_date, comments_count
+            full_text, creation_date, modification_date, 0 AS comments_count
 FROM News
 WHERE news_id NOT IN(SELECT news_id
                      FROM Comments))) All_News_Stat
