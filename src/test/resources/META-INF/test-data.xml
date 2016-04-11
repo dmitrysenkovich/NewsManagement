@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<dataset>
+    <Authors author_id="1" author_name="test" expired="2016-04-08 20:28:13"/>
+    <Authors author_id="2" author_name="test" expired="2016-04-08 20:28:13"/>
+    <News news_id="1" title="title1" short_text="test" full_text="test"
+          creation_date="2016-04-08 20:28:13" modification_date="2016-04-08"/>
+    <News news_id="2" title="title2" short_text="test" full_text="test"
+          creation_date="2016-04-08 20:28:13" modification_date="2016-04-08"/>
+    <News news_id="3" title="title3" short_text="test" full_text="test"
+          creation_date="2016-04-08 20:28:13" modification_date="2016-04-08"/>
+    <Comments comment_id="1" news_id="1" comment_text="test" creation_date="2016-04-08 20:28:13"/>
+    <Comments comment_id="2" news_id="1" comment_text="test" creation_date="2016-04-08 20:28:13"/>
+    <Comments comment_id="3" news_id="3" comment_text="test" creation_date="2016-04-08 20:28:13"/>
+    <Comments comment_id="4" news_id="3" comment_text="test" creation_date="2016-04-08 20:28:13"/>
+    <Comments comment_id="5" news_id="3" comment_text="test" creation_date="2016-04-08 20:28:13"/>
+    <News_Author news_id="1" author_id="1"/>
+    <News_Author news_id="2" author_id="2"/>
+    <News_Author news_id="3" author_id="1"/>
+    <Tags tag_id="1" tag_name="test"/>
+    <Tags tag_id="2" tag_name="test"/>
+    <News_Tag news_id="1" tag_id="1"/>
+    <News_Tag news_id="1" tag_id="2"/>
+    <News_Tag news_id="2" tag_id="1"/>
+    <News_Tag news_id="3" tag_id="1"/>
+    <News_Tag news_id="3" tag_id="2"/>
+    <Roles role_id="1" role_name="test"/>
+    <Roles role_id="2" role_name="test"/>
+    <Users user_id="1" role_id="1" user_name="test" login="test" password="test"/>
+</dataset>

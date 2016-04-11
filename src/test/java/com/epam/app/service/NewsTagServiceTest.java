@@ -1,5 +1,6 @@
 package com.epam.app.service;
 
+import com.epam.app.dao.NewsTagRepository;
 import com.epam.app.dao.impl.NewsTagRepositoryImpl;
 import com.epam.app.model.News;
 import com.epam.app.model.NewsTag;
@@ -28,7 +29,7 @@ public class NewsTagServiceTest {
     private NewsTagServiceImpl newsTagService;
 
     @Mock
-    private NewsTagRepositoryImpl newsTagRepository;
+    private NewsTagRepository newsTagRepository;
 
     @Mock
     private Logger logger;
@@ -37,17 +38,6 @@ public class NewsTagServiceTest {
     public void setupMock() {
         MockitoAnnotations.initMocks(this);
         Whitebox.setInternalState(NewsTagServiceImpl.class, "logger", logger);
-    }
-
-    @Test
-    public void notAdded() {
-        News news = new News();
-        Tag tag = new Tag();
-        when(newsTagRepository.add(any(NewsTag.class))).thenReturn(false);
-        boolean added = newsTagService.add(news, tag);
-
-        assertFalse(added);
-        verify(logger).error(eq("Failed to add tag to news"));
     }
 
     @Test
@@ -62,14 +52,14 @@ public class NewsTagServiceTest {
     }
 
     @Test
-    public void notDeleted() {
+    public void notAdded() {
         News news = new News();
         Tag tag = new Tag();
-        when(newsTagRepository.delete(any(NewsTag.class))).thenReturn(false);
-        boolean deleted = newsTagService.delete(news, tag);
+        when(newsTagRepository.add(any(NewsTag.class))).thenReturn(false);
+        boolean added = newsTagService.add(news, tag);
 
-        assertFalse(deleted);
-        verify(logger).error(eq("Failed to delete tag from news"));
+        assertFalse(added);
+        verify(logger).error(eq("Failed to add tag to news"));
     }
 
     @Test
@@ -81,5 +71,16 @@ public class NewsTagServiceTest {
 
         assertTrue(deleted);
         verify(logger).info(eq("Successfully deleted tag from news"));
+    }
+
+    @Test
+    public void notDeleted() {
+        News news = new News();
+        Tag tag = new Tag();
+        when(newsTagRepository.delete(any(NewsTag.class))).thenReturn(false);
+        boolean deleted = newsTagService.delete(news, tag);
+
+        assertFalse(deleted);
+        verify(logger).error(eq("Failed to delete tag from news"));
     }
 }

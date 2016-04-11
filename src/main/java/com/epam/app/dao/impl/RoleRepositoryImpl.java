@@ -14,9 +14,9 @@ import java.sql.*;
 public class RoleRepositoryImpl implements RoleRepository {
     private static final Logger logger = Logger.getLogger(RoleRepositoryImpl.class.getName());
 
-    private static final String ADD = "INSERT INTO Roles(role_name) VALUES(?);";
-    private static final String FIND = "SELECT * FROM Roles WHERE role_id = ?;";
-    private static final String UPDATE = "UPDATE Roles SET role_name = ? WHERE role_id = ?;";
+    private static final String ADD = "INSERT INTO Roles(role_name) VALUES(?)";
+    private static final String FIND = "SELECT * FROM Roles WHERE role_id = ?";
+    private static final String UPDATE = "UPDATE Roles SET role_name = ? WHERE role_id = ?";
     private static final String DELETE = "DELETE FROM Roles WHERE role_id = ?";
 
     @Autowired

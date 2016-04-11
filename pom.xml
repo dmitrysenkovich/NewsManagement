@@ -12,10 +12,12 @@
       <jdk.version>1.8</jdk.version>
       <spring.version>4.2.5.RELEASE</spring.version>
       <spring.data.version>1.9.0.RELEASE</spring.data.version>
+      <spring.test.dbunit.version>1.2.1</spring.test.dbunit.version>
       <javaee.version>7.0</javaee.version>
       <mysql.version>5.1.24</mysql.version>
       <apache.dbcp2.version>2.1.1</apache.dbcp2.version>
       <apache.pool.version>2.4.2</apache.pool.version>
+      <apache.commons.io.version>2.4</apache.commons.io.version>
       <maven.version>3.0</maven.version>
       <log4j.version>1.2.17</log4j.version>
       <junit.version>4.12</junit.version>
@@ -23,6 +25,9 @@
       <mockito.version>1.10.19</mockito.version>
       <powermock.version>1.6.4</powermock.version>
       <easymock.version>3.4</easymock.version>
+      <dbunit.version>2.5.1</dbunit.version>
+      <unitils.version>3.4.2</unitils.version>
+      <derby.version>10.12.1.1</derby.version>
 
       <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
       <project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
@@ -73,6 +78,12 @@
       </dependency>
 
       <dependency>
+          <groupId>commons-io</groupId>
+          <artifactId>commons-io</artifactId>
+          <version>${apache.commons.io.version}</version>
+      </dependency>
+
+      <dependency>
           <groupId>log4j</groupId>
           <artifactId>log4j</artifactId>
           <version>${log4j.version}</version>
@@ -102,6 +113,11 @@
           <artifactId>spring-test</artifactId>
           <version>${spring.version}</version>
           <scope>test</scope>
+      </dependency>
+      <dependency>
+          <groupId>com.github.springtestdbunit</groupId>
+          <artifactId>spring-test-dbunit</artifactId>
+          <version>${spring.test.dbunit.version}</version>
       </dependency>
 
       <dependency>
@@ -140,6 +156,27 @@
           <groupId>org.easymock</groupId>
           <artifactId>easymock</artifactId>
           <version>${easymock.version}</version>
+          <scope>test</scope>
+      </dependency>
+
+      <dependency>
+          <groupId>org.dbunit</groupId>
+          <artifactId>dbunit</artifactId>
+          <version>${dbunit.version}</version>
+          <scope>test</scope>
+      </dependency>
+
+      <dependency>
+          <groupId>org.unitils</groupId>
+          <artifactId>unitils-dbunit</artifactId>
+          <version>${unitils.version}</version>
+          <scope>test</scope>
+      </dependency>
+
+      <dependency>
+          <groupId>org.apache.derby</groupId>
+          <artifactId>derby</artifactId>
+          <version>${derby.version}</version>
           <scope>test</scope>
       </dependency>
   </dependencies>

@@ -1,5 +1,6 @@
 package com.epam.app.service;
 
+import com.epam.app.dao.CommentRepository;
 import com.epam.app.dao.impl.CommentRepositoryImpl;
 import com.epam.app.model.Comment;
 import com.epam.app.model.News;
@@ -30,7 +31,7 @@ public class CommentServiceTest {
     private CommentServiceImpl commentService;
 
     @Mock
-    private CommentRepositoryImpl commentRepository;
+    private CommentRepository commentRepository;
 
     @Mock
     private Logger logger;
@@ -39,17 +40,6 @@ public class CommentServiceTest {
     public void setupMock() {
         MockitoAnnotations.initMocks(this);
         Whitebox.setInternalState(CommentServiceImpl.class, "logger", logger);
-    }
-
-    @Test
-    public void notAdded() {
-        News news = new News();
-        Comment comment = new Comment();
-        when(commentRepository.add(comment)).thenReturn(comment);
-        comment = commentService.add(news, comment);
-
-        assertNull(comment.getCommentId());
-        verify(logger).error(eq("Failed to add new comment"));
     }
 
     @Test
@@ -67,12 +57,14 @@ public class CommentServiceTest {
     }
 
     @Test
-    public void notFound() {
-        when(commentRepository.find(1L)).thenReturn(null);
-        Comment comment = commentService.find(1L);
+    public void notAdded() {
+        News news = new News();
+        Comment comment = new Comment();
+        when(commentRepository.add(comment)).thenReturn(comment);
+        comment = commentService.add(news, comment);
 
-        assertNull(comment);
-        verify(logger).error(eq("Failed to find comment"));
+        assertNull(comment.getCommentId());
+        verify(logger).error(eq("Failed to add new comment"));
     }
 
     @Test
@@ -87,12 +79,12 @@ public class CommentServiceTest {
     }
 
     @Test
-    public void notUpdated() {
-        when(commentRepository.update(null)).thenReturn(false);
-        boolean updated = commentService.update(null);
+    public void notFound() {
+        when(commentRepository.find(1L)).thenReturn(null);
+        Comment comment = commentService.find(1L);
 
-        assertFalse(updated);
-        verify(logger).error(eq("Failed to update comment"));
+        assertNull(comment);
+        verify(logger).error(eq("Failed to find comment"));
     }
 
     @Test
@@ -107,12 +99,12 @@ public class CommentServiceTest {
     }
 
     @Test
-    public void notDeleted() {
-        when(commentRepository.delete(null)).thenReturn(false);
-        boolean deleted = commentService.delete(null);
+    public void notUpdated() {
+        when(commentRepository.update(null)).thenReturn(false);
+        boolean updated = commentService.update(null);
 
-        assertFalse(deleted);
-        verify(logger).error(eq("Failed to delete comment"));
+        assertFalse(updated);
+        verify(logger).error(eq("Failed to update comment"));
     }
 
     @Test
@@ -127,15 +119,12 @@ public class CommentServiceTest {
     }
 
     @Test
-    public void notAddedAll() {
-        News news = new News();
-        List<Comment> comments = new LinkedList<Comment>();
-        comments.add(new Comment());
-        comments.add(new Comment());
-        when(commentRepository.addAll(comments)).thenReturn(comments);
-        commentService.addAll(news, comments);
+    public void notDeleted() {
+        when(commentRepository.delete(null)).thenReturn(false);
+        boolean deleted = commentService.delete(null);
 
-        verify(logger).error(eq("Failed to add comments"));
+        assertFalse(deleted);
+        verify(logger).error(eq("Failed to delete comment"));
     }
 
     @Test
@@ -158,15 +147,15 @@ public class CommentServiceTest {
     }
 
     @Test
-    public void notDeletedAll() {
+    public void notAddedAll() {
+        News news = new News();
         List<Comment> comments = new LinkedList<Comment>();
         comments.add(new Comment());
         comments.add(new Comment());
-        when(commentRepository.deleteAll(comments)).thenReturn(false);
-        boolean deletedAll = commentService.deleteAll(comments);
+        when(commentRepository.addAll(comments)).thenReturn(comments);
+        commentService.addAll(news, comments);
 
-        assertFalse(deletedAll);
-        verify(logger).error(eq("Failed to delete comments"));
+        verify(logger).error(eq("Failed to add comments"));
     }
 
     @Test
@@ -179,5 +168,17 @@ public class CommentServiceTest {
 
         assertTrue(deletedAll);
         verify(logger).info(eq("Successfully deleted comments"));
+    }
+
+    @Test
+    public void notDeletedAll() {
+        List<Comment> comments = new LinkedList<Comment>();
+        comments.add(new Comment());
+        comments.add(new Comment());
+        when(commentRepository.deleteAll(comments)).thenReturn(false);
+        boolean deletedAll = commentService.deleteAll(comments);
+
+        assertFalse(deletedAll);
+        verify(logger).error(eq("Failed to delete comments"));
     }
 }

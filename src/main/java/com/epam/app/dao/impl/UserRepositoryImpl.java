@@ -14,11 +14,11 @@ import java.sql.*;
 public class UserRepositoryImpl implements UserRepository {
     private static final Logger logger = Logger.getLogger(UserRepositoryImpl.class.getName());
 
-    private static final String ADD = "INSERT INTO User(role_id, user_name, login, password) VALUES(?, ?, ?, ?);";
-    private static final String FIND = "SELECT * FROM User WHERE user_id = ?;";
-    private static final String UPDATE = "UPDATE User SET role_id = ?, user_name = ?, login = ?, password = ? " +
-            "WHERE user_id = ?;";
-    private static final String DELETE = "DELETE FROM User WHERE user_id = ?";
+    private static final String ADD = "INSERT INTO Users(role_id, user_name, login, password) VALUES(?, ?, ?, ?)";
+    private static final String FIND = "SELECT * FROM Users WHERE user_id = ?";
+    private static final String UPDATE = "UPDATE Users SET role_id = ?, user_name = ?, login = ?, password = ? " +
+            "WHERE user_id = ?";
+    private static final String DELETE = "DELETE FROM Users WHERE user_id = ?";
 
     @Autowired
     private DataSource dataSource;

@@ -16,8 +16,8 @@ import java.sql.SQLException;
 public class NewsTagRepositoryImpl implements NewsTagRepository {
     private static final Logger logger = Logger.getLogger(NewsTagRepositoryImpl.class.getName());
 
-    private static final String ADD = "INSERT INTO News_Tag(news_id, tag_id) VALUES(?, ?);";
-    private static final String DELETE = "DELETE FROM News_Tag WHERE news_id = ? AND tag_id = ?;";
+    private static final String ADD = "INSERT INTO News_Tag(news_id, tag_id) VALUES(?, ?)";
+    private static final String DELETE = "DELETE FROM News_Tag WHERE news_id = ? AND tag_id = ?";
 
     @Autowired
     private DataSource dataSource;

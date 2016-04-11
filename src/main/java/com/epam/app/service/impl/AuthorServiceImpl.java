@@ -5,6 +5,7 @@ import com.epam.app.model.Author;
 import com.epam.app.service.AuthorService;
 import org.apache.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.transaction.annotation.Transactional;
 
 /**
  * Author service.
@@ -16,6 +17,7 @@ public class AuthorServiceImpl implements AuthorService {
     private AuthorRepository authorRepository;
 
 
+    @Transactional
     public Author add(Author author) {
         logger.info("Adding new author..");
         author = authorRepository.add(author);
@@ -38,6 +40,7 @@ public class AuthorServiceImpl implements AuthorService {
     }
 
 
+    @Transactional
     public boolean update(Author author) {
         logger.info("Updating author..");
         boolean updated = authorRepository.update(author);
@@ -49,6 +52,7 @@ public class AuthorServiceImpl implements AuthorService {
     }
 
 
+    @Transactional
     public boolean delete(Author author) {
         logger.info("Deleting author..");
         boolean deleted = authorRepository.delete(author);

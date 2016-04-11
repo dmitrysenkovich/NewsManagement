@@ -5,6 +5,12 @@ import com.epam.app.model.Role;
 import com.epam.app.service.RoleService;
 import org.apache.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.jdbc.core.support.JdbcDaoSupport;
+import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.EnableTransactionManagement;
+import org.springframework.transaction.annotation.Propagation;
+import org.springframework.transaction.annotation.Transactional;
+import org.springframework.transaction.support.TransactionTemplate;
 
 /**
  * Role service implementation.
@@ -15,7 +21,7 @@ public class RoleServiceImpl implements RoleService {
     @Autowired
     private RoleRepository roleRepository;
 
-
+    @Transactional
     public Role add(Role role) {
         logger.info("Adding new role..");
         role = roleRepository.add(role);
@@ -38,6 +44,7 @@ public class RoleServiceImpl implements RoleService {
     }
 
 
+    @Transactional
     public boolean update(Role role) {
         logger.info("Updating role..");
         boolean updated = roleRepository.update(role);
@@ -49,6 +56,7 @@ public class RoleServiceImpl implements RoleService {
     }
 
 
+    @Transactional
     public boolean delete(Role role) {
         logger.info("Deleting role..");
         boolean deleted = roleRepository.delete(role);

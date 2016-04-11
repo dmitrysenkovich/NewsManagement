@@ -7,6 +7,7 @@ import com.epam.app.model.NewsAuthor;
 import com.epam.app.service.NewsAuthorService;
 import org.apache.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.transaction.annotation.Transactional;
 
 /**
  * NewsAuthor service implementation.
@@ -18,6 +19,7 @@ public class NewsAuthorServiceImpl implements NewsAuthorService {
     private NewsAuthorRepository newsAuthorRepository;
 
 
+    @Transactional
     public boolean add(News news, Author author) {
         logger.info("Adding new author to news..");
         NewsAuthor newsAuthor = new NewsAuthor();
@@ -32,6 +34,7 @@ public class NewsAuthorServiceImpl implements NewsAuthorService {
     }
 
 
+    @Transactional
     public boolean delete(News news, Author author) {
         logger.info("Deleting author from news..");
         NewsAuthor newsAuthor = new NewsAuthor();

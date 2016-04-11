@@ -1,5 +1,6 @@
 package com.epam.app.service;
 
+import com.epam.app.dao.AuthorRepository;
 import com.epam.app.dao.impl.AuthorRepositoryImpl;
 import com.epam.app.model.Author;
 import com.epam.app.service.impl.AuthorServiceImpl;
@@ -25,7 +26,7 @@ public class AuthorServiceTest {
     private AuthorServiceImpl authorService;
 
     @Mock
-    private AuthorRepositoryImpl authorRepository;
+    private AuthorRepository authorRepository;
 
     @Mock
     private Logger logger;
@@ -34,16 +35,6 @@ public class AuthorServiceTest {
     public void setupMock() {
         MockitoAnnotations.initMocks(this);
         Whitebox.setInternalState(AuthorServiceImpl.class, "logger", logger);
-    }
-
-    @Test
-    public void notAdded() {
-        Author author = new Author();
-        when(authorRepository.add(author)).thenReturn(author);
-        author = authorService.add(author);
-
-        assertNull(author.getAuthorId());
-        verify(logger).error(eq("Failed to add new author"));
     }
 
     @Test
@@ -58,12 +49,13 @@ public class AuthorServiceTest {
     }
 
     @Test
-    public void notFound() {
-        when(authorRepository.find(1L)).thenReturn(null);
-        Author author = authorService.find(1L);
+    public void notAdded() {
+        Author author = new Author();
+        when(authorRepository.add(author)).thenReturn(author);
+        author = authorService.add(author);
 
-        assertNull(author);
-        verify(logger).error(eq("Failed to find author"));
+        assertNull(author.getAuthorId());
+        verify(logger).error(eq("Failed to add new author"));
     }
 
     @Test
@@ -78,12 +70,12 @@ public class AuthorServiceTest {
     }
 
     @Test
-    public void notUpdated() {
-        when(authorRepository.update(null)).thenReturn(false);
-        boolean updated = authorService.update(null);
+    public void notFound() {
+        when(authorRepository.find(1L)).thenReturn(null);
+        Author author = authorService.find(1L);
 
-        assertFalse(updated);
-        verify(logger).error(eq("Failed to update author"));
+        assertNull(author);
+        verify(logger).error(eq("Failed to find author"));
     }
 
     @Test
@@ -98,12 +90,12 @@ public class AuthorServiceTest {
     }
 
     @Test
-    public void notDeleted() {
-        when(authorRepository.delete(null)).thenReturn(false);
-        boolean deleted = authorService.delete(null);
+    public void notUpdated() {
+        when(authorRepository.update(null)).thenReturn(false);
+        boolean updated = authorService.update(null);
 
-        assertFalse(deleted);
-        verify(logger).error(eq("Failed to delete author"));
+        assertFalse(updated);
+        verify(logger).error(eq("Failed to update author"));
     }
 
     @Test
@@ -115,5 +107,14 @@ public class AuthorServiceTest {
 
         assertTrue(deleted);
         verify(logger).info(eq("Successfully deleted author"));
+    }
+
+    @Test
+    public void notDeleted() {
+        when(authorRepository.delete(null)).thenReturn(false);
+        boolean deleted = authorService.delete(null);
+
+        assertFalse(deleted);
+        verify(logger).error(eq("Failed to delete author"));
     }
 }

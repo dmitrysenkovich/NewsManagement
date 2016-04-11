@@ -1,6 +1,8 @@
 package com.epam.app.service;
 
+import com.epam.app.dao.NewsAuthorRepository;
 import com.epam.app.dao.NewsRepository;
+import com.epam.app.dao.NewsTagRepository;
 import com.epam.app.dao.impl.NewsAuthorRepositoryImpl;
 import com.epam.app.dao.impl.NewsTagRepositoryImpl;
 import com.epam.app.model.*;
@@ -37,9 +39,9 @@ public class NewsServiceTest {
     @Mock
     private NewsRepository newsRepository;
     @Mock
-    private NewsAuthorRepositoryImpl newsAuthorRepository;
+    private NewsAuthorRepository newsAuthorRepository;
     @Mock
-    private NewsTagRepositoryImpl newsTagRepository;
+    private NewsTagRepository newsTagRepository;
 
     @Mock
     private SearchUtils searchUtils;
@@ -51,6 +53,70 @@ public class NewsServiceTest {
     public void setupMock() {
         MockitoAnnotations.initMocks(this);
         Whitebox.setInternalState(NewsServiceImpl.class, "logger", logger);
+    }
+
+    @Test
+    public void addedNewsAuthorIsNullTagsAreNull() {
+        News news = new News();
+        news.setNewsId(1L);
+        when(newsRepository.add(news)).thenReturn(news);
+        news = newsService.add(news, null, null);
+
+        assertEquals((Long) 1L, news.getNewsId());
+        verify(logger).info(eq("Successfully added news"));
+        verify(logger, never()).info(eq("Adding author to news.."));
+        verify(logger, never()).info(eq("Adding tags to news.."));
+    }
+
+    @Test
+    public void addedNewsAuthorIsNotNullTagsAreNull() {
+        News news = new News();
+        news.setNewsId(1L);
+        when(newsRepository.add(news)).thenReturn(news);
+        when(newsAuthorRepository.add(any(NewsAuthor.class))).thenReturn(true);
+        news = newsService.add(news, new Author(), null);
+
+        assertEquals((Long) 1L, news.getNewsId());
+        verify(logger).info(eq("Successfully added author to news"));
+        verify(logger).info(eq("Successfully added news"));
+        verify(logger, never()).error(eq("Failed to add author to news"));
+        verify(logger, never()).info(eq("Adding tags to news.."));
+    }
+
+    @Test
+    public void addedNewsAuthorIsNullTagsAreNotNull() {
+        News news = new News();
+        news.setNewsId(1L);
+        List<Tag> tags = new LinkedList<Tag>();
+        tags.add(new Tag());
+        when(newsRepository.add(news)).thenReturn(news);
+        when(newsTagRepository.add(any(NewsTag.class))).thenReturn(true);
+        news = newsService.add(news, null, tags);
+
+        assertEquals((Long) 1L, news.getNewsId());
+        verify(logger).info(eq("Successfully added tags to news"));
+        verify(logger).info(eq("Successfully added news"));
+        verify(logger, never()).error(eq("Failed to add tags to news"));
+        verify(logger, never()).info(eq("Adding author to news.."));
+    }
+
+    @Test
+    public void addedNewsAuthorIsNotNullTagsAreNotNull() {
+        News news = new News();
+        news.setNewsId(1L);
+        List<Tag> tags = new LinkedList<Tag>();
+        tags.add(new Tag());
+        when(newsRepository.add(news)).thenReturn(news);
+        when(newsAuthorRepository.add(any(NewsAuthor.class))).thenReturn(true);
+        when(newsTagRepository.add(any(NewsTag.class))).thenReturn(true);
+        news = newsService.add(news, new Author(), tags);
+
+        assertEquals((Long) 1L, news.getNewsId());
+        verify(logger).info(eq("Successfully added author to news"));
+        verify(logger).info(eq("Successfully added tags to news"));
+        verify(logger).info(eq("Successfully added news"));
+        verify(logger, never()).error(eq("Failed to add author to news"));
+        verify(logger, never()).error(eq("Failed to add tags to news"));
     }
 
     @Test
@@ -176,79 +242,6 @@ public class NewsServiceTest {
     }
 
     @Test
-    public void addedNewsAuthorIsNullTagsAreNull() {
-        News news = new News();
-        news.setNewsId(1L);
-        when(newsRepository.add(news)).thenReturn(news);
-        news = newsService.add(news, null, null);
-
-        assertEquals((Long) 1L, news.getNewsId());
-        verify(logger).info(eq("Successfully added news"));
-        verify(logger, never()).info(eq("Adding author to news.."));
-        verify(logger, never()).info(eq("Adding tags to news.."));
-    }
-
-    @Test
-    public void addedNewsAuthorIsNotNullTagsAreNull() {
-        News news = new News();
-        news.setNewsId(1L);
-        when(newsRepository.add(news)).thenReturn(news);
-        when(newsAuthorRepository.add(any(NewsAuthor.class))).thenReturn(true);
-        news = newsService.add(news, new Author(), null);
-
-        assertEquals((Long) 1L, news.getNewsId());
-        verify(logger).info(eq("Successfully added author to news"));
-        verify(logger).info(eq("Successfully added news"));
-        verify(logger, never()).error(eq("Failed to add author to news"));
-        verify(logger, never()).info(eq("Adding tags to news.."));
-    }
-
-    @Test
-    public void addedNewsAuthorIsNullTagsAreNotNull() {
-        News news = new News();
-        news.setNewsId(1L);
-        List<Tag> tags = new LinkedList<Tag>();
-        tags.add(new Tag());
-        when(newsRepository.add(news)).thenReturn(news);
-        when(newsTagRepository.add(any(NewsTag.class))).thenReturn(true);
-        news = newsService.add(news, null, tags);
-
-        assertEquals((Long) 1L, news.getNewsId());
-        verify(logger).info(eq("Successfully added tags to news"));
-        verify(logger).info(eq("Successfully added news"));
-        verify(logger, never()).error(eq("Failed to add tags to news"));
-        verify(logger, never()).info(eq("Adding author to news.."));
-    }
-
-    @Test
-    public void addedNewsAuthorIsNotNullTagsAreNotNull() {
-        News news = new News();
-        news.setNewsId(1L);
-        List<Tag> tags = new LinkedList<Tag>();
-        tags.add(new Tag());
-        when(newsRepository.add(news)).thenReturn(news);
-        when(newsAuthorRepository.add(any(NewsAuthor.class))).thenReturn(true);
-        when(newsTagRepository.add(any(NewsTag.class))).thenReturn(true);
-        news = newsService.add(news, new Author(), tags);
-
-        assertEquals((Long) 1L, news.getNewsId());
-        verify(logger).info(eq("Successfully added author to news"));
-        verify(logger).info(eq("Successfully added tags to news"));
-        verify(logger).info(eq("Successfully added news"));
-        verify(logger, never()).error(eq("Failed to add author to news"));
-        verify(logger, never()).error(eq("Failed to add tags to news"));
-    }
-
-    @Test
-    public void notFound() {
-        when(newsRepository.find(1L)).thenReturn(null);
-        News news = newsService.find(1L);
-
-        assertNull(news);
-        verify(logger).error(eq("Failed to find news"));
-    }
-
-    @Test
     public void found() {
         News news = new News();
         news.setNewsId(1L);
@@ -260,12 +253,12 @@ public class NewsServiceTest {
     }
 
     @Test
-    public void notUpdated() {
-        when(newsRepository.update(null)).thenReturn(false);
-        boolean updated = newsService.update(null);
+    public void notFound() {
+        when(newsRepository.find(1L)).thenReturn(null);
+        News news = newsService.find(1L);
 
-        assertFalse(updated);
-        verify(logger).error(eq("Failed to update news"));
+        assertNull(news);
+        verify(logger).error(eq("Failed to find news"));
     }
 
     @Test
@@ -280,12 +273,12 @@ public class NewsServiceTest {
     }
 
     @Test
-    public void notDeleted() {
-        when(newsRepository.delete(null)).thenReturn(false);
-        boolean deleted = newsService.delete(null);
+    public void notUpdated() {
+        when(newsRepository.update(null)).thenReturn(false);
+        boolean updated = newsService.update(null);
 
-        assertFalse(deleted);
-        verify(logger).error(eq("Failed to delete news"));
+        assertFalse(updated);
+        verify(logger).error(eq("Failed to update news"));
     }
 
     @Test
@@ -300,13 +293,12 @@ public class NewsServiceTest {
     }
 
     @Test
-    public void notFoundNewsBySearchCriteria() {
-        when(newsRepository.search(any(String.class))).thenReturn(null);
-        when(searchUtils.getSearchQuery(any(SearchCriteria.class))).thenReturn("test");
-        List<News> foundNews = newsService.search(new SearchCriteria());
+    public void notDeleted() {
+        when(newsRepository.delete(null)).thenReturn(false);
+        boolean deleted = newsService.delete(null);
 
-        assertNull(foundNews);
-        verify(logger).error(eq("Failed to find news by search criteria"));
+        assertFalse(deleted);
+        verify(logger).error(eq("Failed to delete news"));
     }
 
     @Test
@@ -320,12 +312,13 @@ public class NewsServiceTest {
     }
 
     @Test
-    public void notFoundSortedNews() {
-        when(newsRepository.findAllSorted()).thenReturn(null);
-        List<News> sortedNews = newsService.findAllSorted();
+    public void notFoundNewsBySearchCriteria() {
+        when(newsRepository.search(any(String.class))).thenReturn(null);
+        when(searchUtils.getSearchQuery(any(SearchCriteria.class))).thenReturn("test");
+        List<News> foundNews = newsService.search(new SearchCriteria());
 
-        assertNull(sortedNews);
-        verify(logger).error(eq("Failed to retrieve all news sorted by comments count"));
+        assertNull(foundNews);
+        verify(logger).error(eq("Failed to find news by search criteria"));
     }
 
     @Test
@@ -338,12 +331,12 @@ public class NewsServiceTest {
     }
 
     @Test
-    public void notCountedAllNews() {
-        when(newsRepository.countAll()).thenReturn(-1L);
-        Long count = newsService.countAll();
+    public void notFoundSortedNews() {
+        when(newsRepository.findAllSorted()).thenReturn(null);
+        List<News> sortedNews = newsService.findAllSorted();
 
-        assertEquals((Long) (-1L), count);
-        verify(logger).error(eq("Failed to count all news"));
+        assertNull(sortedNews);
+        verify(logger).error(eq("Failed to retrieve all news sorted by comments count"));
     }
 
     @Test
@@ -353,5 +346,14 @@ public class NewsServiceTest {
 
         assertEquals((Long) 1L, count);
         verify(logger).info(eq("Successfully counted all news"));
+    }
+
+    @Test
+    public void notCountedAllNews() {
+        when(newsRepository.countAll()).thenReturn(-1L);
+        Long count = newsService.countAll();
+
+        assertEquals((Long) (-1L), count);
+        verify(logger).error(eq("Failed to count all news"));
     }
 }

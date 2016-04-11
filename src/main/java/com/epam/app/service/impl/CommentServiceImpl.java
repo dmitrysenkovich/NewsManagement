@@ -6,6 +6,7 @@ import com.epam.app.model.News;
 import com.epam.app.service.CommentService;
 import org.apache.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.sql.Timestamp;
 import java.util.List;
@@ -20,6 +21,7 @@ public class CommentServiceImpl implements CommentService {
     private CommentRepository commentRepository;
 
 
+    @Transactional
     public Comment add(News news, Comment comment) {
         logger.info("Adding new comment..");
         comment.setNewsId(news.getNewsId());
@@ -44,6 +46,7 @@ public class CommentServiceImpl implements CommentService {
     }
 
 
+    @Transactional
     public boolean update(Comment comment) {
         logger.info("Updating comment..");
         boolean updated = commentRepository.update(comment);
@@ -55,6 +58,7 @@ public class CommentServiceImpl implements CommentService {
     }
 
 
+    @Transactional
     public boolean delete(Comment comment) {
         logger.info("Deleting comment..");
         boolean deleted = commentRepository.delete(comment);
@@ -66,6 +70,7 @@ public class CommentServiceImpl implements CommentService {
     }
 
 
+    @Transactional()
     public List<Comment> addAll(News news, List<Comment> comments) {
         logger.info("Adding comments..");
         for (Comment comment : comments) {
@@ -84,6 +89,8 @@ public class CommentServiceImpl implements CommentService {
         return comments;
     }
 
+
+    @Transactional
     public boolean deleteAll(List<Comment> comments) {
         logger.info("Deleting comments..");
         boolean deleted = commentRepository.deleteAll(comments);

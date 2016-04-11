@@ -14,11 +14,11 @@ import java.sql.*;
 public class AuthorRepositoryImpl implements AuthorRepository {
     private static final Logger logger = Logger.getLogger(AuthorRepositoryImpl.class.getName());
 
-    private static final String ADD = "INSERT INTO Author(author_name, expired) VALUES(?, ?);";
-    private static final String FIND = "SELECT * FROM Author WHERE author_id = ?;";
-    private static final String UPDATE = "UPDATE Author SET author_name = ?, expired = ? " +
+    private static final String ADD = "INSERT INTO Authors(author_name, expired) VALUES(?, ?)";
+    private static final String FIND = "SELECT * FROM Authors WHERE author_id = ?";
+    private static final String UPDATE = "UPDATE Authors SET author_name = ?, expired = ? " +
             "WHERE author_id = ?";
-    private static final String DELETE = "DELETE FROM Author WHERE author_id = ?";
+    private static final String DELETE = "DELETE FROM Authors WHERE author_id = ?";
 
     @Autowired
     private DataSource dataSource;

@@ -9,6 +9,7 @@ import com.epam.app.utils.SearchCriteria;
 import com.epam.app.utils.SearchUtils;
 import org.apache.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.sql.Date;
 import java.sql.Timestamp;
@@ -31,6 +32,7 @@ public class NewsServiceImpl implements NewsService {
     private SearchUtils searchUtils;
 
 
+    @Transactional
     public News add(News news, Author author, List<Tag> tags) {
         logger.info("Adding news..");
         news.setCreationDate(new Timestamp(new java.util.Date().getTime()));
@@ -92,6 +94,7 @@ public class NewsServiceImpl implements NewsService {
     }
 
 
+    @Transactional
     public boolean update(News news) {
         logger.info("Updating news..");
         boolean updated = newsRepository.update(news);
@@ -103,6 +106,7 @@ public class NewsServiceImpl implements NewsService {
     }
 
 
+    @Transactional
     public boolean delete(News news) {
         logger.info("Deleting news..");
         boolean deleted = newsRepository.delete(news);

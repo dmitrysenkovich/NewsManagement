@@ -1,5 +1,6 @@
 package com.epam.app.service;
 
+import com.epam.app.dao.UserRepository;
 import com.epam.app.dao.impl.UserRepositoryImpl;
 import com.epam.app.model.Role;
 import com.epam.app.model.User;
@@ -27,7 +28,7 @@ public class UserServiceTest {
     private UserServiceImpl userService;
 
     @Mock
-    private UserRepositoryImpl userRepository;
+    private UserRepository userRepository;
 
     @Mock
     private Logger logger;
@@ -36,17 +37,6 @@ public class UserServiceTest {
     public void setupMock() {
         MockitoAnnotations.initMocks(this);
         Whitebox.setInternalState(UserServiceImpl.class, "logger", logger);
-    }
-
-    @Test
-    public void notAdded() {
-        User user = new User();
-        Role role = new Role();
-        when(userRepository.add(user)).thenReturn(user);
-        user = userService.add(user, role);
-
-        assertNull(user.getUserId());
-        verify(logger).error(eq("Failed to add new user"));
     }
 
     @Test
@@ -64,12 +54,14 @@ public class UserServiceTest {
     }
 
     @Test
-    public void notFound() {
-        when(userRepository.find(1L)).thenReturn(null);
-        User user = userService.find(1L);
+    public void notAdded() {
+        User user = new User();
+        Role role = new Role();
+        when(userRepository.add(user)).thenReturn(user);
+        user = userService.add(user, role);
 
-        assertNull(user);
-        verify(logger).error(eq("Failed to find user"));
+        assertNull(user.getUserId());
+        verify(logger).error(eq("Failed to add new user"));
     }
 
     @Test
@@ -84,12 +76,12 @@ public class UserServiceTest {
     }
 
     @Test
-    public void notUpdated() {
-        when(userRepository.update(null)).thenReturn(false);
-        boolean updated = userService.update(null);
+    public void notFound() {
+        when(userRepository.find(1L)).thenReturn(null);
+        User user = userService.find(1L);
 
-        assertFalse(updated);
-        verify(logger).error(eq("Failed to update user"));
+        assertNull(user);
+        verify(logger).error(eq("Failed to find user"));
     }
 
     @Test
@@ -104,12 +96,12 @@ public class UserServiceTest {
     }
 
     @Test
-    public void notDeleted() {
-        when(userRepository.delete(null)).thenReturn(false);
-        boolean deleted = userService.delete(null);
+    public void notUpdated() {
+        when(userRepository.update(null)).thenReturn(false);
+        boolean updated = userService.update(null);
 
-        assertFalse(deleted);
-        verify(logger).error(eq("Failed to delete user"));
+        assertFalse(updated);
+        verify(logger).error(eq("Failed to update user"));
     }
 
     @Test
@@ -121,5 +113,14 @@ public class UserServiceTest {
 
         assertTrue(deleted);
         verify(logger).info(eq("Successfully deleted user"));
+    }
+
+    @Test
+    public void notDeleted() {
+        when(userRepository.delete(null)).thenReturn(false);
+        boolean deleted = userService.delete(null);
+
+        assertFalse(deleted);
+        verify(logger).error(eq("Failed to delete user"));
     }
 }

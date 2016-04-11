@@ -1,5 +1,6 @@
 package com.epam.app.service;
 
+import com.epam.app.dao.TagRepository;
 import com.epam.app.dao.impl.TagRepositoryImpl;
 import com.epam.app.model.Tag;
 import com.epam.app.service.impl.TagServiceImpl;
@@ -29,7 +30,7 @@ public class TagServiceTest {
     private TagServiceImpl tagService;
 
     @Mock
-    private TagRepositoryImpl tagRepository;
+    private TagRepository tagRepository;
 
     @Mock
     private Logger logger;
@@ -38,16 +39,6 @@ public class TagServiceTest {
     public void setupMock() {
         MockitoAnnotations.initMocks(this);
         Whitebox.setInternalState(TagServiceImpl.class, "logger", logger);
-    }
-
-    @Test
-    public void notAdded() {
-        Tag tag = new Tag();
-        when(tagRepository.add(tag)).thenReturn(tag);
-        tag = tagService.add(tag);
-
-        assertNull(tag.getTagId());
-        verify(logger).error(eq("Failed to add new tag"));
     }
 
     @Test
@@ -62,12 +53,13 @@ public class TagServiceTest {
     }
 
     @Test
-    public void notFound() {
-        when(tagRepository.find(1L)).thenReturn(null);
-        Tag tag = tagService.find(1L);
+    public void notAdded() {
+        Tag tag = new Tag();
+        when(tagRepository.add(tag)).thenReturn(tag);
+        tag = tagService.add(tag);
 
-        assertNull(tag);
-        verify(logger).error(eq("Failed to find tag"));
+        assertNull(tag.getTagId());
+        verify(logger).error(eq("Failed to add new tag"));
     }
 
     @Test
@@ -82,12 +74,12 @@ public class TagServiceTest {
     }
 
     @Test
-    public void notUpdated() {
-        when(tagRepository.update(null)).thenReturn(false);
-        boolean updated = tagService.update(null);
+    public void notFound() {
+        when(tagRepository.find(1L)).thenReturn(null);
+        Tag tag = tagService.find(1L);
 
-        assertFalse(updated);
-        verify(logger).error(eq("Failed to update tag"));
+        assertNull(tag);
+        verify(logger).error(eq("Failed to find tag"));
     }
 
     @Test
@@ -102,12 +94,12 @@ public class TagServiceTest {
     }
 
     @Test
-    public void notDeleted() {
-        when(tagRepository.delete(null)).thenReturn(false);
-        boolean deleted = tagService.delete(null);
+    public void notUpdated() {
+        when(tagRepository.update(null)).thenReturn(false);
+        boolean updated = tagService.update(null);
 
-        assertFalse(deleted);
-        verify(logger).error(eq("Failed to delete tag"));
+        assertFalse(updated);
+        verify(logger).error(eq("Failed to update tag"));
     }
 
     @Test
@@ -122,14 +114,12 @@ public class TagServiceTest {
     }
 
     @Test
-    public void notAddedAll() {
-        List<Tag> tags = new LinkedList<Tag>();
-        tags.add(new Tag());
-        tags.add(new Tag());
-        when(tagRepository.addAll(tags)).thenReturn(tags);
-        tagService.addAll(tags);
+    public void notDeleted() {
+        when(tagRepository.delete(null)).thenReturn(false);
+        boolean deleted = tagService.delete(null);
 
-        verify(logger).error(eq("Failed to add tags"));
+        assertFalse(deleted);
+        verify(logger).error(eq("Failed to delete tag"));
     }
 
     @Test
@@ -145,5 +135,16 @@ public class TagServiceTest {
         tagService.addAll(tags);
 
         verify(logger).info(eq("Successfully added tags"));
+    }
+
+    @Test
+    public void notAddedAll() {
+        List<Tag> tags = new LinkedList<Tag>();
+        tags.add(new Tag());
+        tags.add(new Tag());
+        when(tagRepository.addAll(tags)).thenReturn(tags);
+        tagService.addAll(tags);
+
+        verify(logger).error(eq("Failed to add tags"));
     }
 }

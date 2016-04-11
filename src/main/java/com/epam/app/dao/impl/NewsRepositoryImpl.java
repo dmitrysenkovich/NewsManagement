@@ -17,11 +17,11 @@ public class NewsRepositoryImpl implements NewsRepository {
     private static final Logger logger = Logger.getLogger(NewsRepositoryImpl.class.getName());
 
     private static final String ADD = "INSERT INTO News(title, short_text, full_text, " +
-            "creation_date, modification_date) VALUES(?, ?, ?, ?, ?);";
-    private static final String FIND = "SELECT * FROM News WHERE news_id = ?;";
+            "creation_date, modification_date) VALUES(?, ?, ?, ?, ?)";
+    private static final String FIND = "SELECT * FROM News WHERE news_id = ?";
     private static final String UPDATE = "UPDATE News SET title = ?, short_text = ?, " +
-            "full_text = ?, modification_date = ? WHERE news_id = ?;";
-    private static final String DELETE = "DELETE FROM News WHERE news_id = ?;";
+            "full_text = ?, modification_date = ? WHERE news_id = ?";
+    private static final String DELETE = "DELETE FROM News WHERE news_id = ?";
     private static final String FIND_ALL_SORTED = "(SELECT news_id, title, short_text, " +
             "full_text, creation_date, modification_date, comments_count " +
             "FROM News JOIN (SELECT news_id, COUNT(*) AS comments_count " +
@@ -34,7 +34,7 @@ public class NewsRepositoryImpl implements NewsRepository {
             "WHERE news_id NOT IN (SELECT news_id " +
             "                      FROM Comments))" +
             "ORDER BY comments_count DESC";
-    private static final String COUNT_ALL_NEWS = "SELECT COUNT(*) FROM News;";
+    private static final String COUNT_ALL_NEWS = "SELECT COUNT(*) FROM News";
 
     @Autowired
     private DataSource dataSource;

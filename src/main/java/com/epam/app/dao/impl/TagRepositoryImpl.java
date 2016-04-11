@@ -15,10 +15,10 @@ import java.util.List;
 public class TagRepositoryImpl implements TagRepository {
     private static final Logger logger = Logger.getLogger(TagRepositoryImpl.class.getName());
 
-    private static final String ADD = "INSERT INTO Tag(tag_name) VALUES(?);";
-    private static final String FIND = "SELECT * FROM Tag WHERE tag_id = ?;";
-    private static final String UPDATE = "UPDATE Tag SET tag_name = ? WHERE tag_id = ?;";
-    private static final String DELETE = "DELETE FROM Tag WHERE tag_id = ?";
+    private static final String ADD = "INSERT INTO Tags(tag_name) VALUES(?)";
+    private static final String FIND = "SELECT * FROM Tags WHERE tag_id = ?";
+    private static final String UPDATE = "UPDATE Tags SET tag_name = ? WHERE tag_id = ?";
+    private static final String DELETE = "DELETE FROM Tags WHERE tag_id = ?";
 
     @Autowired
     private DataSource dataSource;

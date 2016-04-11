@@ -6,6 +6,7 @@ import com.epam.app.model.Tag;
 import com.epam.app.service.TagService;
 import org.apache.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 
@@ -19,6 +20,7 @@ public class TagServiceImpl implements TagService {
     private TagRepository tagRepository;
 
 
+    @Transactional
     public Tag add(Tag tag) {
         logger.info("Adding new tag..");
         tag = tagRepository.add(tag);
@@ -41,6 +43,7 @@ public class TagServiceImpl implements TagService {
     }
 
 
+    @Transactional
     public boolean update(Tag tag) {
         logger.info("Updating tag..");
         boolean updated = tagRepository.update(tag);
@@ -52,6 +55,7 @@ public class TagServiceImpl implements TagService {
     }
 
 
+    @Transactional
     public boolean delete(Tag tag) {
         logger.info("Deleting tag..");
         boolean deleted = tagRepository.delete(tag);
@@ -63,6 +67,7 @@ public class TagServiceImpl implements TagService {
     }
 
 
+    @Transactional
     public List<Tag> addAll(List<Tag> tags) {
         logger.info("Adding tags..");
         tags = tagRepository.addAll(tags);

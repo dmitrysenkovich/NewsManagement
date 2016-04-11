@@ -6,6 +6,7 @@ import com.epam.app.model.User;
 import com.epam.app.service.UserService;
 import org.apache.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.transaction.annotation.Transactional;
 
 /**
  * User service implementation.
@@ -17,6 +18,7 @@ public class UserServiceImpl implements UserService {
     private UserRepository userRepository;
 
 
+    @Transactional
     public User add(User user, Role role) {
         logger.info("Adding new user..");
         user.setRoleId(role.getRoleId());
@@ -40,6 +42,7 @@ public class UserServiceImpl implements UserService {
     }
 
 
+    @Transactional
     public boolean update(User user) {
         logger.info("Updating user..");
         boolean updated = userRepository.update(user);
@@ -51,6 +54,7 @@ public class UserServiceImpl implements UserService {
     }
 
 
+    @Transactional
     public boolean delete(User user) {
         logger.info("Deleting user..");
         boolean deleted = userRepository.delete(user);

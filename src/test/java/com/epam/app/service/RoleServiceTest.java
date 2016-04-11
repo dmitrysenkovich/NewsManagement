@@ -1,5 +1,6 @@
 package com.epam.app.service;
 
+import com.epam.app.dao.RoleRepository;
 import com.epam.app.dao.impl.RoleRepositoryImpl;
 import com.epam.app.model.Role;
 import com.epam.app.service.impl.RoleServiceImpl;
@@ -26,7 +27,7 @@ public class RoleServiceTest {
     private RoleServiceImpl roleService;
 
     @Mock
-    private RoleRepositoryImpl roleRepository;
+    private RoleRepository roleRepository;
 
     @Mock
     private Logger logger;
@@ -35,16 +36,6 @@ public class RoleServiceTest {
     public void setupMock() {
         MockitoAnnotations.initMocks(this);
         Whitebox.setInternalState(RoleServiceImpl.class, "logger", logger);
-    }
-
-    @Test
-    public void notAdded() {
-        Role role = new Role();
-        when(roleRepository.add(role)).thenReturn(role);
-        role = roleService.add(role);
-
-        assertNull(role.getRoleId());
-        verify(logger).error(eq("Failed to add new role"));
     }
 
     @Test
@@ -59,12 +50,13 @@ public class RoleServiceTest {
     }
 
     @Test
-    public void notFound() {
-        when(roleRepository.find(1L)).thenReturn(null);
-        Role role = roleService.find(1L);
+    public void notAdded() {
+        Role role = new Role();
+        when(roleRepository.add(role)).thenReturn(role);
+        role = roleService.add(role);
 
-        assertNull(role);
-        verify(logger).error(eq("Failed to find role"));
+        assertNull(role.getRoleId());
+        verify(logger).error(eq("Failed to add new role"));
     }
 
     @Test
@@ -79,12 +71,12 @@ public class RoleServiceTest {
     }
 
     @Test
-    public void notUpdated() {
-        when(roleRepository.update(null)).thenReturn(false);
-        boolean updated = roleService.update(null);
+    public void notFound() {
+        when(roleRepository.find(1L)).thenReturn(null);
+        Role role = roleService.find(1L);
 
-        assertFalse(updated);
-        verify(logger).error(eq("Failed to update role"));
+        assertNull(role);
+        verify(logger).error(eq("Failed to find role"));
     }
 
     @Test
@@ -99,12 +91,12 @@ public class RoleServiceTest {
     }
 
     @Test
-    public void notDeleted() {
-        when(roleRepository.delete(null)).thenReturn(false);
-        boolean deleted = roleService.delete(null);
+    public void notUpdated() {
+        when(roleRepository.update(null)).thenReturn(false);
+        boolean updated = roleService.update(null);
 
-        assertFalse(deleted);
-        verify(logger).error(eq("Failed to delete role"));
+        assertFalse(updated);
+        verify(logger).error(eq("Failed to update role"));
     }
 
     @Test
@@ -116,5 +108,14 @@ public class RoleServiceTest {
 
         assertTrue(deleted);
         verify(logger).info(eq("Successfully deleted role"));
+    }
+
+    @Test
+    public void notDeleted() {
+        when(roleRepository.delete(null)).thenReturn(false);
+        boolean deleted = roleService.delete(null);
+
+        assertFalse(deleted);
+        verify(logger).error(eq("Failed to delete role"));
     }
 }

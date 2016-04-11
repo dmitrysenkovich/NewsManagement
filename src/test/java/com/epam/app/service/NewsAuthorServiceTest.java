@@ -1,5 +1,6 @@
 package com.epam.app.service;
 
+import com.epam.app.dao.NewsAuthorRepository;
 import com.epam.app.dao.impl.NewsAuthorRepositoryImpl;
 import com.epam.app.model.Author;
 import com.epam.app.model.News;
@@ -27,7 +28,7 @@ public class NewsAuthorServiceTest {
     private NewsAuthorServiceImpl newsAuthorService;
 
     @Mock
-    private NewsAuthorRepositoryImpl newsAuthorRepository;
+    private NewsAuthorRepository newsAuthorRepository;
 
     @Mock
     private Logger logger;
@@ -36,17 +37,6 @@ public class NewsAuthorServiceTest {
     public void setupMock() {
         MockitoAnnotations.initMocks(this);
         Whitebox.setInternalState(NewsAuthorServiceImpl.class, "logger", logger);
-    }
-
-    @Test
-    public void notAdded() {
-        News news = new News();
-        Author author = new Author();
-        when(newsAuthorRepository.add(any(NewsAuthor.class))).thenReturn(false);
-        boolean added = newsAuthorService.add(news, author);
-
-        assertFalse(added);
-        verify(logger).error(eq("Failed to add author to news"));
     }
 
     @Test
@@ -61,14 +51,14 @@ public class NewsAuthorServiceTest {
     }
 
     @Test
-    public void notDeleted() {
+    public void notAdded() {
         News news = new News();
         Author author = new Author();
-        when(newsAuthorRepository.delete(any(NewsAuthor.class))).thenReturn(false);
-        boolean deleted = newsAuthorService.delete(news, author);
+        when(newsAuthorRepository.add(any(NewsAuthor.class))).thenReturn(false);
+        boolean added = newsAuthorService.add(news, author);
 
-        assertFalse(deleted);
-        verify(logger).error(eq("Failed to delete author from news"));
+        assertFalse(added);
+        verify(logger).error(eq("Failed to add author to news"));
     }
 
     @Test
@@ -80,5 +70,16 @@ public class NewsAuthorServiceTest {
 
         assertTrue(deleted);
         verify(logger).info(eq("Successfully deleted author from news"));
+    }
+
+    @Test
+    public void notDeleted() {
+        News news = new News();
+        Author author = new Author();
+        when(newsAuthorRepository.delete(any(NewsAuthor.class))).thenReturn(false);
+        boolean deleted = newsAuthorService.delete(news, author);
+
+        assertFalse(deleted);
+        verify(logger).error(eq("Failed to delete author from news"));
     }
 }

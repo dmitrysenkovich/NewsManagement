@@ -7,6 +7,7 @@ import com.epam.app.model.NewsTag;
 import com.epam.app.service.NewsTagService;
 import org.apache.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.transaction.annotation.Transactional;
 
 /**
  * NewsTag service implementation.
@@ -18,6 +19,7 @@ public class NewsTagServiceImpl implements NewsTagService {
     private NewsTagRepository newsTagRepository;
 
 
+    @Transactional
     public boolean add(News news, Tag tag) {
         logger.info("Adding new tag to news..");
         NewsTag newsTag = new NewsTag();
@@ -32,6 +34,7 @@ public class NewsTagServiceImpl implements NewsTagService {
     }
 
 
+    @Transactional
     public boolean delete(News news, Tag tag) {
         logger.info("Deleting tag from news..");
         NewsTag newsTag = new NewsTag();

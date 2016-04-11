@@ -1,5 +1,7 @@
 package com.epam.app.utils;
 
+import org.apache.commons.io.FileUtils;
+
 import java.text.MessageFormat;
 import java.util.List;
 
@@ -19,9 +21,9 @@ public class SearchUtils {
             "                                WHERE news_id NOT IN(SELECT news_id " +
             "                                                    FROM Comments))) All_News_Stat " +
             "                               WHERE {0} {1} {2}" +
-            "                               ORDER BY comments_count DESC;";
+            "                               ORDER BY comments_count DESC";
     private static final String authorPart = "EXISTS(SELECT * FROM News_Author NA " +
-            "                                        WHERE NA.news_id = news_id AND author_id = {0})";
+            "                                        WHERE NA.news_id = All_News_Stat.news_id AND author_id = {0})";
     private static final String tagsPart = "news_id IN (SELECT news_id " +
             "                                           FROM News_Tag" +
             "                                           WHERE tag_id IN {0}" +

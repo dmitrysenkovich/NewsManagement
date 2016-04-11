@@ -14,8 +14,8 @@ import java.sql.*;
 public class NewsAuthorRepositoryImpl implements NewsAuthorRepository {
     private static final Logger logger = Logger.getLogger(NewsAuthorRepositoryImpl.class.getName());
 
-    private static final String ADD = "INSERT INTO News_Author(news_id, author_id) VALUES(?, ?);";
-    private static final String DELETE = "DELETE FROM News_Author WHERE news_id = ? AND author_id = ?;";
+    private static final String ADD = "INSERT INTO News_Author(news_id, author_id) VALUES(?, ?)";
+    private static final String DELETE = "DELETE FROM News_Author WHERE news_id = ? AND author_id = ?";
 
     @Autowired
     private DataSource dataSource;

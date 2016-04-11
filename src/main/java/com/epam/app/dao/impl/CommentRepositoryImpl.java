@@ -15,10 +15,10 @@ import java.util.List;
 public class CommentRepositoryImpl implements CommentRepository {
     private static final Logger logger = Logger.getLogger(CommentRepositoryImpl.class.getName());
 
-    private static final String ADD = "INSERT INTO Comments(news_id, comment_text, creation_date) VALUES(?, ?, ?);";
-    private static final String FIND = "SELECT * FROM Comments WHERE comment_id = ?;";
-    private static final String UPDATE = "UPDATE Comments SET comment_text = ? WHERE comment_id = ?;";
-    private static final String DELETE = "DELETE FROM Comments WHERE comment_id = ?;";
+    private static final String ADD = "INSERT INTO Comments(news_id, comment_text, creation_date) VALUES(?, ?, ?)";
+    private static final String FIND = "SELECT * FROM Comments WHERE comment_id = ?";
+    private static final String UPDATE = "UPDATE Comments SET comment_text = ? WHERE comment_id = ?";
+    private static final String DELETE = "DELETE FROM Comments WHERE comment_id = ?";
 
     @Autowired
     private DataSource dataSource;
