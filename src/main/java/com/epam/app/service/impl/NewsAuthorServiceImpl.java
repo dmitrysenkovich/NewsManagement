@@ -22,7 +22,7 @@ public class NewsAuthorServiceImpl implements NewsAuthorService {
 
 
     @Override
-    @Transactional(rollbackFor = DaoException.class)
+    @Transactional(rollbackFor = ServiceException.class)
     public void add(News news, Author author) throws ServiceException {
         logger.info("Adding new author to news..");
         NewsAuthor newsAuthor = new NewsAuthor();
@@ -39,7 +39,7 @@ public class NewsAuthorServiceImpl implements NewsAuthorService {
 
 
     @Override
-    @Transactional(rollbackFor = DaoException.class)
+    @Transactional(rollbackFor = ServiceException.class)
     public void delete(News news, Author author) throws ServiceException {
         logger.info("Deleting author from news..");
         NewsAuthor newsAuthor = new NewsAuthor();

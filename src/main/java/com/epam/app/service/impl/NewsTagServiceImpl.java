@@ -22,7 +22,7 @@ public class NewsTagServiceImpl implements NewsTagService {
 
 
     @Override
-    @Transactional(rollbackFor = DaoException.class)
+    @Transactional(rollbackFor = ServiceException.class)
     public void add(News news, Tag tag) throws ServiceException {
         logger.info("Adding new tag to news..");
         NewsTag newsTag = new NewsTag();
@@ -39,7 +39,7 @@ public class NewsTagServiceImpl implements NewsTagService {
 
 
     @Override
-    @Transactional(rollbackFor = DaoException.class)
+    @Transactional(rollbackFor = ServiceException.class)
     public void delete(News news, Tag tag) throws ServiceException {
         logger.info("Deleting tag from news..");
         NewsTag newsTag = new NewsTag();

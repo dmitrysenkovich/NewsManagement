@@ -39,7 +39,7 @@ public class NewsServiceImpl implements NewsService {
 
 
     @Override
-    @Transactional(rollbackFor = DaoException.class)
+    @Transactional(rollbackFor = ServiceException.class)
     public News add(News news, Author author, List<Tag> tags) throws ServiceException {
         logger.info("Adding news..");
         news.setCreationDate(new Timestamp(new java.util.Date().getTime()));
@@ -105,7 +105,7 @@ public class NewsServiceImpl implements NewsService {
 
 
     @Override
-    @Transactional(rollbackFor = DaoException.class)
+    @Transactional(rollbackFor = ServiceException.class)
     public void update(News news) throws ServiceException {
         logger.info("Updating news..");
         try {
@@ -119,7 +119,7 @@ public class NewsServiceImpl implements NewsService {
 
 
     @Override
-    @Transactional(rollbackFor = DaoException.class)
+    @Transactional(rollbackFor = ServiceException.class)
     public void delete(News news) throws ServiceException {
         logger.info("Deleting news..");
         try {

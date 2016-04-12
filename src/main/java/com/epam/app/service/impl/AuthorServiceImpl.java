@@ -20,7 +20,7 @@ public class AuthorServiceImpl implements AuthorService {
 
 
     @Override
-    @Transactional(rollbackFor = DaoException.class)
+    @Transactional(rollbackFor = ServiceException.class)
     public Author add(Author author) throws ServiceException {
         logger.info("Adding new author..");
         try {
@@ -52,7 +52,7 @@ public class AuthorServiceImpl implements AuthorService {
 
 
     @Override
-    @Transactional(rollbackFor = DaoException.class)
+    @Transactional(rollbackFor = ServiceException.class)
     public void update(Author author) throws ServiceException {
         logger.info("Updating author..");
         try {
@@ -66,7 +66,7 @@ public class AuthorServiceImpl implements AuthorService {
 
 
     @Override
-    @Transactional(rollbackFor = DaoException.class)
+    @Transactional(rollbackFor = ServiceException.class)
     public void delete(Author author) throws ServiceException {
         logger.info("Deleting author..");
         try {

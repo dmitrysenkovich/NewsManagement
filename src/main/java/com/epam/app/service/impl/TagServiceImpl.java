@@ -22,7 +22,7 @@ public class TagServiceImpl implements TagService {
 
 
     @Override
-    @Transactional(rollbackFor = DaoException.class)
+    @Transactional(rollbackFor = ServiceException.class)
     public Tag add(Tag tag) throws ServiceException {
         logger.info("Adding new tag..");
         try {
@@ -53,7 +53,7 @@ public class TagServiceImpl implements TagService {
 
 
     @Override
-    @Transactional(rollbackFor = DaoException.class)
+    @Transactional(rollbackFor = ServiceException.class)
     public void update(Tag tag) throws ServiceException {
         logger.info("Updating tag..");
         try {
@@ -67,7 +67,7 @@ public class TagServiceImpl implements TagService {
 
 
     @Override
-    @Transactional(rollbackFor = DaoException.class)
+    @Transactional(rollbackFor = ServiceException.class)
     public void delete(Tag tag) throws ServiceException {
         logger.info("Deleting tag..");
         try {
@@ -81,7 +81,7 @@ public class TagServiceImpl implements TagService {
 
 
     @Override
-    @Transactional(rollbackFor = DaoException.class)
+    @Transactional(rollbackFor = ServiceException.class)
     public List<Tag> addAll(List<Tag> tags) throws ServiceException {
         logger.info("Adding tags..");
         try {

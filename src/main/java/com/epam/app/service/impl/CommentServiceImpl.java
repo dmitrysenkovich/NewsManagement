@@ -24,7 +24,7 @@ public class CommentServiceImpl implements CommentService {
 
 
     @Override
-    @Transactional(rollbackFor = DaoException.class)
+    @Transactional(rollbackFor = ServiceException.class)
     public Comment add(News news, Comment comment) throws ServiceException {
         logger.info("Adding new comment..");
         comment.setNewsId(news.getNewsId());
@@ -57,7 +57,7 @@ public class CommentServiceImpl implements CommentService {
 
 
     @Override
-    @Transactional(rollbackFor = DaoException.class)
+    @Transactional(rollbackFor = ServiceException.class)
     public void update(Comment comment) throws ServiceException {
         logger.info("Updating comment..");
         try {
@@ -71,7 +71,7 @@ public class CommentServiceImpl implements CommentService {
 
 
     @Override
-    @Transactional(rollbackFor = DaoException.class)
+    @Transactional(rollbackFor = ServiceException.class)
     public void delete(Comment comment) throws ServiceException {
         logger.info("Deleting comment..");
         try {
@@ -85,7 +85,7 @@ public class CommentServiceImpl implements CommentService {
 
 
     @Override
-    @Transactional(rollbackFor = DaoException.class)
+    @Transactional(rollbackFor = ServiceException.class)
     public List<Comment> addAll(News news, List<Comment> comments) throws ServiceException {
         logger.info("Adding comments..");
         for (Comment comment : comments) {
@@ -110,7 +110,7 @@ public class CommentServiceImpl implements CommentService {
 
 
     @Override
-    @Transactional(rollbackFor = DaoException.class)
+    @Transactional(rollbackFor = ServiceException.class)
     public void deleteAll(List<Comment> comments) throws ServiceException {
         logger.info("Deleting comments..");
         try {

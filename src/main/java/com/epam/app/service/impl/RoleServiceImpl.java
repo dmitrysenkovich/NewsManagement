@@ -20,7 +20,7 @@ public class RoleServiceImpl implements RoleService {
 
 
     @Override
-    @Transactional(rollbackFor = DaoException.class)
+    @Transactional(rollbackFor = ServiceException.class)
     public Role add(Role role) throws ServiceException {
         logger.info("Adding new role..");
         try {
@@ -51,7 +51,7 @@ public class RoleServiceImpl implements RoleService {
 
 
     @Override
-    @Transactional(rollbackFor = DaoException.class)
+    @Transactional(rollbackFor = ServiceException.class)
     public void update(Role role) throws ServiceException {
         logger.info("Updating role..");
         try {
@@ -65,7 +65,7 @@ public class RoleServiceImpl implements RoleService {
 
 
     @Override
-    @Transactional(rollbackFor = DaoException.class)
+    @Transactional(rollbackFor = ServiceException.class)
     public void delete(Role role) throws ServiceException {
         logger.info("Deleting role..");
         try {

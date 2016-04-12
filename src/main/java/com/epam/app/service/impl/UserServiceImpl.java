@@ -21,7 +21,7 @@ public class UserServiceImpl implements UserService {
 
 
     @Override
-    @Transactional(rollbackFor = DaoException.class)
+    @Transactional(rollbackFor = ServiceException.class)
     public User add(User user, Role role) throws ServiceException {
         logger.info("Adding new user..");
         user.setRoleId(role.getRoleId());
@@ -53,7 +53,7 @@ public class UserServiceImpl implements UserService {
 
 
     @Override
-    @Transactional(rollbackFor = DaoException.class)
+    @Transactional(rollbackFor = ServiceException.class)
     public void update(User user) throws ServiceException {
         logger.info("Updating user..");
         try {
@@ -67,7 +67,7 @@ public class UserServiceImpl implements UserService {
 
 
     @Override
-    @Transactional(rollbackFor = DaoException.class)
+    @Transactional(rollbackFor = ServiceException.class)
     public void delete(User user) throws ServiceException {
         logger.info("Deleting user..");
         try {
