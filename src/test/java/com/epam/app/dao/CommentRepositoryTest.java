@@ -9,6 +9,7 @@ import org.dbunit.database.DatabaseConnection;
 import org.dbunit.dataset.IDataSet;
 import org.dbunit.dataset.ITable;
 import org.junit.After;
+import org.junit.Assert;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -72,13 +73,13 @@ public class CommentRepositoryTest {
         Comment comment = new Comment();
         comment.setNewsId(1L);
         comment.setCommentText("test");
-        comment = commentRepository.add(comment);
+        Long commentId = commentRepository.add(comment);
         connection = DriverManager.getConnection(testDbUrl, testDbUsername, testDbPassword);
         IDataSet actualDataSet = getActualDataSet(connection);
         ITable commentsTable = actualDataSet.getTable("Comments");
 
         assertEquals(6, commentsTable.getRowCount());
-        assertNotNull(comment.getCommentId());
+        assertNotNull(commentId);
     }
 
 
@@ -191,14 +192,13 @@ public class CommentRepositoryTest {
         List<Comment> comments = new LinkedList<>();
         comments.add(comment1);
         comments.add(comment2);
-        comments = commentRepository.addAll(comments);
+        List<Long> commentsIds = commentRepository.addAll(comments);
         connection = DriverManager.getConnection(testDbUrl, testDbUsername, testDbPassword);
         IDataSet actualDataSet = getActualDataSet(connection);
         ITable commentsTable = actualDataSet.getTable("Comments");
 
         assertEquals(7, commentsTable.getRowCount());
-        for (Comment comment : comments)
-            assertNotNull(comment.getCommentId());
+        commentsIds.forEach(Assert::assertNotNull);
     }
 
 

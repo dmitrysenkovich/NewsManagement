@@ -32,9 +32,10 @@ public class UserRepositoryImpl implements UserRepository {
     private DatabaseUtils databaseUtils;
 
 
-    public User add(User user) throws DaoException {
+    public Long add(User user) throws DaoException {
         Connection connection = null;
         PreparedStatement preparedStatement = null;
+        Long userId = null;
         try {
             connection = dataSource.getConnection();
             preparedStatement = connection.prepareStatement(ADD, Statement.RETURN_GENERATED_KEYS);
@@ -45,8 +46,7 @@ public class UserRepositoryImpl implements UserRepository {
             preparedStatement.executeUpdate();
             ResultSet resultSet = preparedStatement.getGeneratedKeys();
             resultSet.next();
-            Long userId = resultSet.getLong(1);
-            user.setUserId(userId);
+            userId = resultSet.getLong(1);
         }
         catch (SQLException e) {
             throw new DaoException(e);
@@ -54,7 +54,7 @@ public class UserRepositoryImpl implements UserRepository {
         finally {
             databaseUtils.closeConnectionAndStatement(preparedStatement, connection);
         }
-        return user;
+        return userId;
     }
 
 

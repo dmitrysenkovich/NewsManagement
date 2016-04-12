@@ -24,7 +24,8 @@ public class AuthorServiceImpl implements AuthorService {
     public Author add(Author author) throws ServiceException {
         logger.info("Adding new author..");
         try {
-            author = authorRepository.add(author);
+            Long id = authorRepository.add(author);
+            author.setAuthorId(id);
         } catch (DaoException e) {
             logger.error("Failed to add new author");
             throw new ServiceException(e);

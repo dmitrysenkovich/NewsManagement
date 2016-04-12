@@ -26,7 +26,8 @@ public class TagServiceImpl implements TagService {
     public Tag add(Tag tag) throws ServiceException {
         logger.info("Adding new tag..");
         try {
-            tag = tagRepository.add(tag);
+            Long id = tagRepository.add(tag);
+            tag.setTagId(id);
         } catch (DaoException e) {
             logger.error("Failed to add new tag");
             throw new ServiceException(e);
@@ -84,7 +85,13 @@ public class TagServiceImpl implements TagService {
     public List<Tag> addAll(List<Tag> tags) throws ServiceException {
         logger.info("Adding tags..");
         try {
-            tags = tagRepository.addAll(tags);
+            List<Long> ids = tagRepository.addAll(tags);
+            int tagsCount = tags.size();
+            for (int i = 0; i < tagsCount; i++) {
+                Long id = ids.get(i);
+                Tag tag = tags.get(i);
+                tag.setTagId(id);
+            }
         } catch (DaoException e) {
             logger.error("Failed to add tags");
             throw new ServiceException(e);

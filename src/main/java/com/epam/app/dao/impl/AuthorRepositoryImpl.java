@@ -33,9 +33,10 @@ public class AuthorRepositoryImpl implements AuthorRepository {
 
 
     @Override
-    public Author add(Author author) throws DaoException {
+    public Long add(Author author) throws DaoException {
         Connection connection = null;
         PreparedStatement preparedStatement = null;
+        Long authorId = null;
         try {
             connection = dataSource.getConnection();
             preparedStatement = connection.prepareStatement(ADD, Statement.RETURN_GENERATED_KEYS);
@@ -44,8 +45,7 @@ public class AuthorRepositoryImpl implements AuthorRepository {
             preparedStatement.executeUpdate();
             ResultSet resultSet = preparedStatement.getGeneratedKeys();
             resultSet.next();
-            Long authorId = resultSet.getLong(1);
-            author.setAuthorId(authorId);
+            authorId = resultSet.getLong(1);
         }
         catch (SQLException e) {
             throw new DaoException(e);
@@ -53,7 +53,7 @@ public class AuthorRepositoryImpl implements AuthorRepository {
         finally {
             databaseUtils.closeConnectionAndStatement(preparedStatement, connection);
         }
-        return author;
+        return authorId;
     }
 
 

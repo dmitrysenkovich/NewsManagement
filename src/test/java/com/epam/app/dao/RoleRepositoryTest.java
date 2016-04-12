@@ -66,13 +66,13 @@ public class RoleRepositoryTest {
     public void roleAdded() throws Exception {
         Role role = new Role();
         role.setRoleName("test");
-        role = roleRepository.add(role);
+        Long roleId = roleRepository.add(role);
         connection = DriverManager.getConnection(testDbUrl, testDbUsername, testDbPassword);
         IDataSet actualDataSet = getActualDataSet(connection);
         ITable rolesTable = actualDataSet.getTable("Roles");
 
         assertEquals(3, rolesTable.getRowCount());
-        assertNotNull(role.getRoleId());
+        assertNotNull(roleId);
     }
 
 

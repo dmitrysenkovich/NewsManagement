@@ -72,13 +72,13 @@ public class UserRepositoryTest {
         user.setUserName("test");
         user.setLogin("test");
         user.setPassword("test");
-        user = userRepository.add(user);
+        Long userId = userRepository.add(user);
         connection = DriverManager.getConnection(testDbUrl, testDbUsername, testDbPassword);
         IDataSet actualDataSet = getActualDataSet(connection);
         ITable usersTable = actualDataSet.getTable("Users");
 
         assertEquals(2, usersTable.getRowCount());
-        assertNotNull(user.getUserId());
+        assertNotNull(userId);
     }
 
 

@@ -13,6 +13,7 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
+import java.util.LinkedList;
 import java.util.List;
 
 /**
@@ -33,9 +34,10 @@ public class CommentRepositoryImpl implements CommentRepository {
 
 
     @Override
-    public Comment add(Comment comment) throws DaoException {
+    public Long add(Comment comment) throws DaoException {
         Connection connection = null;
         PreparedStatement preparedStatement = null;
+        Long commentId = null;
         try {
             connection = dataSource.getConnection();
             preparedStatement = connection.prepareStatement(ADD, Statement.RETURN_GENERATED_KEYS);
@@ -45,8 +47,7 @@ public class CommentRepositoryImpl implements CommentRepository {
             preparedStatement.executeUpdate();
             ResultSet resultSet = preparedStatement.getGeneratedKeys();
             resultSet.next();
-            Long commentId = resultSet.getLong(1);
-            comment.setCommentId(commentId);
+            commentId = resultSet.getLong(1);
         }
         catch (SQLException e) {
             throw new DaoException(e);
@@ -54,7 +55,7 @@ public class CommentRepositoryImpl implements CommentRepository {
         finally {
             databaseUtils.closeConnectionAndStatement(preparedStatement, connection);
         }
-        return comment;
+        return commentId;
     }
 
 
@@ -126,9 +127,10 @@ public class CommentRepositoryImpl implements CommentRepository {
 
 
     @Override
-    public List<Comment> addAll(List<Comment> comments) throws DaoException {
+    public List<Long> addAll(List<Comment> comments) throws DaoException {
         Connection connection = null;
         PreparedStatement preparedStatement = null;
+        List<Long> ids = null;
         try {
             connection = dataSource.getConnection();
             preparedStatement = connection.prepareStatement(ADD, Statement.RETURN_GENERATED_KEYS);
@@ -140,12 +142,9 @@ public class CommentRepositoryImpl implements CommentRepository {
             }
             preparedStatement.executeBatch();
             ResultSet resultSet = preparedStatement.getGeneratedKeys();
-            int i = 0;
-            while (resultSet.next()) {
-                Comment comment = comments.get(i);
-                comment.setCommentId(resultSet.getLong(1));
-                i++;
-            }
+            ids = new LinkedList<>();
+            while (resultSet.next())
+                ids.add(resultSet.getLong(1));
         }
         catch (SQLException e) {
             throw new DaoException(e);
@@ -153,7 +152,7 @@ public class CommentRepositoryImpl implements CommentRepository {
         finally {
             databaseUtils.closeConnectionAndStatement(preparedStatement, connection);
         }
-        return comments;
+        return ids;
     }
 
 

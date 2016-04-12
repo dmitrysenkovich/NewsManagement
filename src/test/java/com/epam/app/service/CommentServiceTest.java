@@ -43,7 +43,7 @@ public class CommentServiceTest {
         news.setNewsId(1L);
         Comment comment = new Comment();
         comment.setCommentId(1L);
-        when(commentRepository.add(comment)).thenReturn(comment);
+        when(commentRepository.add(comment)).thenReturn(1L);
         comment = commentService.add(news, comment);
 
         assertEquals((Long) 1L, comment.getCommentId());
@@ -117,7 +117,10 @@ public class CommentServiceTest {
         Comment comment2 = new Comment();
         comment2.setCommentId(1L);
         comments.add(comment2);
-        when(commentRepository.addAll(comments)).thenReturn(comments);
+        List<Long> commentsIds = new LinkedList<>();
+        commentsIds.add(1L);
+        commentsIds.add(2L);
+        when(commentRepository.addAll(comments)).thenReturn(commentsIds);
         List<Comment> returnedComments = commentService.addAll(news, comments);
 
         for (Comment comment : returnedComments)

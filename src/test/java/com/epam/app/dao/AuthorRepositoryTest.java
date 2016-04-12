@@ -69,13 +69,13 @@ public class AuthorRepositoryTest {
     public void authorAdded() throws Exception {
         Author author = new Author();
         author.setAuthorName("test");
-        author = authorRepository.add(author);
+        Long authorId = authorRepository.add(author);
         connection = DriverManager.getConnection(testDbUrl, testDbUsername, testDbPassword);
         IDataSet actualDataSet = getActualDataSet(connection);
         ITable authorsTable = actualDataSet.getTable("Authors");
 
         assertEquals(3, authorsTable.getRowCount());
-        assertNotNull(author.getAuthorId());
+        assertNotNull(authorId);
     }
 
 
@@ -95,10 +95,7 @@ public class AuthorRepositoryTest {
 
     @Test
     public void authorFound() throws Exception {
-        Author author = new Author();
-        author.setAuthorName("test");
-        author = authorRepository.add(author);
-        author = authorRepository.find(author.getAuthorId());
+        Author author = authorRepository.find(1L);
 
         assertNotNull(author);
     }

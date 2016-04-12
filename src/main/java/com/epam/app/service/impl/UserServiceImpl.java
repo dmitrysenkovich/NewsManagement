@@ -26,7 +26,8 @@ public class UserServiceImpl implements UserService {
         logger.info("Adding new user..");
         user.setRoleId(role.getRoleId());
         try {
-            user = userRepository.add(user);
+            Long id = userRepository.add(user);
+            user.setUserId(id);
         } catch (DaoException e) {
             logger.error("Failed to add new user");
             throw new ServiceException(e);

@@ -40,7 +40,7 @@ public class UserServiceTest {
         user.setUserId(1L);
         Role role = new Role();
         role.setRoleId(1L);
-        when(userRepository.add(user)).thenReturn(user);
+        when(userRepository.add(user)).thenReturn(1L);
         user = userService.add(user, role);
 
         assertEquals((Long) 1L, user.getUserId());

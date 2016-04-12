@@ -9,6 +9,7 @@ import org.dbunit.database.DatabaseConnection;
 import org.dbunit.dataset.IDataSet;
 import org.dbunit.dataset.ITable;
 import org.junit.After;
+import org.junit.Assert;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -71,13 +72,13 @@ public class TagRepositoryTest {
     public void tagAdded() throws Exception {
         Tag tag = new Tag();
         tag.setTagName("test");
-        tag = tagRepository.add(tag);
+        Long tagId = tagRepository.add(tag);
         connection = DriverManager.getConnection(testDbUrl, testDbUsername, testDbPassword);
         IDataSet actualDataSet = getActualDataSet(connection);
         ITable tagsTable = actualDataSet.getTable("Tags");
 
         assertEquals(3, tagsTable.getRowCount());
-        assertNotNull(tag.getTagId());
+        assertNotNull(tagId);
     }
 
 
@@ -173,14 +174,13 @@ public class TagRepositoryTest {
         List<Tag> tags = new LinkedList<>();
         tags.add(tag1);
         tags.add(tag2);
-        tags = tagRepository.addAll(tags);
+        List<Long> tagsIds = tagRepository.addAll(tags);
         connection = DriverManager.getConnection(testDbUrl, testDbUsername, testDbPassword);
         IDataSet actualDataSet = getActualDataSet(connection);
         ITable tagsTable = actualDataSet.getTable("Tags");
 
         assertEquals(4, tagsTable.getRowCount());
-        for (Tag tag : tags)
-            assertNotNull(tag.getTagId());
+        tagsIds.forEach(Assert::assertNotNull);
     }
 
 

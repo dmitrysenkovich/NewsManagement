@@ -11,9 +11,9 @@ public interface CrudRepository<T, E> {
     /**
      * Adds new entity.
      * @param t new entity.
-     * @return this new entity with id set.
+     * @return new entity id.
      */
-    T add(T t) throws DaoException;
+    E add(T t) throws DaoException;
 
     /**
      * Finds an entity by its id.

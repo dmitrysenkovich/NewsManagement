@@ -17,8 +17,8 @@ public interface CrudaRepository<T, E> extends CrudRepository<T, E> {
     /**
      * Adds all entities from list.
      * @param entities entities to be added.
-     * @return entities with set id
+     * @return entities id list
      * if successfully.
      */
-    List<T> addAll(List<T> entities) throws DaoException;
+    List<Long> addAll(List<T> entities) throws DaoException;
 }

@@ -30,7 +30,8 @@ public class CommentServiceImpl implements CommentService {
         comment.setNewsId(news.getNewsId());
         comment.setCreationDate(new Timestamp(new java.util.Date().getTime()));
         try {
-            comment = commentRepository.add(comment);
+            Long id = commentRepository.add(comment);
+            comment.setCommentId(id);
         } catch (DaoException e) {
             logger.error("Failed to add new comment");
             throw new ServiceException(e);
@@ -92,7 +93,13 @@ public class CommentServiceImpl implements CommentService {
             comment.setCreationDate(new Timestamp(new java.util.Date().getTime()));
         }
         try {
-            comments = commentRepository.addAll(comments);
+            List<Long> ids = commentRepository.addAll(comments);
+            int commentsCount = comments.size();
+            for (int i = 0; i < commentsCount; i++) {
+                Long id = ids.get(i);
+                Comment comment = comments.get(i);
+                comment.setCommentId(id);
+            }
         } catch (DaoException e) {
             logger.error("Failed to add comments");
             throw new ServiceException(e);

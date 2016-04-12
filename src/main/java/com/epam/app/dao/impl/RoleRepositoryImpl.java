@@ -31,9 +31,10 @@ public class RoleRepositoryImpl implements RoleRepository {
 
 
     @Override
-    public Role add(Role role) throws DaoException {
+    public Long add(Role role) throws DaoException {
         Connection connection = null;
         PreparedStatement preparedStatement = null;
+        Long roleId = null;
         try {
             connection = dataSource.getConnection();
             preparedStatement = connection.prepareStatement(ADD, Statement.RETURN_GENERATED_KEYS);
@@ -41,8 +42,7 @@ public class RoleRepositoryImpl implements RoleRepository {
             preparedStatement.executeUpdate();
             ResultSet resultSet = preparedStatement.getGeneratedKeys();
             resultSet.next();
-            Long roleId = resultSet.getLong(1);
-            role.setRoleId(roleId);
+            roleId = resultSet.getLong(1);
         }
         catch (SQLException e) {
             throw new DaoException(e);
@@ -50,7 +50,7 @@ public class RoleRepositoryImpl implements RoleRepository {
         finally {
             databaseUtils.closeConnectionAndStatement(preparedStatement, connection);
         }
-        return role;
+        return roleId;
     }
 
 

@@ -24,7 +24,8 @@ public class RoleServiceImpl implements RoleService {
     public Role add(Role role) throws ServiceException {
         logger.info("Adding new role..");
         try {
-            role = roleRepository.add(role);
+            Long id = roleRepository.add(role);
+            role.setRoleId(id);
         } catch (DaoException e) {
             logger.error("Failed to add new role");
             throw new ServiceException(e);

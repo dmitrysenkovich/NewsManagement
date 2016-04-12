@@ -45,7 +45,8 @@ public class NewsServiceImpl implements NewsService {
         news.setCreationDate(new Timestamp(new java.util.Date().getTime()));
         news.setModificationDate(new Date(new java.util.Date().getTime()));
         try {
-            news = newsRepository.add(news);
+            Long id = newsRepository.add(news);
+            news.setNewsId(id);
         } catch (DaoException e) {
             logger.error("Failed to add news");
             throw new ServiceException(e);

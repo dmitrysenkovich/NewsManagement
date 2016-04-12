@@ -81,13 +81,13 @@ public class NewsRepositoryTest {
         news.setShortText("test");
         news.setFullText("test");
         news.setModificationDate(new Date(new java.util.Date().getTime()));
-        news = newsRepository.add(news);
+        Long newsId = newsRepository.add(news);
         connection = DriverManager.getConnection(testDbUrl, testDbUsername, testDbPassword);
         IDataSet actualDataSet = getActualDataSet(connection);
         ITable newsTable = actualDataSet.getTable("News");
 
         assertEquals(4, newsTable.getRowCount());
-        assertNotNull(news.getNewsId());
+        assertNotNull(newsId);
     }
 
 

@@ -37,7 +37,7 @@ public class RoleServiceTest {
     public void added() throws Exception {
         Role role = new Role();
         role.setRoleId(1L);
-        when(roleRepository.add(role)).thenReturn(role);
+        when(roleRepository.add(role)).thenReturn(1L);
         role = roleService.add(role);
 
         assertEquals((Long) 1L, role.getRoleId());

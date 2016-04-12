@@ -49,7 +49,7 @@ public class TagServiceTest {
     public void added() throws Exception {
         Tag tag = new Tag();
         tag.setTagId(1L);
-        when(tagRepository.add(tag)).thenReturn(tag);
+        when(tagRepository.add(tag)).thenReturn(1L);
         tag = tagService.add(tag);
 
         assertEquals((Long) 1L, tag.getTagId());
@@ -114,7 +114,10 @@ public class TagServiceTest {
         List<Tag> tags = new LinkedList<>();
         tags.add(new Tag());
         tags.add(new Tag());
-        when(tagRepository.addAll(tags)).thenReturn(tags);
+        List<Long> tagsIds = new LinkedList<>();
+        tagsIds.add(1L);
+        tagsIds.add(2L);
+        when(tagRepository.addAll(tags)).thenReturn(tagsIds);
         tagService.addAll(tags);
     }
 

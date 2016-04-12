@@ -49,9 +49,10 @@ public class NewsRepositoryImpl implements NewsRepository {
 
 
     @Override
-    public News add(News news) throws DaoException {
+    public Long add(News news) throws DaoException {
         Connection connection = null;
         PreparedStatement preparedStatement = null;
+        Long newsId = null;
         try {
             connection = dataSource.getConnection();
             preparedStatement = connection.prepareStatement(ADD, Statement.RETURN_GENERATED_KEYS);
@@ -63,8 +64,7 @@ public class NewsRepositoryImpl implements NewsRepository {
             preparedStatement.executeUpdate();
             ResultSet resultSet = preparedStatement.getGeneratedKeys();
             resultSet.next();
-            Long newsId = resultSet.getLong(1);
-            news.setNewsId(newsId);
+            newsId = resultSet.getLong(1);
         }
         catch (SQLException e) {
             throw new DaoException(e);
@@ -72,7 +72,7 @@ public class NewsRepositoryImpl implements NewsRepository {
         finally {
             databaseUtils.closeConnectionAndStatement(preparedStatement, connection);
         }
-        return news;
+        return newsId;
     }
 
 

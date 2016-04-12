@@ -13,6 +13,7 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
+import java.util.LinkedList;
 import java.util.List;
 
 /**
@@ -31,9 +32,10 @@ public class TagRepositoryImpl implements TagRepository {
     private DatabaseUtils databaseUtils;
 
 
-    public Tag add(Tag tag) throws DaoException {
+    public Long add(Tag tag) throws DaoException {
         Connection connection = null;
         PreparedStatement preparedStatement = null;
+        Long tagId = null;
         try {
             connection = dataSource.getConnection();
             preparedStatement = connection.prepareStatement(ADD, Statement.RETURN_GENERATED_KEYS);
@@ -41,8 +43,7 @@ public class TagRepositoryImpl implements TagRepository {
             preparedStatement.executeUpdate();
             ResultSet resultSet = preparedStatement.getGeneratedKeys();
             resultSet.next();
-            Long tagId = resultSet.getLong(1);
-            tag.setTagId(tagId);
+            tagId = resultSet.getLong(1);
         }
         catch (SQLException e) {
             throw new DaoException(e);
@@ -50,7 +51,7 @@ public class TagRepositoryImpl implements TagRepository {
         finally {
             databaseUtils.closeConnectionAndStatement(preparedStatement, connection);
         }
-        return tag;
+        return tagId;
     }
 
 
@@ -116,9 +117,10 @@ public class TagRepositoryImpl implements TagRepository {
     }
 
 
-    public List<Tag> addAll(List<Tag> tags) throws DaoException {
+    public List<Long> addAll(List<Tag> tags) throws DaoException {
         Connection connection = null;
         PreparedStatement preparedStatement = null;
+        List<Long> ids = null;
         try {
             connection = dataSource.getConnection();
             preparedStatement = connection.prepareStatement(ADD, Statement.RETURN_GENERATED_KEYS);
@@ -128,12 +130,9 @@ public class TagRepositoryImpl implements TagRepository {
             }
             preparedStatement.executeBatch();
             ResultSet resultSet = preparedStatement.getGeneratedKeys();
-            int i = 0;
-            while (resultSet.next()) {
-                Tag tag = tags.get(i);
-                tag.setTagId(resultSet.getLong(1));
-                i++;
-            }
+            ids = new LinkedList<>();
+            while (resultSet.next())
+                ids.add(resultSet.getLong(1));
         }
         catch (SQLException e) {
             throw new DaoException(e);
@@ -141,6 +140,6 @@ public class TagRepositoryImpl implements TagRepository {
         finally {
             databaseUtils.closeConnectionAndStatement(preparedStatement, connection);
         }
-        return tags;
+        return ids;
     }
 }

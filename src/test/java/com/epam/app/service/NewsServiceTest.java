@@ -59,7 +59,7 @@ public class NewsServiceTest {
     public void addedNewsAuthorIsNullTagsAreNull() throws Exception {
         News news = new News();
         news.setNewsId(1L);
-        when(newsRepository.add(news)).thenReturn(news);
+        when(newsRepository.add(news)).thenReturn(1L);
         news = newsService.add(news, null, null);
 
         assertEquals((Long) 1L, news.getNewsId());
@@ -70,7 +70,7 @@ public class NewsServiceTest {
     public void addedNewsAuthorIsNotNullTagsAreNull() throws Exception {
         News news = new News();
         news.setNewsId(1L);
-        when(newsRepository.add(news)).thenReturn(news);
+        when(newsRepository.add(news)).thenReturn(1L);
         doNothing().when(newsAuthorRepository).add(any(NewsAuthor.class));
         news = newsService.add(news, new Author(), null);
 
@@ -84,7 +84,7 @@ public class NewsServiceTest {
         news.setNewsId(1L);
         List<Tag> tags = new LinkedList<>();
         tags.add(new Tag());
-        when(newsRepository.add(news)).thenReturn(news);
+        when(newsRepository.add(news)).thenReturn(1L);
         doNothing().when(newsTagRepository).add(any(NewsTag.class));
         news = newsService.add(news, null, tags);
 
@@ -98,7 +98,7 @@ public class NewsServiceTest {
         news.setNewsId(1L);
         List<Tag> tags = new LinkedList<>();
         tags.add(new Tag());
-        when(newsRepository.add(news)).thenReturn(news);
+        when(newsRepository.add(news)).thenReturn(1L);
         doNothing().when(newsAuthorRepository).add(any(NewsAuthor.class));
         doNothing().when(newsTagRepository).add(any(NewsTag.class));
         news = newsService.add(news, new Author(), tags);
@@ -141,7 +141,7 @@ public class NewsServiceTest {
 
     @Test(expected = ServiceException.class)
     public void notAddedNewsTagsAreNullAuthorFailure() throws Exception {
-        when(newsRepository.add(any(News.class))).thenReturn(new News());
+        when(newsRepository.add(any(News.class))).thenReturn(1L);
         doThrow(new DaoException()).when(newsAuthorRepository).add(any(NewsAuthor.class));
         newsService.add(new News(), new Author(), null);
     }
@@ -151,7 +151,7 @@ public class NewsServiceTest {
     public void notAddedNewsTagsAreNotNullAuthorFailure() throws Exception {
         List<Tag> tags = new LinkedList<>();
         tags.add(new Tag());
-        when(newsRepository.add(any(News.class))).thenReturn(new News());
+        when(newsRepository.add(any(News.class))).thenReturn(1L);
         doThrow(new DaoException()).when(newsAuthorRepository).add(any(NewsAuthor.class));
         newsService.add(new News(), new Author(), tags);
     }
@@ -161,7 +161,7 @@ public class NewsServiceTest {
     public void notAddedNewsAuthorIsNullTagsFailure() throws Exception {
         List<Tag> tags = new LinkedList<>();
         tags.add(new Tag());
-        when(newsRepository.add(any(News.class))).thenReturn(new News());
+        when(newsRepository.add(any(News.class))).thenReturn(1L);
         doNothing().when(newsAuthorRepository).add(any(NewsAuthor.class));
         doThrow(new DaoException()).when(newsTagRepository).add(any(NewsTag.class));
         newsService.add(new News(), null, tags);
@@ -172,7 +172,7 @@ public class NewsServiceTest {
     public void notAddedNewsAuthorIsNotNullTagsFailure() throws Exception {
         List<Tag> tags = new LinkedList<>();
         tags.add(new Tag());
-        when(newsRepository.add(any(News.class))).thenReturn(new News());
+        when(newsRepository.add(any(News.class))).thenReturn(1L);
         doNothing().when(newsAuthorRepository).add(any(NewsAuthor.class));
         doThrow(new DaoException()).when(newsTagRepository).add(any(NewsTag.class));
         newsService.add(new News(), new Author(), tags);

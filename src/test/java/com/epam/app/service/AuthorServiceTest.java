@@ -37,7 +37,7 @@ public class AuthorServiceTest {
     public void added() throws Exception {
         Author author = new Author();
         author.setAuthorId(1L);
-        when(authorRepository.add(author)).thenReturn(author);
+        when(authorRepository.add(author)).thenReturn(1L);
         author = authorService.add(author);
 
         assertEquals((Long) 1L, author.getAuthorId());
