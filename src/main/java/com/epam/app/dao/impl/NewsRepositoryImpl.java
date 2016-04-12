@@ -20,11 +20,10 @@ import java.util.List;
  * News repository implementation.
  */
 public class NewsRepositoryImpl implements NewsRepository {
-    private static final Logger logger = Logger.getLogger(NewsRepositoryImpl.class.getName());
-
     private static final String ADD = "INSERT INTO News(title, short_text, full_text, " +
             "creation_date, modification_date) VALUES(?, ?, ?, ?, ?)";
-    private static final String FIND = "SELECT * FROM News WHERE news_id = ?";
+    private static final String FIND = "SELECT news_id, title, short_text, full_text, " +
+            "creation_date, modification_date FROM News WHERE news_id = ?";
     private static final String UPDATE = "UPDATE News SET title = ?, short_text = ?, " +
             "full_text = ?, modification_date = ? WHERE news_id = ?";
     private static final String DELETE = "DELETE FROM News WHERE news_id = ?";
@@ -39,7 +38,7 @@ public class NewsRepositoryImpl implements NewsRepository {
             "FROM News " +
             "WHERE news_id NOT IN (SELECT news_id " +
             "                      FROM Comments))" +
-            "ORDER BY comments_count DESC";
+            "ORDER BY comments_count DESC, modification_date";
     private static final String COUNT_ALL_NEWS = "SELECT COUNT(*) FROM News";
 
     @Autowired
@@ -51,7 +50,6 @@ public class NewsRepositoryImpl implements NewsRepository {
 
     @Override
     public News add(News news) throws DaoException {
-        logger.info("Adding news..");
         Connection connection = null;
         PreparedStatement preparedStatement = null;
         try {
@@ -67,15 +65,12 @@ public class NewsRepositoryImpl implements NewsRepository {
             resultSet.next();
             Long newsId = resultSet.getLong(1);
             news.setNewsId(newsId);
-            logger.info("Successfully added news");
         }
         catch (SQLException e) {
-            logger.error("Error while adding news: ", e);
             throw new DaoException(e);
         }
         finally {
-            databaseUtils.closeConnectionAndStatement(logger, "Error while adding news: ",
-                    preparedStatement, connection);
+            databaseUtils.closeConnectionAndStatement(preparedStatement, connection);
         }
         return news;
     }
@@ -83,7 +78,6 @@ public class NewsRepositoryImpl implements NewsRepository {
 
     @Override
     public News find(Long newsId) throws DaoException {
-        logger.info("Retrieving news..");
         Connection connection = null;
         PreparedStatement preparedStatement = null;
         News news = null;
@@ -101,15 +95,12 @@ public class NewsRepositoryImpl implements NewsRepository {
             news.setFullText(resultSet.getString(4));
             news.setCreationDate(resultSet.getTimestamp(5));
             news.setModificationDate(resultSet.getDate(6));
-            logger.info("Successfully retrieved news");
         }
         catch (SQLException e) {
-            logger.error("Error while retrieving news: ", e);
             throw new DaoException(e);
         }
         finally {
-            databaseUtils.closeConnectionAndStatement(logger, "Error while retrieving news: ",
-                    preparedStatement, connection);
+            databaseUtils.closeConnectionAndStatement(preparedStatement, connection);
         }
         return news;
     }
@@ -117,7 +108,6 @@ public class NewsRepositoryImpl implements NewsRepository {
 
     @Override
     public void update(News news) throws DaoException {
-        logger.info("Updating news..");
         Connection connection = null;
         PreparedStatement preparedStatement = null;
         try {
@@ -129,22 +119,18 @@ public class NewsRepositoryImpl implements NewsRepository {
             preparedStatement.setDate(4, news.getModificationDate());
             preparedStatement.setLong(5, news.getNewsId());
             preparedStatement.executeUpdate();
-            logger.info("Successfully updated news");
         }
         catch (SQLException e) {
-            logger.error("Error while updating news: ", e);
             throw new DaoException(e);
         }
         finally {
-            databaseUtils.closeConnectionAndStatement(logger, "Error while updating news: ",
-                    preparedStatement, connection);
+            databaseUtils.closeConnectionAndStatement(preparedStatement, connection);
         }
     }
 
 
     @Override
     public void delete(News news) throws DaoException {
-        logger.info("Deleting news..");
         Connection connection = null;
         PreparedStatement preparedStatement = null;
         try {
@@ -152,22 +138,18 @@ public class NewsRepositoryImpl implements NewsRepository {
             preparedStatement = connection.prepareStatement(DELETE);
             preparedStatement.setLong(1, news.getNewsId());
             preparedStatement.executeUpdate();
-            logger.info("Successfully deleted news");
         }
         catch (SQLException e) {
-            logger.error("Error while deleting news: ", e);
             throw new DaoException(e);
         }
         finally {
-            databaseUtils.closeConnectionAndStatement(logger, "Error while deleting news: ",
-                    preparedStatement, connection);
+            databaseUtils.closeConnectionAndStatement(preparedStatement, connection);
         }
     }
 
 
     @Override
     public List<News> search(final String SEARCH_CRITERIA_QUERY) throws DaoException {
-        logger.info("Retrieving news according to search criteria..");
         Connection connection = null;
         PreparedStatement preparedStatement = null;
         List<News> fitNews = null;
@@ -187,15 +169,12 @@ public class NewsRepositoryImpl implements NewsRepository {
                 news.setModificationDate(resultSet.getDate(6));
                 fitNews.add(news);
             }
-            logger.info("Successfully retrieved news according to search criteria");
         }
         catch (SQLException e) {
-            logger.error("Error while retrieving news: ", e);
             throw new DaoException(e);
         }
         finally {
-            databaseUtils.closeConnectionAndStatement(logger, "Error while retrieving news: ",
-                    preparedStatement, connection);
+            databaseUtils.closeConnectionAndStatement(preparedStatement, connection);
         }
         return fitNews;
     }
@@ -203,7 +182,6 @@ public class NewsRepositoryImpl implements NewsRepository {
 
     @Override
     public List<News> findAllSorted() throws DaoException {
-        logger.info("Retrieving all news..");
         Connection connection = null;
         Statement statement = null;
         List<News> allNews = null;
@@ -223,15 +201,12 @@ public class NewsRepositoryImpl implements NewsRepository {
                 news.setModificationDate(resultSet.getDate(6));
                 allNews.add(news);
             }
-            logger.info("Successfully retrieved all news");
         }
         catch (SQLException e) {
-            logger.error("Error while retrieving news: ", e);
             throw new DaoException(e);
         }
         finally {
-            databaseUtils.closeConnectionAndStatement(logger, "Error while retrieving news: ",
-                    statement, connection);
+            databaseUtils.closeConnectionAndStatement(statement, connection);
         }
         return allNews;
     }
@@ -239,7 +214,6 @@ public class NewsRepositoryImpl implements NewsRepository {
 
     @Override
     public Long countAll() throws DaoException {
-        logger.info("Retrieving news..");
         Connection connection = null;
         PreparedStatement preparedStatement = null;
         Long count = -1L;
@@ -249,15 +223,12 @@ public class NewsRepositoryImpl implements NewsRepository {
             ResultSet resultSet = preparedStatement.executeQuery();
             resultSet.next();
             count = resultSet.getLong(1);
-            logger.info("Successfully retrieved news count");
         }
         catch (SQLException e) {
-            logger.error("Error while retrieving news count: ", e);
             throw new DaoException(e);
         }
         finally {
-            databaseUtils.closeConnectionAndStatement(logger, "Error while retrieving news count: ",
-                    preparedStatement, connection);
+            databaseUtils.closeConnectionAndStatement(preparedStatement, connection);
         }
         return count;
     }

@@ -12,14 +12,19 @@ import java.sql.Statement;
  * Database utils.
  */
 public class DatabaseUtils {
-    public void closeConnectionAndStatement(Logger logger, String errorMessage,
-                                            Statement statement,
+    /**
+     * Closes connection and statement.
+     * @param statement statement to be closed.
+     * @param connection connection to be closed.
+     * @throws DaoException thrown if couldn't
+     * close statement or connection.
+     */
+    public void closeConnectionAndStatement(Statement statement,
                                             Connection connection) throws DaoException {
         if (statement != null) {
             try {
                 statement.close();
             } catch (SQLException e) {
-                logger.error(errorMessage, e);
                 throw new DaoException(e);
             }
         }
@@ -28,7 +33,6 @@ public class DatabaseUtils {
             try {
                 connection.close();
             } catch (SQLException e) {
-                logger.error(errorMessage, e);
                 throw new DaoException(e);
             }
         }

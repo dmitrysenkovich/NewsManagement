@@ -19,10 +19,9 @@ import java.util.List;
  * Comment repository implementation.
  */
 public class CommentRepositoryImpl implements CommentRepository {
-    private static final Logger logger = Logger.getLogger(CommentRepositoryImpl.class.getName());
-
     private static final String ADD = "INSERT INTO Comments(news_id, comment_text, creation_date) VALUES(?, ?, ?)";
-    private static final String FIND = "SELECT * FROM Comments WHERE comment_id = ?";
+    private static final String FIND = "SELECT comment_id, news_id, comment_text, creation_date " +
+            "FROM Comments WHERE comment_id = ?";
     private static final String UPDATE = "UPDATE Comments SET comment_text = ? WHERE comment_id = ?";
     private static final String DELETE = "DELETE FROM Comments WHERE comment_id = ?";
 
@@ -35,7 +34,6 @@ public class CommentRepositoryImpl implements CommentRepository {
 
     @Override
     public Comment add(Comment comment) throws DaoException {
-        logger.info("Adding comment..");
         Connection connection = null;
         PreparedStatement preparedStatement = null;
         try {
@@ -49,15 +47,12 @@ public class CommentRepositoryImpl implements CommentRepository {
             resultSet.next();
             Long commentId = resultSet.getLong(1);
             comment.setCommentId(commentId);
-            logger.info("Successfully added comment");
         }
         catch (SQLException e) {
-            logger.error("Error while adding comment: ", e);
             throw new DaoException(e);
         }
         finally {
-            databaseUtils.closeConnectionAndStatement(logger, "Error while adding comment: ",
-                    preparedStatement, connection);
+            databaseUtils.closeConnectionAndStatement(preparedStatement, connection);
         }
         return comment;
     }
@@ -65,7 +60,6 @@ public class CommentRepositoryImpl implements CommentRepository {
 
     @Override
     public Comment find(Long commentId) throws DaoException {
-        logger.info("Retrieving comment..");
         Connection connection = null;
         PreparedStatement preparedStatement = null;
         Comment comment = null;
@@ -81,15 +75,12 @@ public class CommentRepositoryImpl implements CommentRepository {
             comment.setNewsId(resultSet.getLong(2));
             comment.setCommentText(resultSet.getString(3));
             comment.setCreationDate(resultSet.getTimestamp(4));
-            logger.info("Successfully retrieved comment");
         }
         catch (SQLException e) {
-            logger.error("Error while retrieving comment: ", e);
             throw new DaoException(e);
         }
         finally {
-            databaseUtils.closeConnectionAndStatement(logger, "Error while retrieving comment: ",
-                    preparedStatement, connection);
+            databaseUtils.closeConnectionAndStatement(preparedStatement, connection);
         }
         return comment;
     }
@@ -97,7 +88,6 @@ public class CommentRepositoryImpl implements CommentRepository {
 
     @Override
     public void update(Comment comment) throws DaoException {
-        logger.info("Updating comment..");
         Connection connection = null;
         PreparedStatement preparedStatement = null;
         try {
@@ -106,22 +96,18 @@ public class CommentRepositoryImpl implements CommentRepository {
             preparedStatement.setString(1, comment.getCommentText());
             preparedStatement.setLong(2, comment.getCommentId());
             preparedStatement.executeUpdate();
-            logger.info("Successfully updated comment");
         }
         catch (SQLException e) {
-            logger.error("Error while updating comment: ", e);
             throw new DaoException(e);
         }
         finally {
-            databaseUtils.closeConnectionAndStatement(logger, "Error while updating comment: ",
-                    preparedStatement, connection);
+            databaseUtils.closeConnectionAndStatement(preparedStatement, connection);
         }
     }
 
 
     @Override
     public void delete(Comment comment) throws DaoException {
-        logger.info("Deleting comment..");
         Connection connection = null;
         PreparedStatement preparedStatement = null;
         try {
@@ -129,22 +115,18 @@ public class CommentRepositoryImpl implements CommentRepository {
             preparedStatement = connection.prepareStatement(DELETE);
             preparedStatement.setLong(1, comment.getCommentId());
             preparedStatement.executeUpdate();
-            logger.info("Successfully deleted comment");
         }
         catch (SQLException e) {
-            logger.error("Error while deleting comment: ", e);
             throw new DaoException(e);
         }
         finally {
-            databaseUtils.closeConnectionAndStatement(logger, "Error while deleting comment: ",
-                    preparedStatement, connection);
+            databaseUtils.closeConnectionAndStatement(preparedStatement, connection);
         }
     }
 
 
     @Override
     public List<Comment> addAll(List<Comment> comments) throws DaoException {
-        logger.info("Adding comments..");
         Connection connection = null;
         PreparedStatement preparedStatement = null;
         try {
@@ -164,15 +146,12 @@ public class CommentRepositoryImpl implements CommentRepository {
                 comment.setCommentId(resultSet.getLong(1));
                 i++;
             }
-            logger.info("Successfully added comments");
         }
         catch (SQLException e) {
-            logger.error("Error while adding comments: ", e);
             throw new DaoException(e);
         }
         finally {
-            databaseUtils.closeConnectionAndStatement(logger, "Error while adding comments: ",
-                    preparedStatement, connection);
+            databaseUtils.closeConnectionAndStatement(preparedStatement, connection);
         }
         return comments;
     }
@@ -180,7 +159,6 @@ public class CommentRepositoryImpl implements CommentRepository {
 
     @Override
     public void deleteAll(List<Comment> comments) throws DaoException {
-        logger.info("Deleting comments..");
         Connection connection = null;
         PreparedStatement preparedStatement = null;
         try {
@@ -191,15 +169,12 @@ public class CommentRepositoryImpl implements CommentRepository {
                 preparedStatement.addBatch();
             }
             preparedStatement.executeBatch();
-            logger.info("Successfully deleted comments");
         }
         catch (SQLException e) {
-            logger.error("Error while deleting comments: ", e);
             throw new DaoException(e);
         }
         finally {
-            databaseUtils.closeConnectionAndStatement(logger, "Error while deleting comments: ",
-                    preparedStatement, connection);
+            databaseUtils.closeConnectionAndStatement(preparedStatement, connection);
         }
     }
 }

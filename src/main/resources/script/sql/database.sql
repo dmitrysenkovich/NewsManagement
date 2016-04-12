@@ -8,7 +8,7 @@ CREATE TABLE News
     modification_date DATE NOT NULL
 );
 
-CREATE TABLE Tag
+CREATE TABLE Tags
 (
     tag_id NUMBER(20) PRIMARY KEY,
     tag_name NVARCHAR2(30) NOT NULL
@@ -22,7 +22,7 @@ CREATE TABLE News_Tag
     FOREIGN KEY(tag_id) REFERENCES Tag(tag_id) ON DELETE CASCADE
 );
 
-CREATE TABLE Author
+CREATE TABLE Authors
 (
     author_id NUMBER(20) PRIMARY KEY,
     author_name NVARCHAR2(30) NOT NULL,
@@ -46,19 +46,20 @@ CREATE TABLE Comments
     FOREIGN KEY(news_id) REFERENCES News(news_id) ON DELETE CASCADE
 );
 
-CREATE TABLE User
+CREATE TABLE Users
 (
     user_id NUMBER(20) PRIMARY KEY,
+    role_id NUMBER(20) NOT NULL,
     user_name NVARCHAR2(50) NOT NULL,
     login VARCHAR2(30) NOT NULL,
-    password VARCHAR2(30) NOT NULL
+    password VARCHAR2(30) NOT NULL,
+    FOREIGN KEY(role_id) REFERENCES Roles(role_id) ON DELETE CASCADE
 );
 
 CREATE TABLE Roles
 (
-    user_id NUMBER(20) NOT NULL,
-    role_name VARCHAR2(50) NOT NULL,
-    FOREIGN KEY(user_id) REFERENCES User(user_id) ON DELETE CASCADE
+    role_id NUMBER(20) PRIMARY KEY,
+    role_name VARCHAR2(50) NOT NULL
 );
 
 CREATE SEQUENCE seq_news START WITH 1 INCREMENT BY 1 NOMAXVALUE;
@@ -74,28 +75,28 @@ BEGIN
 END;
 /
 
-CREATE SEQUENCE seq_author START WITH 1 INCREMENT BY 1 NOMAXVALUE;
+CREATE SEQUENCE seq_authors START WITH 1 INCREMENT BY 1 NOMAXVALUE;
 
-CREATE TRIGGER Author_Insert_Trigger
-BEFORE INSERT ON Author
+CREATE TRIGGER Authors_Insert_Trigger
+BEFORE INSERT ON Authors
 FOR EACH ROW
 BEGIN
     IF (:NEW.author_id IS NULL)
     THEN
-     :NEW.author_id := seq_author.NEXTVAL;
+     :NEW.author_id := seq_authors.NEXTVAL;
     END IF;
 END;
 /
 
-CREATE SEQUENCE seq_tag START WITH 1 INCREMENT BY 1 NOMAXVALUE;
+CREATE SEQUENCE seq_tags START WITH 1 INCREMENT BY 1 NOMAXVALUE;
 
-CREATE TRIGGER Tag_Insert_Trigger
-BEFORE INSERT ON Tag
+CREATE TRIGGER Tags_Insert_Trigger
+BEFORE INSERT ON Tags
 FOR EACH ROW
 BEGIN
     IF (:NEW.tag_id IS NULL)
     THEN
-     :NEW.tag_id := seq_tag.NEXTVAL;
+     :NEW.tag_id := seq_tags.NEXTVAL;
     END IF;
 END;
 /
@@ -113,15 +114,28 @@ BEGIN
 END;
 /
 
-CREATE SEQUENCE seq_user START WITH 1 INCREMENT BY 1 NOMAXVALUE;
+CREATE SEQUENCE seq_users START WITH 1 INCREMENT BY 1 NOMAXVALUE;
 
-CREATE TRIGGER User_Insert_Trigger
-BEFORE INSERT ON User
+CREATE TRIGGER Users_Insert_Trigger
+BEFORE INSERT ON Users
 FOR EACH ROW
 BEGIN
     IF (:NEW.user_id IS NULL)
     THEN
-     :NEW.user_id := seq_user.NEXTVAL;
+     :NEW.user_id := seq_users.NEXTVAL;
+    END IF;
+END;
+/
+
+CREATE SEQUENCE seq_roles START WITH 1 INCREMENT BY 1 NOMAXVALUE;
+
+CREATE TRIGGER Roles_Insert_Trigger
+BEFORE INSERT ON Users
+FOR EACH ROW
+BEGIN
+    IF (:NEW.role_id IS NULL)
+    THEN
+     :NEW.role_id := seq_roles.NEXTVAL;
     END IF;
 END;
 /

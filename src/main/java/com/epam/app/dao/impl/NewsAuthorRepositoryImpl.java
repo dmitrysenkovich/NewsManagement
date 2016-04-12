@@ -16,8 +16,6 @@ import java.sql.SQLException;
  * NewsAuthor repository implementation.
  */
 public class NewsAuthorRepositoryImpl implements NewsAuthorRepository {
-    private static final Logger logger = Logger.getLogger(NewsAuthorRepositoryImpl.class.getName());
-
     private static final String ADD = "INSERT INTO News_Author(news_id, author_id) VALUES(?, ?)";
     private static final String DELETE = "DELETE FROM News_Author WHERE news_id = ? AND author_id = ?";
 
@@ -30,7 +28,6 @@ public class NewsAuthorRepositoryImpl implements NewsAuthorRepository {
 
     @Override
     public void add(NewsAuthor newsAuthor) throws DaoException {
-        logger.info("Adding news to author relation..");
         Connection connection = null;
         PreparedStatement preparedStatement = null;
         try {
@@ -39,22 +36,18 @@ public class NewsAuthorRepositoryImpl implements NewsAuthorRepository {
             preparedStatement.setLong(1, newsAuthor.getNewsId());
             preparedStatement.setLong(2, newsAuthor.getAuthorId());
             preparedStatement.executeUpdate();
-            logger.info("Successfully added news to author relation");
         }
         catch (SQLException e) {
-            logger.error("Error while adding news to author relation: ", e);
             throw new DaoException(e);
         }
         finally {
-            databaseUtils.closeConnectionAndStatement(logger, "Error while adding news to author relation: ",
-                    preparedStatement, connection);
+            databaseUtils.closeConnectionAndStatement(preparedStatement, connection);
         }
     }
 
 
     @Override
     public void delete(NewsAuthor newsAuthor) throws DaoException {
-        logger.info("Deleting news to author relation..");
         Connection connection = null;
         PreparedStatement preparedStatement = null;
         try {
@@ -63,15 +56,12 @@ public class NewsAuthorRepositoryImpl implements NewsAuthorRepository {
             preparedStatement.setLong(1, newsAuthor.getNewsId());
             preparedStatement.setLong(2, newsAuthor.getAuthorId());
             preparedStatement.executeUpdate();
-            logger.info("Successfully deleted news to author relation");
         }
         catch (SQLException e) {
-            logger.error("Error while deleting news to author relation: ", e);
             throw new DaoException(e);
         }
         finally {
-            databaseUtils.closeConnectionAndStatement(logger, "Error while deleting news to author relation: ",
-                    preparedStatement, connection);
+            databaseUtils.closeConnectionAndStatement(preparedStatement, connection);
         }
     }
 }

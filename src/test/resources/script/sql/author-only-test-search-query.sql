@@ -12,4 +12,4 @@ WHERE news_id NOT IN(SELECT news_id
                      FROM Comments))) All_News_Stat
 WHERE EXISTS(SELECT * FROM News_Author NA
              WHERE NA.news_id = All_News_Stat.news_id AND author_id = 1)
-ORDER BY comments_count DESC
+ORDER BY comments_count DESC, modification_date

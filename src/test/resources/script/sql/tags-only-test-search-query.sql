@@ -15,4 +15,4 @@ WHERE news_id IN (SELECT news_id
                   WHERE tag_id IN (1, 2)
                   GROUP BY news_id
                   HAVING COUNT(*) = 2)
-ORDER BY comments_count DESC
+ORDER BY comments_count DESC, modification_date

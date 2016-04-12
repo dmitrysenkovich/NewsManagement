@@ -63,4 +63,50 @@ public class News {
     public void setModificationDate(Date modificationDate) {
         this.modificationDate = modificationDate;
     }
+
+    @Override
+    public boolean equals(Object object) {
+        if (this == object)
+            return true;
+        if (object == null || getClass() != object.getClass())
+            return false;
+
+        News news = (News) object;
+
+        if (newsId != null ? !newsId.equals(news.newsId) : news.newsId != null)
+            return false;
+        if (title != null ? !title.equals(news.title) : news.title != null)
+            return false;
+        if (shortText != null ? !shortText.equals(news.shortText) : news.shortText != null)
+            return false;
+        if (fullText != null ? !fullText.equals(news.fullText) : news.fullText != null)
+            return false;
+        if (creationDate != null ? !creationDate.equals(news.creationDate) : news.creationDate != null)
+            return false;
+        return modificationDate != null ? modificationDate.equals(news.modificationDate) : news.modificationDate == null;
+
+    }
+
+    @Override
+    public int hashCode() {
+        int result = newsId != null ? newsId.hashCode() : 0;
+        result = 31 * result + (title != null ? title.hashCode() : 0);
+        result = 31 * result + (shortText != null ? shortText.hashCode() : 0);
+        result = 31 * result + (fullText != null ? fullText.hashCode() : 0);
+        result = 31 * result + (creationDate != null ? creationDate.hashCode() : 0);
+        result = 31 * result + (modificationDate != null ? modificationDate.hashCode() : 0);
+        return result;
+    }
+
+    @Override
+    public String toString() {
+        return "News{" +
+                "newsId=" + newsId +
+                ", title='" + title + '\'' +
+                ", shortText='" + shortText + '\'' +
+                ", fullText='" + fullText + '\'' +
+                ", creationDate=" + creationDate +
+                ", modificationDate=" + modificationDate +
+                '}';
+    }
 }

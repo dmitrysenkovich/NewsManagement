@@ -19,10 +19,8 @@ import java.util.List;
  * Tag repository implementation.
  */
 public class TagRepositoryImpl implements TagRepository {
-    private static final Logger logger = Logger.getLogger(TagRepositoryImpl.class.getName());
-
     private static final String ADD = "INSERT INTO Tags(tag_name) VALUES(?)";
-    private static final String FIND = "SELECT * FROM Tags WHERE tag_id = ?";
+    private static final String FIND = "SELECT tag_id, tag_name FROM Tags WHERE tag_id = ?";
     private static final String UPDATE = "UPDATE Tags SET tag_name = ? WHERE tag_id = ?";
     private static final String DELETE = "DELETE FROM Tags WHERE tag_id = ?";
 
@@ -34,7 +32,6 @@ public class TagRepositoryImpl implements TagRepository {
 
 
     public Tag add(Tag tag) throws DaoException {
-        logger.info("Adding tag..");
         Connection connection = null;
         PreparedStatement preparedStatement = null;
         try {
@@ -46,22 +43,18 @@ public class TagRepositoryImpl implements TagRepository {
             resultSet.next();
             Long tagId = resultSet.getLong(1);
             tag.setTagId(tagId);
-            logger.info("Successfully added tag");
         }
         catch (SQLException e) {
-            logger.error("Error while adding tag: ", e);
             throw new DaoException(e);
         }
         finally {
-            databaseUtils.closeConnectionAndStatement(logger, "Error while adding tag: ",
-                    preparedStatement, connection);
+            databaseUtils.closeConnectionAndStatement(preparedStatement, connection);
         }
         return tag;
     }
 
 
     public Tag find(Long tagId) throws DaoException {
-        logger.info("Retrieving tag..");
         Connection connection = null;
         PreparedStatement preparedStatement = null;
         Tag tag = null;
@@ -75,22 +68,18 @@ public class TagRepositoryImpl implements TagRepository {
             tag = new Tag();
             tag.setTagId(tagId);
             tag.setTagName(resultSet.getString(2));
-            logger.info("Successfully retrieved tag");
         }
         catch (SQLException e) {
-            logger.error("Error while retrieving tag: ", e);
             throw new DaoException(e);
         }
         finally {
-            databaseUtils.closeConnectionAndStatement(logger, "Error while retrieving tag: ",
-                    preparedStatement, connection);
+            databaseUtils.closeConnectionAndStatement(preparedStatement, connection);
         }
         return tag;
     }
 
 
     public void update(Tag tag) throws DaoException {
-        logger.info("Updating tag..");
         Connection connection = null;
         PreparedStatement preparedStatement = null;
         try {
@@ -99,21 +88,17 @@ public class TagRepositoryImpl implements TagRepository {
             preparedStatement.setString(1, tag.getTagName());
             preparedStatement.setLong(2, tag.getTagId());
             preparedStatement.executeUpdate();
-            logger.info("Successfully updated tag");
         }
         catch (SQLException e) {
-            logger.error("Error while updating tag: ", e);
             throw new DaoException(e);
         }
         finally {
-            databaseUtils.closeConnectionAndStatement(logger, "Error while updating tag: ",
-                    preparedStatement, connection);
+            databaseUtils.closeConnectionAndStatement(preparedStatement, connection);
         }
     }
 
 
     public void delete(Tag tag) throws DaoException {
-        logger.info("Deleting tag..");
         Connection connection = null;
         PreparedStatement preparedStatement = null;
         try {
@@ -121,21 +106,17 @@ public class TagRepositoryImpl implements TagRepository {
             preparedStatement = connection.prepareStatement(DELETE);
             preparedStatement.setLong(1, tag.getTagId());
             preparedStatement.executeUpdate();
-            logger.info("Successfully deleted tag");
         }
         catch (SQLException e) {
-            logger.error("Error while deleting tag: ", e);
             throw new DaoException(e);
         }
         finally {
-            databaseUtils.closeConnectionAndStatement(logger, "Error while deleting tag: ",
-                    preparedStatement, connection);
+            databaseUtils.closeConnectionAndStatement(preparedStatement, connection);
         }
     }
 
 
     public List<Tag> addAll(List<Tag> tags) throws DaoException {
-        logger.info("Adding tags..");
         Connection connection = null;
         PreparedStatement preparedStatement = null;
         try {
@@ -153,15 +134,12 @@ public class TagRepositoryImpl implements TagRepository {
                 tag.setTagId(resultSet.getLong(1));
                 i++;
             }
-            logger.info("Successfully added tags");
         }
         catch (SQLException e) {
-            logger.error("Error while adding tags: ", e);
             throw new DaoException(e);
         }
         finally {
-            databaseUtils.closeConnectionAndStatement(logger, "Error while adding tags: ",
-                    preparedStatement, connection);
+            databaseUtils.closeConnectionAndStatement(preparedStatement, connection);
         }
         return tags;
     }

@@ -17,4 +17,4 @@ WHERE EXISTS(SELECT * FROM News_Author NA
                   WHERE tag_id IN (1, 2)
                   GROUP BY news_id
                   HAVING COUNT(*) = 2)
-ORDER BY comments_count DESC
+ORDER BY comments_count DESC, modification_date

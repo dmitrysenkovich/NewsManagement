@@ -11,4 +11,4 @@ FROM News
 WHERE news_id NOT IN(SELECT news_id
                      FROM Comments))) All_News_Stat
 WHERE {0}{1}{2}
-ORDER BY comments_count DESC
+ORDER BY comments_count DESC, modification_date

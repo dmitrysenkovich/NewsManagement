@@ -18,10 +18,8 @@ import java.sql.Statement;
  * Role repository implementation.
  */
 public class RoleRepositoryImpl implements RoleRepository {
-    private static final Logger logger = Logger.getLogger(RoleRepositoryImpl.class.getName());
-
     private static final String ADD = "INSERT INTO Roles(role_name) VALUES(?)";
-    private static final String FIND = "SELECT * FROM Roles WHERE role_id = ?";
+    private static final String FIND = "SELECT role_id, role_name FROM Roles WHERE role_id = ?";
     private static final String UPDATE = "UPDATE Roles SET role_name = ? WHERE role_id = ?";
     private static final String DELETE = "DELETE FROM Roles WHERE role_id = ?";
 
@@ -34,7 +32,6 @@ public class RoleRepositoryImpl implements RoleRepository {
 
     @Override
     public Role add(Role role) throws DaoException {
-        logger.info("Adding role..");
         Connection connection = null;
         PreparedStatement preparedStatement = null;
         try {
@@ -46,15 +43,12 @@ public class RoleRepositoryImpl implements RoleRepository {
             resultSet.next();
             Long roleId = resultSet.getLong(1);
             role.setRoleId(roleId);
-            logger.info("Successfully added role");
         }
         catch (SQLException e) {
-            logger.error("Error while adding role: ", e);
             throw new DaoException(e);
         }
         finally {
-            databaseUtils.closeConnectionAndStatement(logger, "Error while adding role: ",
-                    preparedStatement, connection);
+            databaseUtils.closeConnectionAndStatement(preparedStatement, connection);
         }
         return role;
     }
@@ -62,7 +56,6 @@ public class RoleRepositoryImpl implements RoleRepository {
 
     @Override
     public Role find(Long roleId) throws DaoException {
-        logger.info("Retrieving role..");
         Connection connection = null;
         PreparedStatement preparedStatement = null;
         Role role = null;
@@ -76,15 +69,12 @@ public class RoleRepositoryImpl implements RoleRepository {
             role = new Role();
             role.setRoleId(roleId);
             role.setRoleName(resultSet.getString(2));
-            logger.info("Successfully retrieved role");
         }
         catch (SQLException e) {
-            logger.error("Error while retrieving role: ", e);
             throw new DaoException(e);
         }
         finally {
-            databaseUtils.closeConnectionAndStatement(logger, "Error while retrieving role: ",
-                    preparedStatement, connection);
+            databaseUtils.closeConnectionAndStatement(preparedStatement, connection);
         }
         return role;
     }
@@ -92,7 +82,6 @@ public class RoleRepositoryImpl implements RoleRepository {
 
     @Override
     public void update(Role role) throws DaoException {
-        logger.info("Updating role..");
         Connection connection = null;
         PreparedStatement preparedStatement = null;
         try {
@@ -101,22 +90,18 @@ public class RoleRepositoryImpl implements RoleRepository {
             preparedStatement.setString(1, role.getRoleName());
             preparedStatement.setLong(2, role.getRoleId());
             preparedStatement.executeUpdate();
-            logger.info("Successfully updated role");
         }
         catch (SQLException e) {
-            logger.error("Error while updating role: ", e);
             throw new DaoException(e);
         }
         finally {
-            databaseUtils.closeConnectionAndStatement(logger, "Error while updating role: ",
-                    preparedStatement, connection);
+            databaseUtils.closeConnectionAndStatement(preparedStatement, connection);
         }
     }
 
 
     @Override
     public void delete(Role role) throws DaoException {
-        logger.info("Deleting role..");
         Connection connection = null;
         PreparedStatement preparedStatement = null;
         try {
@@ -124,15 +109,12 @@ public class RoleRepositoryImpl implements RoleRepository {
             preparedStatement = connection.prepareStatement(DELETE);
             preparedStatement.setLong(1, role.getRoleId());
             preparedStatement.executeUpdate();
-            logger.info("Successfully deleted role");
         }
         catch (SQLException e) {
-            logger.error("Error while deleting role: ", e);
             throw new DaoException(e);
         }
         finally {
-            databaseUtils.closeConnectionAndStatement(logger, "Error while deleting role: ",
-                    preparedStatement, connection);
+            databaseUtils.closeConnectionAndStatement(preparedStatement, connection);
         }
     }
 }
