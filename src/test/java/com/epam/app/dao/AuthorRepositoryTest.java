@@ -4,6 +4,7 @@ import com.epam.app.exception.DaoException;
 import com.epam.app.model.Author;
 import com.github.springtestdbunit.DbUnitTestExecutionListener;
 import com.github.springtestdbunit.annotation.DatabaseSetup;
+import org.dbunit.Assertion;
 import org.dbunit.DefaultDatabaseTester;
 import org.dbunit.database.DatabaseConnection;
 import org.dbunit.dataset.IDataSet;
@@ -23,12 +24,15 @@ import org.unitils.database.util.TransactionMode;
 
 import java.sql.Connection;
 import java.sql.DriverManager;
+import java.sql.Timestamp;
+import java.text.SimpleDateFormat;
 
 import static com.googlecode.catchexception.CatchException.catchException;
 import static com.googlecode.catchexception.CatchException.caughtException;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertNull;
+import static org.junit.Assert.fail;
 
 /**
  * Author repository test.
@@ -132,8 +136,8 @@ public class AuthorRepositoryTest {
     }
 
 
-    @Test
-    public void authorDeleted() throws Exception {
+    @Test(expected = DaoException.class)
+    public void validAuthorNotDeleted() throws Exception {
         Author author = new Author();
         author.setAuthorId(1L);
         authorRepository.delete(author);
@@ -142,13 +146,13 @@ public class AuthorRepositoryTest {
         ITable authorsTable = actualDataSet.getTable("Authors");
         ITable newsAuthorsTable = actualDataSet.getTable("News_Author");
 
-        assertEquals(1, authorsTable.getRowCount());
-        assertEquals(1, newsAuthorsTable.getRowCount());
+        assertEquals(2, authorsTable.getRowCount());
+        assertEquals(3, newsAuthorsTable.getRowCount());
     }
 
 
-    @Test
-    public void authorNotDeleted() throws Exception {
+    @Test(expected = DaoException.class)
+    public void invalidAuthorNotDeleted() throws Exception {
         Author author = new Author();
         author.setAuthorId(-1L);
         authorRepository.delete(author);
@@ -159,5 +163,36 @@ public class AuthorRepositoryTest {
 
         assertEquals(2, authorsTable.getRowCount());
         assertEquals(3, newsAuthorsTable.getRowCount());
+    }
+
+
+    @Test
+    public void authorIsMadeExpired() throws Exception {
+        Timestamp currentDate = new Timestamp(new java.util.Date().getTime());
+        Author author = new Author();
+        author.setAuthorId(1L);
+        author.setExpired(currentDate);
+        authorRepository.makeAuthorExpired(author);
+        Author foundAuthor = authorRepository.find(author.getAuthorId());
+
+        assertEquals(currentDate.getDate(), foundAuthor.getExpired().getDate());
+    }
+
+
+    @Test
+    public void authorIsNotMadeExpired() throws Exception {
+        Author author = new Author();
+        author.setAuthorId(-1L);
+        Timestamp currentDate = new Timestamp(new java.util.Date().getTime());
+        author.setExpired(currentDate);
+
+        connection = DriverManager.getConnection(testDbUrl, testDbUsername, testDbPassword);
+        IDataSet oldDataSet = getActualDataSet(connection);
+        ITable oldAuthorsTable = oldDataSet.getTable("Authors");
+        authorRepository.makeAuthorExpired(author);
+        IDataSet actualDataSet = getActualDataSet(connection);
+        ITable authorsTable = actualDataSet.getTable("Authors");
+
+        Assertion.assertEquals(oldAuthorsTable, authorsTable);
     }
 }

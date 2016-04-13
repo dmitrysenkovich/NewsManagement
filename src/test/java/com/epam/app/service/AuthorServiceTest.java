@@ -83,16 +83,22 @@ public class AuthorServiceTest {
     }
 
 
-    @Test
-    public void deleted() throws Exception {
-        doNothing().when(authorRepository).delete(any(Author.class));
-        authorService.delete(new Author());
-    }
-
-
     @Test(expected = ServiceException.class)
     public void notDeleted() throws Exception {
         doThrow(new DaoException()).when(authorRepository).delete(any(Author.class));
         authorService.delete(new Author());
+    }
+
+    @Test
+    public void authorIsMadeExpired() throws Exception {
+        doNothing().when(authorRepository).makeAuthorExpired(any(Author.class));
+        authorService.makeAuthorExpired(new Author());
+    }
+
+
+    @Test(expected = ServiceException.class)
+    public void authorIsNotMadeExpired() throws Exception {
+        doThrow(new DaoException()).when(authorRepository).makeAuthorExpired(any(Author.class));
+        authorService.makeAuthorExpired(new Author());
     }
 }

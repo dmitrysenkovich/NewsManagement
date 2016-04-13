@@ -12,8 +12,11 @@ public interface CrudRepository<T, E> {
      * Adds new entity.
      * @param t new entity.
      * @return new entity id.
+     * @throws DaoException
      */
-    E add(T t) throws DaoException;
+    default E add(T t) throws DaoException {
+        throw new DaoException();
+    }
 
     /**
      * Finds an entity by its id.
@@ -21,17 +24,23 @@ public interface CrudRepository<T, E> {
      * @return the entity if the needed
      * entity was found, otherwise null.
      */
-    T find(E id) throws DaoException;
+    default T find(E id) throws DaoException {
+        throw new DaoException();
+    }
 
     /**
      * Updates an entity.
      * @param t an entity to be updated.
      */
-    void update(T t) throws DaoException;
+    default void update(T t) throws DaoException {
+        throw new DaoException();
+    }
 
     /**
      * Deletes an entity.
      * @param t the entity to be deleted.
      */
-    void delete(T t) throws DaoException;
+    default void delete(T t) throws DaoException {
+        throw new DaoException();
+    }
 }

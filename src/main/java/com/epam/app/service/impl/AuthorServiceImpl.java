@@ -9,6 +9,8 @@ import org.apache.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.sql.Timestamp;
+
 /**
  * Author service.
  */
@@ -76,5 +78,20 @@ public class AuthorServiceImpl implements AuthorService {
             throw new ServiceException(e);
         }
         logger.info("Successfully deleted author");
+    }
+
+
+    @Override
+    @Transactional(rollbackFor = ServiceException.class)
+    public void makeAuthorExpired(Author author) throws ServiceException {
+        logger.info("Making author expired..");
+        author.setExpired(new Timestamp(new java.util.Date().getTime()));
+        try {
+            authorRepository.makeAuthorExpired(author);
+        } catch (DaoException e) {
+            logger.error("Failed to make author expired");
+            throw new ServiceException(e);
+        }
+        logger.info("Successfully made author expired");
     }
 }

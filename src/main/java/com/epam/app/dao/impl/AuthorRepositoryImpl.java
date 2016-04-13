@@ -23,7 +23,7 @@ public class AuthorRepositoryImpl implements AuthorRepository {
     private static final String FIND = "SELECT author_id, author_name, expired FROM Authors WHERE author_id = ?";
     private static final String UPDATE = "UPDATE Authors SET author_name = ?, expired = ? " +
             "WHERE author_id = ?";
-    private static final String DELETE = "DELETE FROM Authors WHERE author_id = ?";
+    private static final String MAKE_AUTHOR_EXPIRED = "UPDATE Authors SET expired = ? WHERE author_id = ?";
 
     @Autowired
     private DataSource dataSource;
@@ -104,15 +104,15 @@ public class AuthorRepositoryImpl implements AuthorRepository {
         }
     }
 
-
     @Override
-    public void delete(Author author) throws DaoException {
+    public void makeAuthorExpired(Author author) throws DaoException {
         Connection connection = null;
         PreparedStatement preparedStatement = null;
         try {
             connection = dataSource.getConnection();
-            preparedStatement = connection.prepareStatement(DELETE);
-            preparedStatement.setLong(1, author.getAuthorId());
+            preparedStatement = connection.prepareStatement(MAKE_AUTHOR_EXPIRED);
+            preparedStatement.setTimestamp(1, author.getExpired());
+            preparedStatement.setLong(2, author.getAuthorId());
             preparedStatement.executeUpdate();
         }
         catch (SQLException e) {

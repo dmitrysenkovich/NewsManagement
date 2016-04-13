@@ -12,6 +12,7 @@ public interface CommentRepository extends CrudaRepository<Comment, Long> {
     /**
      * Deletes all comments from list.
      * @param comments comments to be deleted.
+     * @throws DaoException
      */
     void deleteAll(List<Comment> comments) throws DaoException;
 }

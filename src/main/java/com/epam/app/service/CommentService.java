@@ -9,13 +9,14 @@ import java.util.List;
 /**
  * Comment service interface.
  */
-public interface CommentService extends RudService<Comment> {
+public interface CommentService extends CrudService<Comment> {
     /**
      * Adds comment to news.
      * @param news news that will be updated.
      * @param comment new comment.
      * @return comment with set id
      * if added successfully.
+     * @throws ServiceException
      */
     Comment add(News news, Comment comment) throws ServiceException;
 
@@ -25,12 +26,14 @@ public interface CommentService extends RudService<Comment> {
      * @param comments comments to be added.
      * @return comments with set id
      * if successfully.
+     * @throws ServiceException
      */
     List<Comment> addAll(News news, List<Comment> comments) throws ServiceException;
 
     /**
      * Deletes all comments from list.
      * @param comments comments to be deleted.
+     * @throws ServiceException
      */
     void deleteAll(List<Comment> comments) throws ServiceException;
 }

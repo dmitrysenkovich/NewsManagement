@@ -11,7 +11,7 @@ import java.util.List;
 /**
  * News service interface
  */
-public interface NewsService extends RudService<News> {
+public interface NewsService extends CrudService<News> {
     /**
      * Adds news.
      * @param news news.
@@ -19,6 +19,7 @@ public interface NewsService extends RudService<News> {
      * @param tags news tags.
      * @return this news with id set
      * if added successfully.
+     * @throws ServiceException
      */
     News add(News news, Author author, List<Tag> tags) throws ServiceException;
 
@@ -27,6 +28,7 @@ public interface NewsService extends RudService<News> {
      * by searchCriteria object contents.
      * @param searchCriteria search criteria.
      * @return all fit news.
+     * @throws ServiceException
      */
     List<News> search(SearchCriteria searchCriteria) throws ServiceException;
 
@@ -35,6 +37,7 @@ public interface NewsService extends RudService<News> {
      * from database sorted by
      * comments count.
      * @return all news sorted by comments count.
+     * @throws ServiceException
      */
     List<News> findAllSorted() throws ServiceException;
 
@@ -42,6 +45,7 @@ public interface NewsService extends RudService<News> {
      * Counts all news.
      * @return news count. -1 if not
      * finished successfully.
+     * @throws ServiceException
      */
     Long countAll() throws ServiceException;
 }

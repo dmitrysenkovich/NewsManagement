@@ -6,12 +6,13 @@ import com.epam.app.model.Author;
 /**
  * Author service interface.
  */
-public interface AuthorService extends RudService<Author> {
+public interface AuthorService extends CrudService<Author> {
     /**
-     * Adds new author.
-     * @param author new author.
-     * @return this new author with id set
-     * if added successfully.
+     * Makes an author expired
+     * setting expired date current.
+     * @param author author that is
+     * to be expired.
+     * @throws ServiceException
      */
-    Author add(Author author) throws ServiceException;
+    void makeAuthorExpired(Author author) throws ServiceException;
 }
