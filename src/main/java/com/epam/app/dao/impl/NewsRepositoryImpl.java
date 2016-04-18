@@ -20,26 +20,26 @@ import java.util.List;
  * News repository implementation.
  */
 public class NewsRepositoryImpl implements NewsRepository {
-    private static final String ADD = "INSERT INTO News(title, short_text, full_text, " +
-            "creation_date, modification_date) VALUES(?, ?, ?, ?, ?)";
-    private static final String FIND = "SELECT news_id, title, short_text, full_text, " +
-            "creation_date, modification_date FROM News WHERE news_id = ?";
-    private static final String UPDATE = "UPDATE News SET title = ?, short_text = ?, " +
-            "full_text = ?, modification_date = ? WHERE news_id = ?";
-    private static final String DELETE = "DELETE FROM News WHERE news_id = ?";
-    private static final String FIND_ALL_SORTED = "(SELECT news_id, title, short_text, " +
-            "full_text, creation_date, modification_date, comments_count " +
-            "FROM News JOIN (SELECT news_id, COUNT(*) AS comments_count " +
-            "                FROM Comments " +
-            "                GROUP BY news_id) AS News_Stat USING(news_id))" +
+    private static final String ADD = "INSERT INTO NEWS(TITLE, SHORT_TEXT, FULL_TEXT, " +
+            "CREATION_DATE, MODIFICATION_DATE) VALUES(?, ?, ?, ?, ?)";
+    private static final String FIND = "SELECT NEWS_ID, TITLE, SHORT_TEXT, FULL_TEXT, " +
+            "CREATION_DATE, MODIFICATION_DATE FROM NEWS WHERE NEWS_ID = ?";
+    private static final String UPDATE = "UPDATE NEWS SET TITLE = ?, SHORT_TEXT = ?, " +
+            "FULL_TEXT = ?, MODIFICATION_DATE = ? WHERE NEWS_ID = ?";
+    private static final String DELETE = "DELETE FROM NEWS WHERE NEWS_ID = ?";
+    private static final String FIND_ALL_SORTED = "(SELECT NEWS_ID, TITLE, SHORT_TEXT, " +
+            "FULL_TEXT, CREATION_DATE, MODIFICATION_DATE, COMMENTS_COUNT " +
+            "FROM NEWS JOIN (SELECT NEWS_ID, COUNT(*) COMMENTS_COUNT " +
+            "                FROM COMMENTS " +
+            "                GROUP BY NEWS_ID) NEWS_STAT USING(NEWS_ID))" +
             "UNION " +
-            "(SELECT news_id, title, short_text, " +
-            "full_text, creation_date, modification_date, 0 AS comments_count " +
-            "FROM News " +
-            "WHERE news_id NOT IN (SELECT news_id " +
-            "                      FROM Comments))" +
-            "ORDER BY comments_count DESC, modification_date";
-    private static final String COUNT_ALL_NEWS = "SELECT COUNT(*) FROM News";
+            "(SELECT NEWS_ID, TITLE, SHORT_TEXT, " +
+            "FULL_TEXT, CREATION_DATE, MODIFICATION_DATE, 0 COMMENTS_COUNT " +
+            "FROM NEWS " +
+            "WHERE NEWS_ID NOT IN (SELECT NEWS_ID " +
+            "                      FROM COMMENTS))" +
+            "ORDER BY COMMENTS_COUNT DESC, MODIFICATION_DATE";
+    private static final String COUNT_ALL_NEWS = "SELECT COUNT(*) FROM NEWS";
 
     @Autowired
     private DataSource dataSource;
@@ -55,7 +55,7 @@ public class NewsRepositoryImpl implements NewsRepository {
         Long newsId = null;
         try {
             connection = dataSource.getConnection();
-            preparedStatement = connection.prepareStatement(ADD, Statement.RETURN_GENERATED_KEYS);
+            preparedStatement = connection.prepareStatement(ADD, new String[]{ "NEWS_ID" });
             preparedStatement.setString(1, news.getTitle());
             preparedStatement.setString(2, news.getShortText());
             preparedStatement.setString(3, news.getFullText());
@@ -151,12 +151,12 @@ public class NewsRepositoryImpl implements NewsRepository {
     @Override
     public List<News> search(final String SEARCH_CRITERIA_QUERY) throws DaoException {
         Connection connection = null;
-        PreparedStatement preparedStatement = null;
+        Statement statement = null;
         List<News> fitNews = null;
         try {
             connection = dataSource.getConnection();
-            preparedStatement = connection.prepareStatement(SEARCH_CRITERIA_QUERY);
-            ResultSet resultSet = preparedStatement.executeQuery();
+            statement = connection.createStatement();
+            ResultSet resultSet = statement.executeQuery(SEARCH_CRITERIA_QUERY);
 
             fitNews = new LinkedList<>();
             while (resultSet.next()) {
@@ -174,7 +174,7 @@ public class NewsRepositoryImpl implements NewsRepository {
             throw new DaoException(e);
         }
         finally {
-            databaseUtils.closeConnectionAndStatement(preparedStatement, connection);
+            databaseUtils.closeConnectionAndStatement(statement, connection);
         }
         return fitNews;
     }
@@ -215,12 +215,12 @@ public class NewsRepositoryImpl implements NewsRepository {
     @Override
     public Long countAll() throws DaoException {
         Connection connection = null;
-        PreparedStatement preparedStatement = null;
+        Statement statement = null;
         Long count = -1L;
         try {
             connection = dataSource.getConnection();
-            preparedStatement = connection.prepareStatement(COUNT_ALL_NEWS);
-            ResultSet resultSet = preparedStatement.executeQuery();
+            statement = connection.createStatement();
+            ResultSet resultSet = statement.executeQuery(COUNT_ALL_NEWS);
             resultSet.next();
             count = resultSet.getLong(1);
         }
@@ -228,7 +228,7 @@ public class NewsRepositoryImpl implements NewsRepository {
             throw new DaoException(e);
         }
         finally {
-            databaseUtils.closeConnectionAndStatement(preparedStatement, connection);
+            databaseUtils.closeConnectionAndStatement(statement, connection);
         }
         return count;
     }

@@ -21,16 +21,6 @@ public interface CommentService extends CrudService<Comment> {
     Comment add(News news, Comment comment) throws ServiceException;
 
     /**
-     * Adds all comments from list to news.
-     * @param news news that will be updated.
-     * @param comments comments to be added.
-     * @return comments with set id
-     * if successfully.
-     * @throws ServiceException
-     */
-    List<Comment> addAll(News news, List<Comment> comments) throws ServiceException;
-
-    /**
      * Deletes all comments from list.
      * @param comments comments to be deleted.
      * @throws ServiceException

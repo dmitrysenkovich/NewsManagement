@@ -19,11 +19,11 @@ import java.sql.Statement;
  * Author repository implementation.
  */
 public class AuthorRepositoryImpl implements AuthorRepository {
-    private static final String ADD = "INSERT INTO Authors(author_name, expired) VALUES(?, ?)";
-    private static final String FIND = "SELECT author_id, author_name, expired FROM Authors WHERE author_id = ?";
-    private static final String UPDATE = "UPDATE Authors SET author_name = ?, expired = ? " +
-            "WHERE author_id = ?";
-    private static final String MAKE_AUTHOR_EXPIRED = "UPDATE Authors SET expired = ? WHERE author_id = ?";
+    private static final String ADD = "INSERT INTO AUTHORS(AUTHOR_NAME, EXPIRED) VALUES(?, ?)";
+    private static final String FIND = "SELECT AUTHOR_ID, AUTHOR_NAME, EXPIRED FROM AUTHORS WHERE AUTHOR_ID = ?";
+    private static final String UPDATE = "UPDATE AUTHORS SET AUTHOR_NAME = ?, EXPIRED = ? " +
+            "WHERE AUTHOR_ID = ?";
+    private static final String MAKE_AUTHOR_EXPIRED = "UPDATE AUTHORS SET EXPIRED = ? WHERE AUTHOR_ID = ?";
 
     @Autowired
     private DataSource dataSource;
@@ -39,7 +39,7 @@ public class AuthorRepositoryImpl implements AuthorRepository {
         Long authorId = null;
         try {
             connection = dataSource.getConnection();
-            preparedStatement = connection.prepareStatement(ADD, Statement.RETURN_GENERATED_KEYS);
+            preparedStatement = connection.prepareStatement(ADD, new String[]{ "AUTHOR_ID" });
             preparedStatement.setString(1, author.getAuthorName());
             preparedStatement.setTimestamp(2, author.getExpired());
             preparedStatement.executeUpdate();

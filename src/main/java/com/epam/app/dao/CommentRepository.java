@@ -8,7 +8,7 @@ import java.util.List;
 /**
  * Comment repository interface.
  */
-public interface CommentRepository extends CrudaRepository<Comment, Long> {
+public interface CommentRepository extends CrudRepository<Comment, Long> {
     /**
      * Deletes all comments from list.
      * @param comments comments to be deleted.

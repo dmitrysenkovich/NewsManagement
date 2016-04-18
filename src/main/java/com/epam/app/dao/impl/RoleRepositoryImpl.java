@@ -18,10 +18,10 @@ import java.sql.Statement;
  * Role repository implementation.
  */
 public class RoleRepositoryImpl implements RoleRepository {
-    private static final String ADD = "INSERT INTO Roles(role_name) VALUES(?)";
-    private static final String FIND = "SELECT role_id, role_name FROM Roles WHERE role_id = ?";
-    private static final String UPDATE = "UPDATE Roles SET role_name = ? WHERE role_id = ?";
-    private static final String DELETE = "DELETE FROM Roles WHERE role_id = ?";
+    private static final String ADD = "INSERT INTO ROLES(ROLE_NAME) VALUES(?)";
+    private static final String FIND = "SELECT ROLE_ID, ROLE_NAME FROM ROLES WHERE ROLE_ID = ?";
+    private static final String UPDATE = "UPDATE ROLES SET ROLE_NAME = ? WHERE ROLE_ID = ?";
+    private static final String DELETE = "DELETE FROM ROLES WHERE ROLE_ID = ?";
 
     @Autowired
     private DataSource dataSource;
@@ -37,7 +37,7 @@ public class RoleRepositoryImpl implements RoleRepository {
         Long roleId = null;
         try {
             connection = dataSource.getConnection();
-            preparedStatement = connection.prepareStatement(ADD, Statement.RETURN_GENERATED_KEYS);
+            preparedStatement = connection.prepareStatement(ADD, new String[]{ "ROLE_ID" });
             preparedStatement.setString(1, role.getRoleName());
             preparedStatement.executeUpdate();
             ResultSet resultSet = preparedStatement.getGeneratedKeys();

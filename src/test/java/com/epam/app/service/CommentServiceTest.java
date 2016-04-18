@@ -107,40 +107,6 @@ public class CommentServiceTest {
 
 
     @Test
-    public void addedAll() throws Exception {
-        News news = new News();
-        news.setNewsId(1L);
-        List<Comment> comments = new LinkedList<>();
-        Comment comment1 = new Comment();
-        comment1.setCommentId(1L);
-        comments.add(comment1);
-        Comment comment2 = new Comment();
-        comment2.setCommentId(1L);
-        comments.add(comment2);
-        List<Long> commentsIds = new LinkedList<>();
-        commentsIds.add(1L);
-        commentsIds.add(2L);
-        when(commentRepository.addAll(comments)).thenReturn(commentsIds);
-        List<Comment> returnedComments = commentService.addAll(news, comments);
-
-        for (Comment comment : returnedComments)
-            assertEquals((Long) 1L, comment.getNewsId());
-    }
-
-
-    @Test(expected = ServiceException.class)
-    public void notAddedAll() throws Exception {
-        News news = new News();
-        news.setNewsId(1L);
-        List<Comment> comments = new LinkedList<>();
-        comments.add(new Comment());
-        comments.add(new Comment());
-        doThrow(new DaoException()).when(commentRepository).addAll(any(List.class));
-        commentService.addAll(news, comments);
-    }
-
-
-    @Test
     public void deletedAll() throws Exception {
         List<Comment> comments = new LinkedList<>();
         comments.add(new Comment());

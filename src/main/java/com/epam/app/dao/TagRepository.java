@@ -5,5 +5,5 @@ import com.epam.app.model.Tag;
 /**
  * Tag repository.
  */
-public interface TagRepository extends CrudaRepository<Tag, Long> {
+public interface TagRepository extends CrudRepository<Tag, Long> {
 }

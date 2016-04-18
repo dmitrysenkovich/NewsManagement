@@ -28,7 +28,6 @@ import static com.googlecode.catchexception.CatchException.catchException;
 import static com.googlecode.catchexception.CatchException.caughtException;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertNull;
 
 /**
  * User repository test.
@@ -75,7 +74,7 @@ public class UserRepositoryTest {
         Long userId = userRepository.add(user);
         connection = DriverManager.getConnection(testDbUrl, testDbUsername, testDbPassword);
         IDataSet actualDataSet = getActualDataSet(connection);
-        ITable usersTable = actualDataSet.getTable("Users");
+        ITable usersTable = actualDataSet.getTable("USERS");
 
         assertEquals(2, usersTable.getRowCount());
         assertNotNull(userId);
@@ -90,10 +89,9 @@ public class UserRepositoryTest {
         assert caughtException() instanceof DaoException;
         connection = DriverManager.getConnection(testDbUrl, testDbUsername, testDbPassword);
         IDataSet actualDataSet = getActualDataSet(connection);
-        ITable usersTable = actualDataSet.getTable("Users");
+        ITable usersTable = actualDataSet.getTable("USERS");
 
         assertEquals(1, usersTable.getRowCount());
-        assertNull(user.getUserId());
     }
 
 
@@ -108,10 +106,9 @@ public class UserRepositoryTest {
         assert caughtException() instanceof DaoException;
         connection = DriverManager.getConnection(testDbUrl, testDbUsername, testDbPassword);
         IDataSet actualDataSet = getActualDataSet(connection);
-        ITable usersTable = actualDataSet.getTable("Users");
+        ITable usersTable = actualDataSet.getTable("USERS");
 
         assertEquals(1, usersTable.getRowCount());
-        assertNull(user.getUserId());
     }
 
 
@@ -183,7 +180,7 @@ public class UserRepositoryTest {
         userRepository.delete(user);
         connection = DriverManager.getConnection(testDbUrl, testDbUsername, testDbPassword);
         IDataSet actualDataSet = getActualDataSet(connection);
-        ITable usersTable = actualDataSet.getTable("Users");
+        ITable usersTable = actualDataSet.getTable("USERS");
 
         assertEquals(0, usersTable.getRowCount());
     }
@@ -196,7 +193,7 @@ public class UserRepositoryTest {
         userRepository.delete(user);
         connection = DriverManager.getConnection(testDbUrl, testDbUsername, testDbPassword);
         IDataSet actualDataSet = getActualDataSet(connection);
-        ITable usersTable = actualDataSet.getTable("Users");
+        ITable usersTable = actualDataSet.getTable("USERS");
 
         assertEquals(1, usersTable.getRowCount());
     }

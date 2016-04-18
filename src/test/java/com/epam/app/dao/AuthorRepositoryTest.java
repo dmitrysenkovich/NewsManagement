@@ -25,14 +25,11 @@ import org.unitils.database.util.TransactionMode;
 import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.Timestamp;
-import java.text.SimpleDateFormat;
 
 import static com.googlecode.catchexception.CatchException.catchException;
 import static com.googlecode.catchexception.CatchException.caughtException;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertNull;
-import static org.junit.Assert.fail;
 
 /**
  * Author repository test.
@@ -76,7 +73,7 @@ public class AuthorRepositoryTest {
         Long authorId = authorRepository.add(author);
         connection = DriverManager.getConnection(testDbUrl, testDbUsername, testDbPassword);
         IDataSet actualDataSet = getActualDataSet(connection);
-        ITable authorsTable = actualDataSet.getTable("Authors");
+        ITable authorsTable = actualDataSet.getTable("AUTHORS");
 
         assertEquals(3, authorsTable.getRowCount());
         assertNotNull(authorId);
@@ -90,10 +87,9 @@ public class AuthorRepositoryTest {
         assert caughtException() instanceof DaoException;
         connection = DriverManager.getConnection(testDbUrl, testDbUsername, testDbPassword);
         IDataSet actualDataSet = getActualDataSet(connection);
-        ITable authorsTable = actualDataSet.getTable("Authors");
+        ITable authorsTable = actualDataSet.getTable("AUTHORS");
 
         assertEquals(2, authorsTable.getRowCount());
-        assertNull(author.getAuthorId());
     }
 
 
@@ -143,8 +139,8 @@ public class AuthorRepositoryTest {
         authorRepository.delete(author);
         connection = DriverManager.getConnection(testDbUrl, testDbUsername, testDbPassword);
         IDataSet actualDataSet = getActualDataSet(connection);
-        ITable authorsTable = actualDataSet.getTable("Authors");
-        ITable newsAuthorsTable = actualDataSet.getTable("News_Author");
+        ITable authorsTable = actualDataSet.getTable("AUTHORS");
+        ITable newsAuthorsTable = actualDataSet.getTable("NEWS_AUTHOR");
 
         assertEquals(2, authorsTable.getRowCount());
         assertEquals(3, newsAuthorsTable.getRowCount());
@@ -158,8 +154,8 @@ public class AuthorRepositoryTest {
         authorRepository.delete(author);
         connection = DriverManager.getConnection(testDbUrl, testDbUsername, testDbPassword);
         IDataSet actualDataSet = getActualDataSet(connection);
-        ITable authorsTable = actualDataSet.getTable("Authors");
-        ITable newsAuthorsTable = actualDataSet.getTable("News_Author");
+        ITable authorsTable = actualDataSet.getTable("AUTHORS");
+        ITable newsAuthorsTable = actualDataSet.getTable("NEWS_AUTHOR");
 
         assertEquals(2, authorsTable.getRowCount());
         assertEquals(3, newsAuthorsTable.getRowCount());
@@ -188,10 +184,10 @@ public class AuthorRepositoryTest {
 
         connection = DriverManager.getConnection(testDbUrl, testDbUsername, testDbPassword);
         IDataSet oldDataSet = getActualDataSet(connection);
-        ITable oldAuthorsTable = oldDataSet.getTable("Authors");
+        ITable oldAuthorsTable = oldDataSet.getTable("AUTHORS");
         authorRepository.makeAuthorExpired(author);
         IDataSet actualDataSet = getActualDataSet(connection);
-        ITable authorsTable = actualDataSet.getTable("Authors");
+        ITable authorsTable = actualDataSet.getTable("AUTHORS");
 
         Assertion.assertEquals(oldAuthorsTable, authorsTable);
     }

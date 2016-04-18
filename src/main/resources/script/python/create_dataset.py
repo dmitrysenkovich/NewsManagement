@@ -22,18 +22,18 @@ COMMENTS_COUNT = 600
 TAGS_COUNT_PER_NEWS = 8
 AUTHORS_COUNT_PER_NEWS = 3
 
-ROLES = ['Admin', 'User', 'Moderator']
+ROLES = ['ADMIN', 'USER', 'MODERATOR']
 
 DATA_SQL_FILE_PATH = '../sql/data.sql'
 
-INSERT_NEWS_ROW = 'INSERT INTO News VALUES({0}, \'{1}\', \'{2}\', \'{3}\', \'{4}\', \'{5}\');\n'
-INSERT_TAG_ROW = 'INSERT INTO Tags VALUES({0}, \'{1}\');\n'
-INSERT_NEWS_TAG_ROW = 'INSERT INTO News_Tag VALUES({0}, {1});\n'
-INSERT_AUTHOR_ROW = 'INSERT INTO Authors VALUES({0}, \'{1}\', \'{2}\');\n'
-INSERT_NEWS_AUTHOR_ROW = 'INSERT INTO News_Author VALUES({0}, {1});\n'
-INSERT_COMMENT_ROW = 'INSERT INTO Comments VALUES({0}, {1}, \'{2}\', \'{3}\');\n'
-INSERT_USER_ROW = 'INSERT INTO Users VALUES({0}, {1}, \'{2}\', \'{3}\', \'{4}\');\n'
-INSERT_ROLE_ROW = 'INSERT INTO Roles VALUES({0}, \'{1}\');\n'
+INSERT_NEWS_ROW = 'INSERT INTO NEWS VALUES({0}, \'{1}\', \'{2}\', \'{3}\', TO_TIMESTAMP(\'{4}\', \'YYYY-MM-DD HH24:MI:SS\'), TO_DATE(\'{5}\', \'YYYY-MM-DD\'));\n'
+INSERT_TAG_ROW = 'INSERT INTO TAGS VALUES({0}, \'{1}\');\n'
+INSERT_NEWS_TAG_ROW = 'INSERT INTO NEWS_TAG VALUES({0}, {1});\n'
+INSERT_AUTHOR_ROW = 'INSERT INTO AUTHORS VALUES({0}, \'{1}\', TO_TIMESTAMP(\'{2}\', \'YYYY-MM-DD HH24:MI:SS\'));\n'
+INSERT_NEWS_AUTHOR_ROW = 'INSERT INTO NEWS_AUTHOR VALUES({0}, {1});\n'
+INSERT_COMMENT_ROW = 'INSERT INTO COMMENTS VALUES({0}, {1}, \'{2}\', TO_TIMESTAMP(\'{3}\', \'YYYY-MM-DD HH24:MI:SS\'));\n'
+INSERT_USER_ROW = 'INSERT INTO USERS VALUES({0}, {1}, \'{2}\', \'{3}\', \'{4}\');\n'
+INSERT_ROLE_ROW = 'INSERT INTO ROLES VALUES({0}, \'{1}\');\n'
 
 
 def get_html(url):
@@ -47,17 +47,17 @@ def parse_reuter_main_page_html(reuter_main_page_html):
     short_texts = []
     news_links = []
     soup = BeautifulSoup(reuter_main_page_html, 'html.parser')
-    features = soup.find_all('div', { 'class' : 'feature' })
+    story_contents = soup.find_all('div', { 'class' : 'story-content' })
     for i in range(10):
-        feature = features[i]
-        titles.append(feature.h2.a.getText())
-        short_texts.append(feature.p.getText())
-        news_links.append(feature.h2.a['href'])
+        story_content = story_contents[i]
+        titles.append(story_content.h3.a.getText())
+        short_texts.append(story_content.p.getText())
+        news_links.append(story_content.h3.a['href'])
     return titles, short_texts, news_links
 
 
 def parse_news_page_html(news_page_html):
-    author = ''
+    authors = []
     creation_date = ''
     modification_date = ''
     full_text = ''
@@ -65,11 +65,15 @@ def parse_news_page_html(news_page_html):
     soup = BeautifulSoup(news_page_html, 'html.parser')
     meta_information_json_in_string = soup.find('script', { 'type' : 'application/ld+json' }).getText()
     meta_information_json = json.loads(meta_information_json_in_string)
-    author = meta_information_json['creator']
+    if 'dateCreated' not in meta_information_json:
+        meta_information_json = meta_information_json['article']
     creation_date = meta_information_json['dateCreated']
     creation_date = creation_date.replace('T', ' ')[:-5]
     tags = meta_information_json['keywords']
     modification_date = creation_date[:10]
+    author_string = soup.find('meta', { 'property' : 'og:article:author' })['content']
+    author_string = author_string.replace('By ', '').replace(' and', ',')
+    authors = [author.strip() for author in author_string.split(',')]
     raw_paragraphs = soup.find('span', { 'id' : 'articleText' }).find_all('p')
     for raw_paragraph in raw_paragraphs:
         raw_paragraph_text = str(raw_paragraph)
@@ -82,7 +86,7 @@ def parse_news_page_html(news_page_html):
         if re.search('[a-zA-Z]', clean_text):
             full_text += clean_text + '\n'
     full_text = full_text.rstrip()
-    return author, creation_date, modification_date, full_text, tags
+    return authors, creation_date, modification_date, full_text, tags
 
 
 def get_comments_from_reddit_news(reddit_news_html):
@@ -153,8 +157,10 @@ def generate_dataset(full_texts, titles, short_texts, creation_dates, \
 
     print('Adding authors..')
     authors_count = len(authors)
+    creation_dates_count = len(creation_dates)
+    print(authors_count)
     for i in range(authors_count):
-        data_sql_file.write(INSERT_AUTHOR_ROW.format(i+1, MySQLdb.escape_string(authors[i]).decode('UTF-8'), creation_dates[i]))
+        data_sql_file.write(INSERT_AUTHOR_ROW.format(i+1, MySQLdb.escape_string(authors[i]).decode('UTF-8'), creation_dates[i%creation_dates_count]))
     print('Added authors')
 
     data_sql_file.write('\n')
@@ -224,9 +230,8 @@ def main():
     for news_link in news_links:
         news_url = REUTERS_SITE + news_link
         news_page_html = get_html(news_url)
-        author, creation_date, modification_date, full_text, tags = parse_news_page_html(news_page_html)
-        if not author[0] == '':
-            authors.append(author[0])
+        news_authors, creation_date, modification_date, full_text, tags = parse_news_page_html(news_page_html)
+        authors.extend(news_authors)
         creation_dates.append(creation_date)
         modification_dates.append(modification_date)
         full_texts.append(full_text)

@@ -4,7 +4,6 @@ import com.epam.app.dao.CommentRepository;
 import com.epam.app.exception.DaoException;
 import com.epam.app.model.Comment;
 import com.epam.app.utils.DatabaseUtils;
-import org.apache.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 
 import javax.sql.DataSource;
@@ -12,7 +11,6 @@ import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
-import java.sql.Statement;
 import java.util.LinkedList;
 import java.util.List;
 
@@ -20,11 +18,11 @@ import java.util.List;
  * Comment repository implementation.
  */
 public class CommentRepositoryImpl implements CommentRepository {
-    private static final String ADD = "INSERT INTO Comments(news_id, comment_text, creation_date) VALUES(?, ?, ?)";
-    private static final String FIND = "SELECT comment_id, news_id, comment_text, creation_date " +
-            "FROM Comments WHERE comment_id = ?";
-    private static final String UPDATE = "UPDATE Comments SET comment_text = ? WHERE comment_id = ?";
-    private static final String DELETE = "DELETE FROM Comments WHERE comment_id = ?";
+    private static final String ADD = "INSERT INTO COMMENTS(NEWS_ID, COMMENT_TEXT, CREATION_DATE) VALUES(?, ?, ?)";
+    private static final String FIND = "SELECT COMMENT_ID, NEWS_ID, COMMENT_TEXT, CREATION_DATE " +
+            "FROM COMMENTS WHERE COMMENT_ID = ?";
+    private static final String UPDATE = "UPDATE COMMENTS SET COMMENT_TEXT = ? WHERE COMMENT_ID = ?";
+    private static final String DELETE = "DELETE FROM COMMENTS WHERE COMMENT_ID = ?";
 
     @Autowired
     private DataSource dataSource;
@@ -40,7 +38,7 @@ public class CommentRepositoryImpl implements CommentRepository {
         Long commentId = null;
         try {
             connection = dataSource.getConnection();
-            preparedStatement = connection.prepareStatement(ADD, Statement.RETURN_GENERATED_KEYS);
+            preparedStatement = connection.prepareStatement(ADD, new String[]{ "COMMENT_ID" });
             preparedStatement.setLong(1, comment.getNewsId());
             preparedStatement.setString(2, comment.getCommentText());
             preparedStatement.setTimestamp(3, comment.getCreationDate());
@@ -123,36 +121,6 @@ public class CommentRepositoryImpl implements CommentRepository {
         finally {
             databaseUtils.closeConnectionAndStatement(preparedStatement, connection);
         }
-    }
-
-
-    @Override
-    public List<Long> addAll(List<Comment> comments) throws DaoException {
-        Connection connection = null;
-        PreparedStatement preparedStatement = null;
-        List<Long> ids = null;
-        try {
-            connection = dataSource.getConnection();
-            preparedStatement = connection.prepareStatement(ADD, Statement.RETURN_GENERATED_KEYS);
-            for (Comment comment : comments) {
-                preparedStatement.setLong(1, comment.getNewsId());
-                preparedStatement.setString(2, comment.getCommentText());
-                preparedStatement.setTimestamp(3, comment.getCreationDate());
-                preparedStatement.addBatch();
-            }
-            preparedStatement.executeBatch();
-            ResultSet resultSet = preparedStatement.getGeneratedKeys();
-            ids = new LinkedList<>();
-            while (resultSet.next())
-                ids.add(resultSet.getLong(1));
-        }
-        catch (SQLException e) {
-            throw new DaoException(e);
-        }
-        finally {
-            databaseUtils.closeConnectionAndStatement(preparedStatement, connection);
-        }
-        return ids;
     }
 
 

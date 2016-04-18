@@ -1,7 +1,9 @@
 package com.epam.app.dao;
 
 import com.epam.app.exception.DaoException;
+import com.epam.app.model.News;
 import com.epam.app.model.NewsTag;
+import com.epam.app.model.Tag;
 import com.github.springtestdbunit.DbUnitTestExecutionListener;
 import com.github.springtestdbunit.annotation.DatabaseSetup;
 import org.dbunit.DefaultDatabaseTester;
@@ -23,6 +25,8 @@ import org.unitils.database.util.TransactionMode;
 
 import java.sql.Connection;
 import java.sql.DriverManager;
+import java.util.LinkedList;
+import java.util.List;
 
 import static com.googlecode.catchexception.CatchException.catchException;
 import static com.googlecode.catchexception.CatchException.caughtException;
@@ -71,7 +75,7 @@ public class NewsTagRepositoryTest {
         newsTagRepository.add(newsTag);
         connection = DriverManager.getConnection(testDbUrl, testDbUsername, testDbPassword);
         IDataSet actualDataSet = getActualDataSet(connection);
-        ITable newsTagTable = actualDataSet.getTable("News_Tag");
+        ITable newsTagTable = actualDataSet.getTable("NEWS_TAG");
 
         assertEquals(6, newsTagTable.getRowCount());
     }
@@ -86,7 +90,7 @@ public class NewsTagRepositoryTest {
         assert caughtException() instanceof DaoException;
         connection = DriverManager.getConnection(testDbUrl, testDbUsername, testDbPassword);
         IDataSet actualDataSet = getActualDataSet(connection);
-        ITable newsTagTable = actualDataSet.getTable("News_Tag");
+        ITable newsTagTable = actualDataSet.getTable("NEWS_TAG");
 
         assertEquals(5, newsTagTable.getRowCount());
     }
@@ -101,7 +105,7 @@ public class NewsTagRepositoryTest {
         assert caughtException() instanceof DaoException;
         connection = DriverManager.getConnection(testDbUrl, testDbUsername, testDbPassword);
         IDataSet actualDataSet = getActualDataSet(connection);
-        ITable newsTagTable = actualDataSet.getTable("News_Tag");
+        ITable newsTagTable = actualDataSet.getTable("NEWS_TAG");
 
         assertEquals(5, newsTagTable.getRowCount());
     }
@@ -115,7 +119,7 @@ public class NewsTagRepositoryTest {
         newsTagRepository.delete(newsTag);
         connection = DriverManager.getConnection(testDbUrl, testDbUsername, testDbPassword);
         IDataSet actualDataSet = getActualDataSet(connection);
-        ITable newsTagTable = actualDataSet.getTable("News_Tag");
+        ITable newsTagTable = actualDataSet.getTable("NEWS_TAG");
 
         assertEquals(4, newsTagTable.getRowCount());
     }
@@ -129,7 +133,7 @@ public class NewsTagRepositoryTest {
         newsTagRepository.delete(newsTag);
         connection = DriverManager.getConnection(testDbUrl, testDbUsername, testDbPassword);
         IDataSet actualDataSet = getActualDataSet(connection);
-        ITable newsTagTable = actualDataSet.getTable("News_Tag");
+        ITable newsTagTable = actualDataSet.getTable("NEWS_TAG");
 
         assertEquals(5, newsTagTable.getRowCount());
     }
@@ -143,7 +147,90 @@ public class NewsTagRepositoryTest {
         newsTagRepository.delete(newsTag);
         connection = DriverManager.getConnection(testDbUrl, testDbUsername, testDbPassword);
         IDataSet actualDataSet = getActualDataSet(connection);
-        ITable newsTagTable = actualDataSet.getTable("News_Tag");
+        ITable newsTagTable = actualDataSet.getTable("NEWS_TAG");
+
+        assertEquals(5, newsTagTable.getRowCount());
+    }
+
+
+    @Test
+    public void newsTagRelationsAdded() throws Exception {
+        News news = new News();
+        news.setNewsId(2L);
+        List<Tag> tags = new LinkedList<>();
+        Tag tag1 = new Tag();
+        tag1.setTagId(2L);
+        Tag tag2 = new Tag();
+        tag2.setTagId(3L);
+        tags.add(tag1);
+        tags.add(tag2);
+        newsTagRepository.addAll(news, tags);
+        connection = DriverManager.getConnection(testDbUrl, testDbUsername, testDbPassword);
+        IDataSet actualDataSet = getActualDataSet(connection);
+        ITable newsTagTable = actualDataSet.getTable("NEWS_TAG");
+
+        assertEquals(7, newsTagTable.getRowCount());
+    }
+
+
+    @Test
+    public void newsTagRelationsNotAllAdded() throws Exception {
+        News news = new News();
+        news.setNewsId(2L);
+        List<Tag> tags = new LinkedList<>();
+        Tag tag1 = new Tag();
+        tag1.setTagId(2L);
+        Tag tag2 = new Tag();
+        tag2.setTagId(-1L);
+        tags.add(tag1);
+        tags.add(tag2);
+        catchException(() -> newsTagRepository.addAll(news, tags));
+        assert caughtException() instanceof DaoException;
+        connection = DriverManager.getConnection(testDbUrl, testDbUsername, testDbPassword);
+        IDataSet actualDataSet = getActualDataSet(connection);
+        ITable newsTagTable = actualDataSet.getTable("NEWS_TAG");
+
+        assertEquals(6, newsTagTable.getRowCount());
+    }
+
+
+    @Test
+    public void newsTagRelationsNotAddedInvalidTags() throws Exception {
+        News news = new News();
+        news.setNewsId(2L);
+        List<Tag> tags = new LinkedList<>();
+        Tag tag1 = new Tag();
+        tag1.setTagId(-1L);
+        Tag tag2 = new Tag();
+        tag2.setTagId(-1L);
+        tags.add(tag1);
+        tags.add(tag2);
+        catchException(() -> newsTagRepository.addAll(news, tags));
+        assert caughtException() instanceof DaoException;
+        connection = DriverManager.getConnection(testDbUrl, testDbUsername, testDbPassword);
+        IDataSet actualDataSet = getActualDataSet(connection);
+        ITable newsTagTable = actualDataSet.getTable("NEWS_TAG");
+
+        assertEquals(5, newsTagTable.getRowCount());
+    }
+
+
+    @Test
+    public void newsTagRelationsNotAddedInvalidNews() throws Exception {
+        News news = new News();
+        news.setNewsId(-1L);
+        List<Tag> tags = new LinkedList<>();
+        Tag tag1 = new Tag();
+        tag1.setTagId(2L);
+        Tag tag2 = new Tag();
+        tag2.setTagId(3L);
+        tags.add(tag1);
+        tags.add(tag2);
+        catchException(() -> newsTagRepository.addAll(news, tags));
+        assert caughtException() instanceof DaoException;
+        connection = DriverManager.getConnection(testDbUrl, testDbUsername, testDbPassword);
+        IDataSet actualDataSet = getActualDataSet(connection);
+        ITable newsTagTable = actualDataSet.getTable("NEWS_TAG");
 
         assertEquals(5, newsTagTable.getRowCount());
     }

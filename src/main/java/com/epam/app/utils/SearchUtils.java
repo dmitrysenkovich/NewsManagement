@@ -2,8 +2,10 @@ package com.epam.app.utils;
 
 import org.apache.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Component;
 
+import javax.annotation.PostConstruct;
 import java.text.MessageFormat;
 import java.util.List;
 
@@ -28,6 +30,7 @@ public class SearchUtils {
     /**
      * Initializes script parts.
      */
+    @PostConstruct
     public void init() {
         String searchScriptDirectoryPath = scriptFileUtils.getSearchScriptDirectoryPath();
         MAIN_PART = scriptFileUtils.getScriptPart(searchScriptDirectoryPath, MAIN_PART_FILE_NAME, logger,

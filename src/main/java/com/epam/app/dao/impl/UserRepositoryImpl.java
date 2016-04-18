@@ -18,12 +18,12 @@ import java.sql.Statement;
  * User repository implementation.
  */
 public class UserRepositoryImpl implements UserRepository {
-    private static final String ADD = "INSERT INTO Users(role_id, user_name, login, password) VALUES(?, ?, ?, ?)";
-    private static final String FIND = "SELECT user_id, role_id, user_name, login, " +
-            "password FROM Users WHERE user_id = ?";
-    private static final String UPDATE = "UPDATE Users SET role_id = ?, user_name = ?, login = ?, password = ? " +
-            "WHERE user_id = ?";
-    private static final String DELETE = "DELETE FROM Users WHERE user_id = ?";
+    private static final String ADD = "INSERT INTO USERS(ROLE_ID, USER_NAME, LOGIN, PASSWORD) VALUES(?, ?, ?, ?)";
+    private static final String FIND = "SELECT USER_ID, ROLE_ID, USER_NAME, LOGIN, " +
+            "PASSWORD FROM USERS WHERE USER_ID = ?";
+    private static final String UPDATE = "UPDATE USERS SET ROLE_ID = ?, USER_NAME = ?, LOGIN = ?, PASSWORD = ? " +
+            "WHERE USER_ID = ?";
+    private static final String DELETE = "DELETE FROM USERS WHERE USER_ID = ?";
 
     @Autowired
     private DataSource dataSource;
@@ -32,13 +32,14 @@ public class UserRepositoryImpl implements UserRepository {
     private DatabaseUtils databaseUtils;
 
 
+    @Override
     public Long add(User user) throws DaoException {
         Connection connection = null;
         PreparedStatement preparedStatement = null;
         Long userId = null;
         try {
             connection = dataSource.getConnection();
-            preparedStatement = connection.prepareStatement(ADD, Statement.RETURN_GENERATED_KEYS);
+            preparedStatement = connection.prepareStatement(ADD, new String[]{ "USER_ID" });
             preparedStatement.setLong(1, user.getRoleId());
             preparedStatement.setString(2, user.getUserName());
             preparedStatement.setString(3, user.getLogin());
@@ -58,6 +59,7 @@ public class UserRepositoryImpl implements UserRepository {
     }
 
 
+    @Override
     public User find(Long userId) throws DaoException {
         Connection connection = null;
         PreparedStatement preparedStatement = null;
@@ -86,6 +88,7 @@ public class UserRepositoryImpl implements UserRepository {
     }
 
 
+    @Override
     public void update(User user) throws DaoException {
         Connection connection = null;
         PreparedStatement preparedStatement = null;
@@ -108,6 +111,7 @@ public class UserRepositoryImpl implements UserRepository {
     }
 
 
+    @Override
     public void delete(User user) throws DaoException {
         Connection connection = null;
         PreparedStatement preparedStatement = null;

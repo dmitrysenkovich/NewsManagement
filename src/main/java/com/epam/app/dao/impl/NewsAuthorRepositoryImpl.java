@@ -16,8 +16,8 @@ import java.sql.SQLException;
  * NewsAuthor repository implementation.
  */
 public class NewsAuthorRepositoryImpl implements NewsAuthorRepository {
-    private static final String ADD = "INSERT INTO News_Author(news_id, author_id) VALUES(?, ?)";
-    private static final String DELETE = "DELETE FROM News_Author WHERE news_id = ? AND author_id = ?";
+    private static final String ADD = "INSERT INTO NEWS_AUTHOR(NEWS_ID, AUTHOR_ID) VALUES(?, ?)";
+    private static final String DELETE = "DELETE FROM NEWS_AUTHOR WHERE NEWS_ID = ? AND AUTHOR_ID = ?";
 
     @Autowired
     private DataSource dataSource;

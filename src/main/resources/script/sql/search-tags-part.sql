@@ -1,5 +1,5 @@
-news_id IN (SELECT news_id
-                  FROM News_Tag
-                  WHERE tag_id IN {0}
-                  GROUP BY news_id
+NEWS_ID IN (SELECT NEWS_ID
+                  FROM NEWS_TAG
+                  WHERE TAG_ID IN {0}
+                  GROUP BY NEWS_ID
                   HAVING COUNT(*) = {1})

@@ -67,19 +67,15 @@ public class NewsServiceImpl implements NewsService {
             logger.info("Successfully added author to news");
         }
 
-        if (tags != null) {
+        if (tags != null && !tags.isEmpty()) {
             logger.info("Adding tags to news..");
-            for (Tag tag : tags) {
-                NewsTag newsTag = new NewsTag();
-                newsTag.setNewsId(news.getNewsId());
-                newsTag.setTagId(tag.getTagId());
-                try {
-                    newsTagRepository.add(newsTag);
-                } catch (DaoException e) {
-                    logger.error("Failed to add tags to news");
-                    logger.error("Failed to add news");
-                    throw new ServiceException(e);
-                }
+
+            try {
+                newsTagRepository.addAll(news, tags);
+            } catch (DaoException e) {
+                logger.error("Failed to add tags to news");
+                logger.error("Failed to add news");
+                throw new ServiceException(e);
             }
             logger.info("Successfully added tags to news");
         }

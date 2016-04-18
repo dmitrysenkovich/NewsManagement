@@ -71,7 +71,7 @@ public class NewsAuthorRepositoryTest {
         newsAuthorRepository.add(newsAuthor);
         connection = DriverManager.getConnection(testDbUrl, testDbUsername, testDbPassword);
         IDataSet actualDataSet = getActualDataSet(connection);
-        ITable newsAuthorTable = actualDataSet.getTable("News_Author");
+        ITable newsAuthorTable = actualDataSet.getTable("NEWS_AUTHOR");
 
         assertEquals(4, newsAuthorTable.getRowCount());
     }
@@ -86,7 +86,7 @@ public class NewsAuthorRepositoryTest {
         assert caughtException() instanceof DaoException;
         connection = DriverManager.getConnection(testDbUrl, testDbUsername, testDbPassword);
         IDataSet actualDataSet = getActualDataSet(connection);
-        ITable newsAuthorTable = actualDataSet.getTable("News_Author");
+        ITable newsAuthorTable = actualDataSet.getTable("NEWS_AUTHOR");
 
         assertEquals(3, newsAuthorTable.getRowCount());
     }
@@ -101,7 +101,7 @@ public class NewsAuthorRepositoryTest {
         assert caughtException() instanceof DaoException;
         connection = DriverManager.getConnection(testDbUrl, testDbUsername, testDbPassword);
         IDataSet actualDataSet = getActualDataSet(connection);
-        ITable newsAuthorTable = actualDataSet.getTable("News_Author");
+        ITable newsAuthorTable = actualDataSet.getTable("NEWS_AUTHOR");
 
         assertEquals(3, newsAuthorTable.getRowCount());
     }
@@ -115,7 +115,7 @@ public class NewsAuthorRepositoryTest {
         newsAuthorRepository.delete(newsAuthor);
         connection = DriverManager.getConnection(testDbUrl, testDbUsername, testDbPassword);
         IDataSet actualDataSet = getActualDataSet(connection);
-        ITable newsAuthorTable = actualDataSet.getTable("News_Author");
+        ITable newsAuthorTable = actualDataSet.getTable("NEWS_AUTHOR");
 
         assertEquals(2, newsAuthorTable.getRowCount());
     }
@@ -129,7 +129,7 @@ public class NewsAuthorRepositoryTest {
         newsAuthorRepository.delete(newsAuthor);
         connection = DriverManager.getConnection(testDbUrl, testDbUsername, testDbPassword);
         IDataSet actualDataSet = getActualDataSet(connection);
-        ITable newsAuthorTable = actualDataSet.getTable("News_Author");
+        ITable newsAuthorTable = actualDataSet.getTable("NEWS_AUTHOR");
 
         assertEquals(3, newsAuthorTable.getRowCount());
     }
@@ -143,7 +143,7 @@ public class NewsAuthorRepositoryTest {
         newsAuthorRepository.delete(newsAuthor);
         connection = DriverManager.getConnection(testDbUrl, testDbUsername, testDbPassword);
         IDataSet actualDataSet = getActualDataSet(connection);
-        ITable newsAuthorTable = actualDataSet.getTable("News_Author");
+        ITable newsAuthorTable = actualDataSet.getTable("NEWS_AUTHOR");
 
         assertEquals(3, newsAuthorTable.getRowCount());
     }

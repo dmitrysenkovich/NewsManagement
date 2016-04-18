@@ -20,10 +20,10 @@ import java.util.List;
  * Tag repository implementation.
  */
 public class TagRepositoryImpl implements TagRepository {
-    private static final String ADD = "INSERT INTO Tags(tag_name) VALUES(?)";
-    private static final String FIND = "SELECT tag_id, tag_name FROM Tags WHERE tag_id = ?";
-    private static final String UPDATE = "UPDATE Tags SET tag_name = ? WHERE tag_id = ?";
-    private static final String DELETE = "DELETE FROM Tags WHERE tag_id = ?";
+    private static final String ADD = "INSERT INTO TAGS(TAG_NAME) VALUES(?)";
+    private static final String FIND = "SELECT TAG_ID, TAG_NAME FROM TAGS WHERE TAG_ID = ?";
+    private static final String UPDATE = "UPDATE TAGS SET TAG_NAME = ? WHERE TAG_ID = ?";
+    private static final String DELETE = "DELETE FROM TAGS WHERE TAG_ID = ?";
 
     @Autowired
     private DataSource dataSource;
@@ -32,13 +32,14 @@ public class TagRepositoryImpl implements TagRepository {
     private DatabaseUtils databaseUtils;
 
 
+    @Override
     public Long add(Tag tag) throws DaoException {
         Connection connection = null;
         PreparedStatement preparedStatement = null;
         Long tagId = null;
         try {
             connection = dataSource.getConnection();
-            preparedStatement = connection.prepareStatement(ADD, Statement.RETURN_GENERATED_KEYS);
+            preparedStatement = connection.prepareStatement(ADD, new String[]{ "TAG_ID" });
             preparedStatement.setString(1, tag.getTagName());
             preparedStatement.executeUpdate();
             ResultSet resultSet = preparedStatement.getGeneratedKeys();
@@ -55,6 +56,7 @@ public class TagRepositoryImpl implements TagRepository {
     }
 
 
+    @Override
     public Tag find(Long tagId) throws DaoException {
         Connection connection = null;
         PreparedStatement preparedStatement = null;
@@ -80,6 +82,7 @@ public class TagRepositoryImpl implements TagRepository {
     }
 
 
+    @Override
     public void update(Tag tag) throws DaoException {
         Connection connection = null;
         PreparedStatement preparedStatement = null;
@@ -99,6 +102,7 @@ public class TagRepositoryImpl implements TagRepository {
     }
 
 
+    @Override
     public void delete(Tag tag) throws DaoException {
         Connection connection = null;
         PreparedStatement preparedStatement = null;
@@ -114,32 +118,5 @@ public class TagRepositoryImpl implements TagRepository {
         finally {
             databaseUtils.closeConnectionAndStatement(preparedStatement, connection);
         }
-    }
-
-
-    public List<Long> addAll(List<Tag> tags) throws DaoException {
-        Connection connection = null;
-        PreparedStatement preparedStatement = null;
-        List<Long> ids = null;
-        try {
-            connection = dataSource.getConnection();
-            preparedStatement = connection.prepareStatement(ADD, Statement.RETURN_GENERATED_KEYS);
-            for (Tag tag : tags) {
-                preparedStatement.setString(1, tag.getTagName());
-                preparedStatement.addBatch();
-            }
-            preparedStatement.executeBatch();
-            ResultSet resultSet = preparedStatement.getGeneratedKeys();
-            ids = new LinkedList<>();
-            while (resultSet.next())
-                ids.add(resultSet.getLong(1));
-        }
-        catch (SQLException e) {
-            throw new DaoException(e);
-        }
-        finally {
-            databaseUtils.closeConnectionAndStatement(preparedStatement, connection);
-        }
-        return ids;
     }
 }

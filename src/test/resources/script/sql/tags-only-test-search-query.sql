@@ -1,18 +1,18 @@
 SELECT *
-FROM ((SELECT news_id, title, short_text,
-            full_text, creation_date, modification_date, comments_count
-       FROM News JOIN (SELECT news_id, COUNT(*) AS comments_count
-                       FROM Comments
-                       GROUP BY news_id) AS News_Stat USING(news_id))
+FROM ((SELECT NEWS_ID, TITLE, SHORT_TEXT,
+            FULL_TEXT, CREATION_DATE, MODIFICATION_DATE, COMMENTS_COUNT
+       FROM NEWS JOIN (SELECT NEWS_ID, COUNT(*) COMMENTS_COUNT
+                       FROM COMMENTS
+                       GROUP BY NEWS_ID) NEWS_STAT USING(NEWS_ID))
 UNION
-(SELECT news_id, title, short_text,
-            full_text, creation_date, modification_date, 0 AS comments_count
-FROM News
-WHERE news_id NOT IN(SELECT news_id
-                     FROM Comments))) All_News_Stat
-WHERE news_id IN (SELECT news_id
-                  FROM News_Tag
-                  WHERE tag_id IN (1, 2)
-                  GROUP BY news_id
+(SELECT NEWS_ID, TITLE, SHORT_TEXT,
+            FULL_TEXT, CREATION_DATE, MODIFICATION_DATE, 0 COMMENTS_COUNT
+FROM NEWS
+WHERE NEWS_ID NOT IN(SELECT NEWS_ID
+                     FROM COMMENTS))) ALL_NEWS_STAT
+WHERE NEWS_ID IN (SELECT NEWS_ID
+                  FROM NEWS_TAG
+                  WHERE TAG_ID IN (1, 2)
+                  GROUP BY NEWS_ID
                   HAVING COUNT(*) = 2)
-ORDER BY comments_count DESC, modification_date
+ORDER BY COMMENTS_COUNT DESC, MODIFICATION_DATE

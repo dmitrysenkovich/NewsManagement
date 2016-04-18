@@ -107,27 +107,4 @@ public class TagServiceTest {
         doThrow(new DaoException()).when(tagRepository).delete(any(Tag.class));
         tagService.delete(new Tag());
     }
-
-
-    @Test
-    public void addedAll() throws Exception {
-        List<Tag> tags = new LinkedList<>();
-        tags.add(new Tag());
-        tags.add(new Tag());
-        List<Long> tagsIds = new LinkedList<>();
-        tagsIds.add(1L);
-        tagsIds.add(2L);
-        when(tagRepository.addAll(tags)).thenReturn(tagsIds);
-        tagService.addAll(tags);
-    }
-
-
-    @Test(expected = ServiceException.class)
-    public void notAddedAll() throws Exception {
-        List<Tag> tags = new LinkedList<>();
-        tags.add(new Tag());
-        tags.add(new Tag());
-        doThrow(new DaoException()).when(tagRepository).addAll(any(List.class));
-        tagService.addAll(tags);
-    }
 }

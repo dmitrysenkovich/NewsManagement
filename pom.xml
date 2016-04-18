@@ -14,7 +14,7 @@
       <spring.data.version>1.9.0.RELEASE</spring.data.version>
       <spring.test.dbunit.version>1.2.1</spring.test.dbunit.version>
       <javaee.version>7.0</javaee.version>
-      <mysql.version>5.1.24</mysql.version>
+      <oracle.jdbc.driver.version>11.2.0.2.0</oracle.jdbc.driver.version>
       <apache.dbcp2.version>2.1.1</apache.dbcp2.version>
       <apache.pool.version>2.4.2</apache.pool.version>
       <apache.commons.io.version>2.4</apache.commons.io.version>
@@ -61,10 +61,11 @@
       </dependency>
 
       <dependency>
-          <groupId>mysql</groupId>
-          <artifactId>mysql-connector-java</artifactId>
-          <version>${mysql.version}</version>
+          <groupId>com.oracle</groupId>
+          <artifactId>ojdbc6</artifactId>
+          <version>${oracle.jdbc.driver.version}</version>
       </dependency>
+
 
       <dependency>
           <groupId>	org.apache.commons</groupId>

@@ -26,6 +26,7 @@ import org.unitils.database.util.TransactionMode;
 import java.sql.Connection;
 import java.sql.Date;
 import java.sql.DriverManager;
+import java.sql.Timestamp;
 import java.util.LinkedList;
 import java.util.List;
 
@@ -33,7 +34,6 @@ import static com.googlecode.catchexception.CatchException.catchException;
 import static com.googlecode.catchexception.CatchException.caughtException;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertTrue;
 
 /**
@@ -77,14 +77,15 @@ public class NewsRepositoryTest {
     @Test
     public void newsAdded() throws Exception {
         News news = new News();
-        news.setTitle("test");
-        news.setShortText("test");
-        news.setFullText("test");
+        news.setTitle("test1");
+        news.setShortText("test1");
+        news.setFullText("test1");
         news.setModificationDate(new Date(new java.util.Date().getTime()));
+        news.setCreationDate(new Timestamp(new java.util.Date().getTime()));
         Long newsId = newsRepository.add(news);
         connection = DriverManager.getConnection(testDbUrl, testDbUsername, testDbPassword);
         IDataSet actualDataSet = getActualDataSet(connection);
-        ITable newsTable = actualDataSet.getTable("News");
+        ITable newsTable = actualDataSet.getTable("NEWS");
 
         assertEquals(4, newsTable.getRowCount());
         assertNotNull(newsId);
@@ -98,10 +99,9 @@ public class NewsRepositoryTest {
         assert caughtException() instanceof DaoException;
         connection = DriverManager.getConnection(testDbUrl, testDbUsername, testDbPassword);
         IDataSet actualDataSet = getActualDataSet(connection);
-        ITable newsTable = actualDataSet.getTable("News");
+        ITable newsTable = actualDataSet.getTable("NEWS");
 
         assertEquals(3, newsTable.getRowCount());
-        assertNull(news.getNewsId());
     }
 
 
@@ -156,10 +156,10 @@ public class NewsRepositoryTest {
         newsRepository.delete(news);
         connection = DriverManager.getConnection(testDbUrl, testDbUsername, testDbPassword);
         IDataSet actualDataSet = getActualDataSet(connection);
-        ITable newsTable = actualDataSet.getTable("News");
-        ITable newsAuthorTable = actualDataSet.getTable("News_Author");
-        ITable newsTagTable = actualDataSet.getTable("News_Tag");
-        ITable commentTable = actualDataSet.getTable("Comments");
+        ITable newsTable = actualDataSet.getTable("NEWS");
+        ITable newsAuthorTable = actualDataSet.getTable("NEWS_AUTHOR");
+        ITable newsTagTable = actualDataSet.getTable("NEWS_TAG");
+        ITable commentTable = actualDataSet.getTable("COMMENTS");
 
         assertEquals(2, newsTable.getRowCount());
         assertEquals(2, newsAuthorTable.getRowCount());
@@ -175,10 +175,10 @@ public class NewsRepositoryTest {
         newsRepository.delete(news);
         connection = DriverManager.getConnection(testDbUrl, testDbUsername, testDbPassword);
         IDataSet actualDataSet = getActualDataSet(connection);
-        ITable newsTable = actualDataSet.getTable("News");
-        ITable newsAuthorTable = actualDataSet.getTable("News_Author");
-        ITable newsTagTable = actualDataSet.getTable("News_Tag");
-        ITable commentTable = actualDataSet.getTable("Comments");
+        ITable newsTable = actualDataSet.getTable("NEWS");
+        ITable newsAuthorTable = actualDataSet.getTable("NEWS_AUTHOR");
+        ITable newsTagTable = actualDataSet.getTable("NEWS_TAG");
+        ITable commentTable = actualDataSet.getTable("COMMENTS");
 
         assertEquals(3, newsTable.getRowCount());
         assertEquals(3, newsAuthorTable.getRowCount());

@@ -86,31 +86,6 @@ public class CommentServiceImpl implements CommentService {
 
     @Override
     @Transactional(rollbackFor = ServiceException.class)
-    public List<Comment> addAll(News news, List<Comment> comments) throws ServiceException {
-        logger.info("Adding comments..");
-        for (Comment comment : comments) {
-            comment.setNewsId(news.getNewsId());
-            comment.setCreationDate(new Timestamp(new java.util.Date().getTime()));
-        }
-        try {
-            List<Long> ids = commentRepository.addAll(comments);
-            int commentsCount = comments.size();
-            for (int i = 0; i < commentsCount; i++) {
-                Long id = ids.get(i);
-                Comment comment = comments.get(i);
-                comment.setCommentId(id);
-            }
-        } catch (DaoException e) {
-            logger.error("Failed to add comments");
-            throw new ServiceException(e);
-        }
-        logger.info("Successfully added comments");
-        return comments;
-    }
-
-
-    @Override
-    @Transactional(rollbackFor = ServiceException.class)
     public void deleteAll(List<Comment> comments) throws ServiceException {
         logger.info("Deleting comments..");
         try {

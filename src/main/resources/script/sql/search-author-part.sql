@@ -1,2 +1,2 @@
-EXISTS(SELECT * FROM News_Author NA
-             WHERE NA.news_id = All_News_Stat.news_id AND author_id = {0})
+EXISTS(SELECT * FROM NEWS_AUTHOR NA
+             WHERE NA.NEWS_ID = ALL_NEWS_STAT.NEWS_ID AND AUTHOR_ID = {0})

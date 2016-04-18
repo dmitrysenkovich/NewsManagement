@@ -26,7 +26,6 @@ import static com.googlecode.catchexception.CatchException.catchException;
 import static com.googlecode.catchexception.CatchException.caughtException;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertNull;
 
 /**
  * Role repository test.
@@ -69,7 +68,7 @@ public class RoleRepositoryTest {
         Long roleId = roleRepository.add(role);
         connection = DriverManager.getConnection(testDbUrl, testDbUsername, testDbPassword);
         IDataSet actualDataSet = getActualDataSet(connection);
-        ITable rolesTable = actualDataSet.getTable("Roles");
+        ITable rolesTable = actualDataSet.getTable("ROLES");
 
         assertEquals(3, rolesTable.getRowCount());
         assertNotNull(roleId);
@@ -83,10 +82,9 @@ public class RoleRepositoryTest {
         assert caughtException() instanceof DaoException;
         connection = DriverManager.getConnection(testDbUrl, testDbUsername, testDbPassword);
         IDataSet actualDataSet = getActualDataSet(connection);
-        ITable rolesTable = actualDataSet.getTable("Roles");
+        ITable rolesTable = actualDataSet.getTable("ROLES");
 
         assertEquals(2, rolesTable.getRowCount());
-        assertNull(role.getRoleId());
     }
 
 
@@ -136,8 +134,8 @@ public class RoleRepositoryTest {
         roleRepository.delete(role);
         connection = DriverManager.getConnection(testDbUrl, testDbUsername, testDbPassword);
         IDataSet actualDataSet = getActualDataSet(connection);
-        ITable rolesTable = actualDataSet.getTable("Roles");
-        ITable usersTable = actualDataSet.getTable("Users");
+        ITable rolesTable = actualDataSet.getTable("ROLES");
+        ITable usersTable = actualDataSet.getTable("USERS");
 
         assertEquals(1, rolesTable.getRowCount());
         assertEquals(0, usersTable.getRowCount());
@@ -151,8 +149,8 @@ public class RoleRepositoryTest {
         roleRepository.delete(role);
         connection = DriverManager.getConnection(testDbUrl, testDbUsername, testDbPassword);
         IDataSet actualDataSet = getActualDataSet(connection);
-        ITable rolesTable = actualDataSet.getTable("Roles");
-        ITable usersTable = actualDataSet.getTable("Users");
+        ITable rolesTable = actualDataSet.getTable("ROLES");
+        ITable usersTable = actualDataSet.getTable("USERS");
 
         assertEquals(2, rolesTable.getRowCount());
         assertEquals(1, usersTable.getRowCount());
