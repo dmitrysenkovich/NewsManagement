@@ -22,6 +22,10 @@
     <bean id="searchUtils" class="com.epam.app.utils.SearchUtils"/>
     <bean id="scriptFileUtils" class="com.epam.app.utils.ScriptFileUtils"/>
     <bean id="databaseUtils" class="com.epam.app.utils.DatabaseUtils"/>
+    <bean class="org.springframework.beans.factory.config.MethodInvokingBean">
+        <property name="targetClass" value="com.epam.app.utils.DatabaseInitializingUtils" />
+        <property name="targetMethod" value="initializeDatabase" />
+    </bean>
 
     <bean id="authorService" class="com.epam.app.service.impl.AuthorServiceImpl"/>
     <bean id="commentService" class="com.epam.app.service.impl.CommentServiceImpl"/>

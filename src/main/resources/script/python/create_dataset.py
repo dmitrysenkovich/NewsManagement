@@ -26,14 +26,14 @@ ROLES = ['ADMIN', 'USER', 'MODERATOR']
 
 DATA_SQL_FILE_PATH = '../sql/data.sql'
 
-INSERT_NEWS_ROW = 'INSERT INTO NEWS VALUES({0}, \'{1}\', \'{2}\', \'{3}\', TO_TIMESTAMP(\'{4}\', \'YYYY-MM-DD HH24:MI:SS\'), TO_DATE(\'{5}\', \'YYYY-MM-DD\'));\n'
-INSERT_TAG_ROW = 'INSERT INTO TAGS VALUES({0}, \'{1}\');\n'
-INSERT_NEWS_TAG_ROW = 'INSERT INTO NEWS_TAG VALUES({0}, {1});\n'
-INSERT_AUTHOR_ROW = 'INSERT INTO AUTHORS VALUES({0}, \'{1}\', TO_TIMESTAMP(\'{2}\', \'YYYY-MM-DD HH24:MI:SS\'));\n'
-INSERT_NEWS_AUTHOR_ROW = 'INSERT INTO NEWS_AUTHOR VALUES({0}, {1});\n'
-INSERT_COMMENT_ROW = 'INSERT INTO COMMENTS VALUES({0}, {1}, \'{2}\', TO_TIMESTAMP(\'{3}\', \'YYYY-MM-DD HH24:MI:SS\'));\n'
-INSERT_USER_ROW = 'INSERT INTO USERS VALUES({0}, {1}, \'{2}\', \'{3}\', \'{4}\');\n'
-INSERT_ROLE_ROW = 'INSERT INTO ROLES VALUES({0}, \'{1}\');\n'
+INSERT_NEWS_ROW = 'INSERT INTO NEWS VALUES({0}, \'{1}\', \'{2}\', \'{3}\', TO_TIMESTAMP(\'{4}\', \'YYYY-MM-DD HH24:MI:SS\'), TO_DATE(\'{5}\', \'YYYY-MM-DD\'))\n'
+INSERT_TAG_ROW = 'INSERT INTO TAGS VALUES({0}, \'{1}\')\n'
+INSERT_NEWS_TAG_ROW = 'INSERT INTO NEWS_TAG VALUES({0}, {1})\n'
+INSERT_AUTHOR_ROW = 'INSERT INTO AUTHORS VALUES({0}, \'{1}\', TO_TIMESTAMP(\'{2}\', \'YYYY-MM-DD HH24:MI:SS\'))\n'
+INSERT_NEWS_AUTHOR_ROW = 'INSERT INTO NEWS_AUTHOR VALUES({0}, {1})\n'
+INSERT_COMMENT_ROW = 'INSERT INTO COMMENTS VALUES({0}, {1}, \'{2}\', TO_TIMESTAMP(\'{3}\', \'YYYY-MM-DD HH24:MI:SS\'))\n'
+INSERT_USER_ROW = 'INSERT INTO USERS VALUES({0}, {1}, \'{2}\', \'{3}\', \'{4}\')\n'
+INSERT_ROLE_ROW = 'INSERT INTO ROLES VALUES({0}, \'{1}\')\n'
 
 
 def get_html(url):
@@ -130,9 +130,9 @@ def generate_dataset(full_texts, titles, short_texts, creation_dates, \
     print('Adding news..')
     news_count = len(full_texts)
     for i in range(news_count):
-        data_sql_file.write(INSERT_NEWS_ROW.format(i+1, MySQLdb.escape_string(titles[i]).decode('UTF-8'), \
-            MySQLdb.escape_string(short_texts[i]).decode('UTF-8'), \
-            MySQLdb.escape_string(full_texts[i]).decode('UTF-8'), creation_dates[i], modification_dates[i]))
+        data_sql_file.write(INSERT_NEWS_ROW.format(i+1, MySQLdb.escape_string(titles[i]).decode('UTF-8').replace('\\\'', '\'\''), \
+            MySQLdb.escape_string(short_texts[i]).decode('UTF-8').replace('\\\'', '\'\''), \
+            MySQLdb.escape_string(full_texts[i]).decode('UTF-8').replace('\\\'', '\'\''), creation_dates[i], modification_dates[i]))
     print('Added news')
 
     data_sql_file.write('\n')
@@ -140,7 +140,7 @@ def generate_dataset(full_texts, titles, short_texts, creation_dates, \
     print('Adding tags..')
     tags_count = len(tags)
     for i in range(tags_count):
-        data_sql_file.write(INSERT_TAG_ROW.format(i+1, MySQLdb.escape_string(tags[i]).decode('UTF-8')))
+        data_sql_file.write(INSERT_TAG_ROW.format(i+1, MySQLdb.escape_string(tags[i]).decode('UTF-8').replace('\\\'', '\'\'')))
     print('Added tags')
 
     data_sql_file.write('\n')
@@ -158,9 +158,9 @@ def generate_dataset(full_texts, titles, short_texts, creation_dates, \
     print('Adding authors..')
     authors_count = len(authors)
     creation_dates_count = len(creation_dates)
-    print(authors_count)
     for i in range(authors_count):
-        data_sql_file.write(INSERT_AUTHOR_ROW.format(i+1, MySQLdb.escape_string(authors[i]).decode('UTF-8'), creation_dates[i%creation_dates_count]))
+        data_sql_file.write(INSERT_AUTHOR_ROW.format(i+1, MySQLdb.escape_string(authors[i]).decode('UTF-8').replace('\\\'', '\'\''), \
+            creation_dates[i%creation_dates_count]))
     print('Added authors')
 
     data_sql_file.write('\n')
@@ -179,7 +179,8 @@ def generate_dataset(full_texts, titles, short_texts, creation_dates, \
     comments_count = len(comments)
     for i in range(comments_count):
         news_id = random.randint(1, news_count)
-        data_sql_file.write(INSERT_COMMENT_ROW.format(i+1, news_id, MySQLdb.escape_string(comments[i]).decode('UTF-8'), creation_dates[news_id-1]))
+        data_sql_file.write(INSERT_COMMENT_ROW.format(i+1, news_id, \
+            MySQLdb.escape_string(comments[i]).decode('UTF-8').replace('\\\'', '\'\''), creation_dates[news_id-1]))
     print('Added comments')
 
     data_sql_file.write('\n')
@@ -195,8 +196,9 @@ def generate_dataset(full_texts, titles, short_texts, creation_dates, \
     print('Adding users..')
     for i in range(USERNAMES_COUNT):
         role_id = random.randint(1, len(ROLES))
-        data_sql_file.write(INSERT_USER_ROW.format(i+1, role_id, MySQLdb.escape_string(usernames[i]).decode('UTF-8'), \
-            MySQLdb.escape_string(logins[i]).decode('UTF-8'), MySQLdb.escape_string(passwords[i]).decode('UTF-8')))
+        data_sql_file.write(INSERT_USER_ROW.format(i+1, role_id, MySQLdb.escape_string(usernames[i]).decode('UTF-8').replace('\\\'', '\'\''), \
+            MySQLdb.escape_string(logins[i]).decode('UTF-8').replace('\\\'', '\'\''), \
+            MySQLdb.escape_string(passwords[i]).decode('UTF-8').replace('\\\'', '\'\'')))
     print('Added users')
 
     data_sql_file.close()
