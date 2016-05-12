@@ -18,6 +18,7 @@
         <spring.security.version>3.2.3.RELEASE</spring.security.version>
         <jstl.version>1.2</jstl.version>
         <servlet.version>3.0.1</servlet.version>
+        <apache.tiles.version>3.0.5</apache.tiles.version>
         <maven.version>3.0</maven.version>
         <tomcat-plugin.version>2.2</tomcat-plugin.version>
 
@@ -70,10 +71,16 @@
             <artifactId>javax.servlet-api</artifactId>
             <version>${servlet.version}</version>
         </dependency>
+
+        <dependency>
+            <groupId>org.apache.tiles</groupId>
+            <artifactId>tiles-jsp</artifactId>
+            <version>${apache.tiles.version}</version>
+        </dependency>
     </dependencies>
 
     <build>
-        <finalName>news-admin</finalName>
+        <finalName>news-management</finalName>
         <plugins>
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
@@ -89,7 +96,7 @@
                 <artifactId>tomcat7-maven-plugin</artifactId>
                 <version>${tomcat-plugin.version}</version>
                 <configuration>
-                    <path>/news-admin</path>
+                    <path>/news-management</path>
                 </configuration>
             </plugin>
         </plugins>

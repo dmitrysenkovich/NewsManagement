@@ -1,32 +1,19 @@
+<%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core"%>
+<%@ page session="false" contentType="text/html; charset=UTF-8" %>
+<%@ taglib uri="http://tiles.apache.org/tags-tiles" prefix="tiles"%>
 <html>
     <head>
         <meta charset="utf-8">
 
         <title>News Management | Add Tags</title>
 
-        <link rel="stylesheet" href="./css/style.css">
+        <link href="<c:url value="/resources/css/style.css" />" rel="stylesheet">
     </head>
     <body>
         <div id="container">
-            <div id="header">
-                <h1 id="title">News portal - Administration</h1>
-                <div id="greeting">Hello, admin Admin <button id="logout-button">Logout</button></div>
-                <div id="language">
-                    <a href="#">EN</a>
-                    <a href="#">RU</a>
-                </div>
-            </div>
+            <tiles:insertAttribute name="header" />
             <div id="crutch">
-                <div id="navbar">
-                    <div id="links">
-                        <ul>
-                            <li><a href="#">News List</a></li>
-                            <li><a href="#">Add News</a></li>
-                            <li><a href="#">Add/Update Authors</a></li>
-                            <li><a href="#" style="font-weight: bold;">Add/Update Tags</a></li>
-                        </ul>
-                    </div>
-                </div>
+                <tiles:insertAttribute name="navbar" />
                 <div id="content" class="scrollable news-content">
                     <div id="items-list">
                         <div class="item">
@@ -135,9 +122,7 @@
                     </div>
                 </div>
             </div>
-            <div id="footer">
-                Copyright @ Epam 2016. All rights reserved.
-            </div>
+            <tiles:insertAttribute name="footer" />
         </div>
     </body>
 </html>

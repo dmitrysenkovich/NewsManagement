@@ -1,32 +1,19 @@
+<%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core"%>
+<%@ page session="false" contentType="text/html; charset=UTF-8" %>
+<%@ taglib uri="http://tiles.apache.org/tags-tiles" prefix="tiles"%>
 <html>
     <head>
         <meta charset="utf-8">
 
         <title>News Management | News</title>
 
-        <link rel="stylesheet" href="./css/style.css">
+        <link href="<c:url value="/resources/css/style.css" />" rel="stylesheet">
     </head>
     <body>
         <div id="container">
-            <div id="header">
-                <h1 id="title">News portal - Administration</h1>
-                <div id="greeting">Hello, admin Admin <button id="logout-button">Logout</button></div>
-                <div id="language">
-                    <a href="#">EN</a>
-                    <a href="#">RU</a>
-                </div>
-            </div>
+            <tiles:insertAttribute name="header" />
             <div id="crutch">
-                <div id="navbar">
-                    <div id="links">
-                        <ul>
-                            <li><a href="#">News List</a></li>
-                            <li><a href="#">Add News</a></li>
-                            <li><a href="#">Add/Update Authors</a></li>
-                            <li><a href="#">Add/Update Tags</a></li>
-                        </ul>
-                    </div>
-                </div>
+                <tiles:insertAttribute name="navbar" />
                 <div id="content" class="scrollable news-content">
                     <div class="news">
                         <div class="title">
@@ -53,7 +40,7 @@
                                     <u>9, 2016 6:59</u>
                                 </div>
                                 <div class="comment-text-wrapper">
-                                    <span id="delete-post-button-span"><button id="delete-post-button">&times;</button></span>
+                                    <span class="delete-post-button-span"><button class="delete-post-button">&times;</button></span>
                                     <div class="comment-text">
                                         I know you're probably joking but why is it the way it is? And how do we fix it
                                     </div>
@@ -64,7 +51,7 @@
                                     <u>9, 2016 6:59</u>
                                 </div>
                                 <div class="comment-text-wrapper">
-                                    <span id="delete-post-button-span"><button id="delete-post-button">&times;</button></span>
+                                    <span class="delete-post-button-span"><button class="delete-post-button">&times;</button></span>
                                     <div class="comment-text">
                                         Look at this fucking moderate over here making reasoned choices based on his personal political beliefs and not bowing to peer pressure.
                                     </div>
@@ -75,7 +62,7 @@
                                     <u>9, 2016 6:59</u>
                                 </div>
                                 <div class="comment-text-wrapper">
-                                    <span id="delete-post-button-span"><button id="delete-post-button">&times;</button></span>
+                                    <span class="delete-post-button-span"><button class="delete-post-button">&times;</button></span>
                                     <div class="comment-text">
                                         As a complement to early devoted users fading away, even if they stay, there's a big dilution factor of people who (on average--of course some new thoughtful contributors do keep come in with the tide) made less effort to find the sub, care less about quality of comments, and upvote a higher percentage of quick browse fodder (images, short comments). Right now there are some pretty good small politics subs that have good conversation in them, but I won't link them here, because reasons.
                                     </div>
@@ -100,9 +87,7 @@
                     </div>
                 </div>
             </div>
-            <div id="footer">
-                Copyright @ Epam 2016. All rights reserved.
-            </div>
+            <tiles:insertAttribute name="footer" />
         </div>
     </body>
 </html>

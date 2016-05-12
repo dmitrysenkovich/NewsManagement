@@ -1,23 +1,17 @@
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core"%>
 <%@ page session="false" contentType="text/html; charset=UTF-8" %>
+<%@ taglib uri="http://tiles.apache.org/tags-tiles" prefix="tiles"%>
 <html>
     <head>
         <meta charset="utf-8">
 
         <title>News Management | Login</title>
 
-        <link rel="stylesheet" href="./css/style.css">
         <link href="<c:url value="/resources/css/style.css" />" rel="stylesheet">
     </head>
     <body>
         <div id="container">
-            <div id="header" class="bordered">
-                <h1 id="title">News portal - Administration</h1>
-                <div id="language">
-                    <a href="#">EN</a>
-                    <a href="#">RU</a>
-                </div>
-            </div>
+            <tiles:insertAttribute name="header" />
             <div id="crutch">
                 <div id="user-content">
                     <div id="login-form">
@@ -29,10 +23,9 @@
                         </div>
                         <button id="login-button" class="row-padded" type="button">Login</button>
                     </div>
+                </div>
             </div>
-            <div id="footer">
-               Copyright @ Epam 2016. All rights reserved.
-            </div>
+            <tiles:insertAttribute name="footer" />
         </div>
     </body>
 </html>

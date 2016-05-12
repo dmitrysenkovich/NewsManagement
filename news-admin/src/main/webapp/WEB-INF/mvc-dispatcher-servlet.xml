@@ -26,12 +26,20 @@
     </bean>
 
     <bean id="viewResolver"
-          class="org.springframework.web.servlet.view.InternalResourceViewResolver">
-        <property name="prefix">
-            <value>/WEB-INF/pages/</value>
+          class="org.springframework.web.servlet.view.UrlBasedViewResolver">
+        <property name="viewClass">
+            <value>
+                org.springframework.web.servlet.view.tiles3.TilesView
+            </value>
         </property>
-        <property name="suffix">
-            <value>.jsp</value>
+    </bean>
+
+    <bean id="tilesConfigurer"
+          class="org.springframework.web.servlet.view.tiles3.TilesConfigurer">
+        <property name="definitions">
+            <list>
+                <value>/WEB-INF/tiles.xml</value>
+            </list>
         </property>
     </bean>
 
