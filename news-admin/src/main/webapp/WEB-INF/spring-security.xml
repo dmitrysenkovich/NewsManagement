@@ -1,0 +1,41 @@
+<beans:beans xmlns="http://www.springframework.org/schema/security"
+			 xmlns:beans="http://www.springframework.org/schema/beans"
+			 xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+			 xsi:schemaLocation="http://www.springframework.org/schema/beans
+	http://www.springframework.org/schema/beans/spring-beans-3.0.xsd
+	http://www.springframework.org/schema/security
+	http://www.springframework.org/schema/security/spring-security-3.2.xsd">
+
+	<beans:import resource="classpath*:spring-configuration.xml" />
+
+    <beans:bean id="customAuthenticationFailureHandler"
+                class="com.epam.newsmanagement.handler.CustomAuthenticationFailureHandler"/>
+
+	<http auto-config="true" use-expressions="true">
+        <intercept-url pattern="/authors/**" access="isAuthenticated() and hasRole('ADMIN')"/>
+        <intercept-url pattern="/tags/**" access="isAuthenticated() and hasRole('ADMIN')"/>
+        <intercept-url pattern="/news-administration/**" access="isAuthenticated() and hasRole('ADMIN')"/>
+		<intercept-url pattern="/news-edit/**" access="isAuthenticated() and hasRole('ADMIN')"/>
+		<intercept-url pattern="/news-list-administration/**" access="isAuthenticated() and hasRole('ADMIN')"/>
+        <access-denied-handler error-page="/403" />
+		<form-login
+				login-page="/login"
+				default-target-url="/news-list-administration"
+				authentication-failure-url="/login?error"
+				username-parameter="login"
+				password-parameter="password"
+                authentication-failure-handler-ref="customAuthenticationFailureHandler"/>
+		<logout logout-success-url="/login?logout"  />
+		<csrf/>
+	</http>
+
+	<authentication-manager alias="authenticationManager">
+		<authentication-provider>
+			<jdbc-user-service data-source-ref="dataSource"
+               users-by-username-query=
+                   "select LOGIN, PASSWORD from USERS where LOGIN=?"
+               authorities-by-username-query=
+                   "select LOGIN, ROLE from USERS where LOGIN=?" />
+		</authentication-provider>
+	</authentication-manager>
+</beans:beans>

@@ -1,0 +1,110 @@
+<html>
+    <head>
+        <meta charset="utf-8">
+
+        <title>News Management | News</title>
+
+        <link rel="stylesheet" href="./css/style.css">
+        <link rel="stylesheet" type="text/css" href="./css/jquery.multiselect.css">
+        <link rel="stylesheet" type="text/css" href="./assets/style.css">
+        <link rel="stylesheet" type="text/css" href="./assets/prettify.css">
+        <link rel="stylesheet" type="text/css" href="http://ajax.googleapis.com/ajax/libs/jqueryui/1/themes/ui-lightness/jquery-ui.css">
+
+        <script type="text/javascript" src="http://ajax.googleapis.com/ajax/libs/jquery/1/jquery.js"></script>
+        <script type="text/javascript" src="http://ajax.googleapis.com/ajax/libs/jqueryui/1/jquery-ui.min.js"></script>
+        <script type="text/javascript" src="./js/jquery.multiselect.min.js"></script>
+        <script type="text/javascript" src="./assets/prettify.js"></script>
+        <script type="text/javascript" src="./js/newsmanagement.js"></script>
+    </head>
+    <body>
+        <div id="container">
+            <div id="header">
+                <h1 id="title">News portal - Administration</h1>
+                <div id="greeting">Hello, admin Admin <button id="logout-button">Logout</button></div>
+                <div id="language">
+                    <a href="#">EN</a>
+                    <a href="#">RU</a>
+                </div>
+            </div>
+            <div id="crutch">
+                <div id="navbar">
+                    <div id="links">
+                        <ul>
+                            <li><a href="#">News List</a></li>
+                            <li><a href="#" style="font-weight: bold;">Add News</a></li>
+                            <li><a href="#">Add/Update Authors</a></li>
+                            <li><a href="#">Add/Update Tags</a></li>
+                        </ul>
+                    </div>
+                </div>
+                <div id="content" class="scrollable news-content">
+                    <div id="new-news">
+                        <div id="new-news-title-row">
+                            <div id="new-news-title-label">
+                                Title:
+                            </div>
+                            <div id="new-news-title">
+                                <input id="new-news-textarea" type="text" value="">
+                            </div>
+                        </div>
+                        <div id="date-row">
+                            <div id="date-title">
+                                Date:
+                            </div>
+                            <div id="date">
+                                <input id="date-textarea" type="text" value="">
+                            </div>
+                        </div>
+                        <div id="short-text-row">
+                            <div id="short-text-title">
+                                Brief:
+                            </div>
+                            <div id="short-text">
+                                <textarea id="short-text-textarea" rows="4" >
+                                </textarea>
+                            </div>
+                        </div>
+                        <div id="text-row">
+                            <div id="text-title">
+                                Content:
+                            </div>
+                            <div id="text">
+                                <textarea id="text-textarea" rows="6" >
+                                </textarea>
+                            </div>
+                        </div>
+                    </div>
+                    <div id="filter-row">
+                        <select id="authors" name="authors">
+                            <option value="" disabled selected>Please select the author</option>
+                            <option value="Chris Kahn">Chris Kahn</option>
+                            <option value="Jeff Mason">Jeff Mason</option>
+                            <option value="Ginger Gibson">Ginger Gibson</option>
+                            <option value="My Pham">My Pham</option>
+                            <option value="David Lawder">David Lawder</opt  ion>
+                            <option value="Lindsay Dunsmuird">Lindsay Dunsmuird</option>
+                        </select>
+
+                        <select id="tags" multiple="multiple" name="tags">
+                            <option value="" disabled>Please select the tag</option>
+                            <option value="politics">politics</option>
+                            <option value="election">election</option>
+                            <option value="republican">republican</option>
+                            <option value="Donald Trump">Donald Trump</option>
+                            <option value="White House">White House</option>
+                            <option value="Barack Obama">Barack Obama</option>
+                            <option value="president">president</option>
+                            <option value="Vietnam">Vietnam</option>
+                        </select>
+                    </div>
+                    <div id="save-news-button-wrapper">
+                        <button id="save-news-button">Save</button>
+                    </div>
+                </div>
+            </div>
+            <div id="footer">
+                Copyright @ Epam 2016. All rights reserved.
+            </div>
+        </div>
+    </body>
+</html>

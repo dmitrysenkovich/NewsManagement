@@ -1,0 +1,522 @@
+body {
+    margin: 0px;
+    font-family: Times New Roman;
+    overflow: hidden;
+}
+
+#container {
+    position: absolute;
+    width: 100%;
+    top: 0;
+    bottom: 0;
+}
+
+#header {
+    position: absolute;
+    height: 55px;
+    top: 5px;
+    left: 5px;
+    right: 5px;
+    display: block;
+    border: solid;
+}
+
+#title {
+    display: inline;
+    padding-left: 15px;
+}
+
+#language {
+    display: inline;
+    float: right;
+    position: absolute;
+    bottom: 5px;
+    right: 0;
+    padding-right: 15px;
+}
+
+#greeting {
+    display: inline;
+    float: right;
+    position: absolute;
+    right: 0;
+    top: 5px;
+    padding-right: 15px;
+    font-weight: bold;
+}
+
+#logout-button {
+    margin-left: 30px;
+}
+
+#login-form {
+    position: absolute;
+    left: 50%;
+    margin-left: -135px;
+    margin-top: -50px;
+    width: 270px;
+    top: 50%;
+}
+
+.label {
+    display: inline-block;
+    width: 70px;
+    text-align: left;
+    font-size: 15px;
+}
+
+.login-form-input {
+    width: 200px;
+}
+
+#login-button {
+    float: right;
+}
+
+.login-row {
+    margin-bottom: 5px;
+}
+
+#crutch {
+    border-left: solid;
+    border-right: solid;
+    height: 100%;
+    display: block;
+    margin-top: 5px;
+    margin-left: 5px;
+    margin-right: 5px;
+    overflow: hidden;
+}
+
+#content {
+    position: absolute;
+    top: 76px;
+    bottom: 65px;
+    left: 255px;
+    right: 10px;
+    overflow-y: scroll;
+    overflow-x: hidden;
+    border: solid;
+    border-color: #CCCCCC;
+    text-align: center;
+}
+
+.news-content {
+    bottom: 35px !important;
+}
+
+#user-content {
+    position: absolute;
+    top: 76px;
+    bottom: 35px;
+    left: 15px;
+    right: 15px;
+    overflow-y: scroll;
+    overflow-x: hidden;
+    border: solid;
+    border-color: #CCCCCC;
+}
+
+#footer {
+    position: absolute;
+    height: 20px;
+    bottom: 0;
+    left: 5px;
+    right: 5px;
+    text-align: center;
+    display: block;
+    background: white;
+    border: solid;
+}
+
+#navbar {
+    width: 250px;
+    height: 140px;
+    background: #CCCCCC;
+    float: left;
+    position: fixed;
+    top: 76px;
+    left: 8px;
+}
+
+#links {
+    width: 200px;
+    height: 120px;
+    margin: 0 auto;
+    margin-top: 0px;
+    padding-top: 0px;
+    background: #FFFFFF;
+}
+
+#links ul {
+    margin-top: 0px;
+}
+
+#links li {
+    margin-bottom: 10px;
+    margin-left: -15px;
+    list-style-image: url('../images/link.png');
+}
+
+#filter-row {
+    width: 70%;
+    margin: 0 auto;
+    text-align: center;
+    margin-top: 10px;
+}
+
+#news-list {
+    margin-bottom: 10px;
+    margin-top: 10px;
+}
+
+.short-news {
+    margin: 50px;
+    display: block;
+}
+
+.short-news-title-row {
+    margin: 10px;
+    display: flex;
+    text-align: left;
+}
+
+.short-news-short-text-row {
+    margin: 10px;
+    text-align: left;
+    display: block;
+}
+
+.short-news-footer-row {
+    margin: 10px;
+    display: block;
+    text-align: right;
+}
+
+.short-news-title {
+    margin-right: 5px;
+    display: inline-block;
+    width: 60%;
+    font-weight: bold;
+}
+
+.short-news-authors {
+    margin-left: 5px;
+    margin-right: 5px;
+    display: inline-block;
+    width: 30%;
+}
+
+.short-news-last-edit {
+    margin-left: 5px;
+    display: inline;
+    width: 10%;
+}
+
+.short-news-tags {
+    margin-right: 5px;
+    display: inline-block;
+    width: 40%;
+    color: #5c5c3d;
+}
+
+.short-news-others {
+    margin-left: 5px;
+    display: inline;
+    width: 60%;
+}
+
+#delete-button {
+    float: right;
+    margin-right: 60px;
+    margin-bottom: 50px;
+    width: 150px;
+    height: 30px;
+}
+
+#pagination-row {
+    position: fixed;
+    height: 50px;
+    bottom: 35px;
+    background: #CCCCCC;
+    display: block;
+    left: 255px;
+    right: 10px;
+    display: flex;
+    justify-content: center;
+}
+
+#user-pagination-row {
+    position: fixed;
+    height: 50px;
+    bottom: 35px;
+    background: #CCCCCC;
+    display: block;
+    left: 15px;
+    right: 15px;
+    display: flex;
+    justify-content: center;
+}
+
+.pagination {
+    align-self: center;
+}
+
+ul.pagination {
+    display: inline-block;
+    padding: 0;
+    margin: 0;
+}
+
+ul.pagination li {display: inline;}
+
+ul.pagination li a {
+    color: black;
+    float: left;
+    padding: 8px 16px;
+    text-decoration: none;
+    border-radius: 5px;
+    font-size: 20px;
+}
+
+ul.pagination li a.active {
+    background-color: #5c5c3d;
+    color: white;
+    border-radius: 5px;
+}
+
+ul.pagination li a:hover:not(.active) {background-color: #ddd;}
+
+.news {
+    margin: 50px;
+    margin-top: 10px;
+    display: block;
+    text-align: left;
+}
+
+.title {
+    width: 90%;
+    display: flex;
+    font-weight: bold;
+    margin: 10px;
+}
+
+.data-and-authors-row {
+    margin: 10px;
+    display: flex;
+}
+
+.news-authors {
+    display: flex;
+    width: 90%;
+}
+
+.news-last-edit {
+    display: flex;
+    width: 10%;
+}
+
+.news-text {
+    margin: 10px;
+}
+
+.comment {
+    margin-top: 10px;
+}
+
+.comment-text-wrapper {
+    margin: 10px;
+    margin-top: 0px;
+    background: #CCCCCC;
+    width: 70%;
+}
+
+.comment-text {
+    padding-top: 10px;
+    padding-bottom: 10px;
+    width: 90%;
+}
+
+#new-comment-text {
+    margin: 10px;
+    width: 70%;
+}
+
+#new-post-textarea {
+    width: 100%;
+}
+
+#post-comment-button-wrapper {
+    margin: 10px;
+    width: 70%;
+}
+
+#post-comment-button {
+    width: 150px;
+    height: 30px;
+    float: right;
+    margin-bottom: 40px;
+}
+
+#news-footer {
+    margin: 10px;
+    display: flex;
+    width: 90%;
+}
+
+#previous-link {
+    width: 50%;
+    text-align: left;
+}
+
+#next-link {
+    width: 50%;
+    text-align: right;
+}
+
+#delete-post-button-span {
+    float: right;
+}
+
+#items-list {
+    margin: 50px;
+    display: block;
+}
+
+.item {
+    margin: 10px;
+    margin-bottom: 40px;
+    display: flex;
+}
+
+.item-label {
+    width: 10%;
+    text-align: left;
+}
+
+.item-name {
+    margin-right: 10px;
+    text-align: left;
+    width: 70%;
+}
+
+.item-action {
+    margin-left: 10px;
+    width: 20%;
+    text-align: left;
+}
+
+#new-item-name-textarea, .item-name-textarea {
+    width: 100%;
+}
+
+#add-item {
+    margin: 50px;
+    margin-left: 60px;
+    margin-bottom: 40px;
+    margin-top: 100px;
+    display: flex;
+}
+
+#save-item-link {
+    margin-left: 10px;
+    width: 30%;
+    text-align: left;
+}
+
+#new-news {
+    margin: 50px;
+}
+
+#new-news-title-row {
+    margin: 10px;
+    margin-bottom: 40px;
+    display: flex;
+}
+
+#new-news-title-label {
+    font-weight: bold;
+    width: 10%;
+}
+
+#new-news-title {
+    width: 90%;
+}
+
+#new-news-textarea {
+    width: 100%;
+}
+
+#date-row {
+    margin: 10px;
+    margin-bottom: 40px;
+    display: flex;
+}
+
+#date-title {
+    font-weight: bold;
+    width: 10%;
+}
+
+#date {
+    max-width: 20%;
+}
+
+#short-text-row {
+    margin: 10px;
+    margin-bottom: 40px;
+    display: flex;
+    justify-content: center;
+}
+
+#short-text-title {
+    font-weight: bold;
+    width: 10%;
+    align-self: center;
+}
+
+#short-text {
+    width: 90%;
+}
+
+#short-text-textarea {
+    width: 100%;
+}
+
+#text-row {
+    margin: 10px;
+    margin-bottom: 40px;
+    display: flex;
+    justify-content: center;
+}
+
+#text-title {
+    font-weight: bold;
+    width: 10%;
+    align-self: center;
+}
+
+#text {
+    width: 90%;
+}
+
+#text-textarea {
+    width: 100%;
+}
+
+#save-news-button {
+    float: right;
+    margin-top: 20px;
+    margin-right: 60px;
+    margin-bottom: 50px;
+    width: 150px;
+    height: 30px;
+}
+
+#back-link {
+    margin: 10px;
+}
+
+#news-list-bottom-space {
+    height: 50px;
+}
