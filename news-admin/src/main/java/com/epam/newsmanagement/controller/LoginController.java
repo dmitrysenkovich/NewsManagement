@@ -29,6 +29,12 @@ public class LoginController {
     private AuthorizationUtils authorizationUtils;
 
 
+    /**
+     * Dispatches login requests.
+     * @param error error while authorizing.
+     * @param logout message while login out.
+     * @return login ModelAndView.
+     */
     @RequestMapping(value = { "/", "/login" }, method = RequestMethod.GET)
     public ModelAndView login(@RequestParam(value = "error", required = false) String error,
                               @RequestParam(value = "logout", required = false) String logout,
@@ -59,15 +65,29 @@ public class LoginController {
         return model;
     }
 
+
     @RequestMapping(value = "/news-list-administration", method = RequestMethod.GET)
     public ModelAndView newsListAdministrationStub() {
         logger.info("News list administration GET request");
         return new ModelAndView("news-list-administration");
     }
 
-    @RequestMapping(value = "/403", method = RequestMethod.GET)
-    public ModelAndView asd(HttpServletRequest request) {
-        System.out.println(request.isUserInRole("ADMIN"));
-        return new ModelAndView("403");
+
+    /**
+     * Dispatches access denying.
+     * @return error page ModelAndView.
+     */
+    @RequestMapping(value = { "/403", "/404" }, method = {RequestMethod.GET, RequestMethod.POST})
+    public ModelAndView error(HttpServletRequest request) {
+        ModelAndView modelAndView = new ModelAndView("error");
+        if (request.getRequestURI().endsWith("403")) {
+            logger.info("403 page request");
+            modelAndView.addObject("errorMessage", "Hey, you are not admin!:\\");
+        }
+        else {
+            logger.info("404 page request");
+            modelAndView.addObject("errorMessage", "Unfortunately we couldn't find the page you wanted:c");
+        }
+        return modelAndView;
     }
 }

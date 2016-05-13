@@ -532,3 +532,13 @@ ul.pagination li a:hover:not(.active) {background-color: #ddd;}
 #news-list-bottom-space {
     height: 50px;
 }
+
+#error-div {
+    position: absolute;
+    left: 50%;
+    margin-left: -175px;
+    margin-top: -50px;
+    width: 350px;
+    top: 50%;
+    text-align: center;
+}

@@ -8,13 +8,17 @@
         <put-attribute name="header" value="/WEB-INF/pages/header.jsp" />
     </definition>
 
+    <definition name="simple.definition">
+        <put-attribute name="footer" value="/WEB-INF/pages/footer.jsp" />
+        <put-attribute name="header" value="/WEB-INF/pages/simple-header.jsp" />
+    </definition>
+
     <definition name="extended.definition" extends="base.definition">
         <put-attribute name="navbar" value="/WEB-INF/pages/navbar.jsp" />
     </definition>
 
-    <definition name="login" template="/WEB-INF/pages/login.jsp" extends="base.definition" >
-        <put-attribute name="header" value="/WEB-INF/pages/simple-header.jsp" />
-    </definition>
+    <definition name="login" template="/WEB-INF/pages/login.jsp" extends="simple.definition" />
+    <definition name="error" template="/WEB-INF/pages/error.jsp" extends="simple.definition" />
     <definition name="authors" template="/WEB-INF/pages/authors.jsp" extends="extended.definition" />
     <definition name="tags" template="/WEB-INF/pages/tags.jsp" extends="extended.definition" />
     <definition name="news-administration" template="/WEB-INF/pages/news-administration.jsp" extends="extended.definition" />
