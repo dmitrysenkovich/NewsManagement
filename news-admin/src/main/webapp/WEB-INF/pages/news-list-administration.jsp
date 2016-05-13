@@ -1,42 +1,29 @@
+<%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core"%>
+<%@ taglib prefix="tiles" uri="http://tiles.apache.org/tags-tiles"%>
+<%@ page session="false" contentType="text/html; charset=UTF-8" %>
 <html>
     <head>
         <meta charset="utf-8">
 
         <title>News Management | News</title>
 
-        <link rel="stylesheet" href="./css/style.css">
-        <link rel="stylesheet" type="text/css" href="./css/jquery.multiselect.css">
-        <link rel="stylesheet" type="text/css" href="./assets/style.css">
-        <link rel="stylesheet" type="text/css" href="./assets/prettify.css">
-        <link rel="stylesheet" type="text/css" href="http://ajax.googleapis.com/ajax/libs/jqueryui/1/themes/ui-lightness/jquery-ui.css">
+        <link href="<c:url value="/resources/css/style.css" />" rel="stylesheet">
+        <link href="<c:url value="/resources/css/jquery.multiselect.css" />" rel="stylesheet">
+        <link href="<c:url value="/resources/assets/style.css" />" rel="stylesheet">
+        <link href="<c:url value="/resources/assets/prettify.css" />" rel="stylesheet">
+        <link href="http://ajax.googleapis.com/ajax/libs/jqueryui/1/themes/ui-lightness/jquery-ui.css" rel="stylesheet">
 
+        <script type="text/javascript" src="<c:url value="/resources/js/jquery.multiselect.min.js" />"></script>
+        <script type="text/javascript" src="<c:url value="/resources/assets/prettify.js" />"></script>
+        <script type="text/javascript" src="<c:url value="/resources/js/newsmanagement.js" />"></script>
         <script type="text/javascript" src="http://ajax.googleapis.com/ajax/libs/jquery/1/jquery.js"></script>
         <script type="text/javascript" src="http://ajax.googleapis.com/ajax/libs/jqueryui/1/jquery-ui.min.js"></script>
-        <script type="text/javascript" src="./js/jquery.multiselect.min.js"></script>
-        <script type="text/javascript" src="./assets/prettify.js"></script>
-        <script type="text/javascript" src="./js/newsmanagement.js"></script>
     </head>
     <body>
         <div id="container">
-            <div id="header">
-                <h1 id="title">News portal - Administration</h1>
-                <div id="greeting">Hello, admin Admin <button id="logout-button">Logout</button></div>
-                <div id="language">
-                    <a href="#">EN</a>
-                    <a href="#">RU</a>
-                </div>
-            </div>
+            <tiles:insertAttribute name="header" />
             <div id="crutch">
-                <div id="navbar">
-                    <div id="links">
-                        <ul>
-                            <li><a href="#" style="font-weight: bold;">News List</a></li>
-                            <li><a href="#">Add News</a></li>
-                            <li><a href="#">Add/Update Authors</a></li>
-                            <li><a href="#">Add/Update Tags</a></li>
-                        </ul>
-                    </div>
-                </div>
+                <tiles:insertAttribute name="navbar" />
                 <div id="content" class="scrollable">
                     <div id="filter-row">
                         <select id="authors" name="authors">
@@ -45,7 +32,7 @@
                             <option value="Jeff Mason">Jeff Mason</option>
                             <option value="Ginger Gibson">Ginger Gibson</option>
                             <option value="My Pham">My Pham</option>
-                            <option value="David Lawder">David Lawder</opt  ion>
+                            <option value="David Lawder">David Lawder</option>
                             <option value="Lindsay Dunsmuird">Lindsay Dunsmuird</option>
                         </select>
 
@@ -87,7 +74,7 @@
                                     Politics, election
                                 </div>
                                 <div class="short-news-others">
-                                    <span style="color: #ff0000">Comments(5)</span> <a href="#">Edit</a> <input type="checkbox"></input>
+                                    <span style="color: #ff0000">Comments(5)</span> <a href="#">Edit</a> <input type="checkbox" />
                                 </div>
                             </div>
                         </div>
@@ -113,7 +100,7 @@
                                     Republican, Donald Trump, White House
                                 </div>
                                 <div class="short-news-others">
-                                    <span style="color: #ff0000">Comments(15)</span> <a href="#">Edit</a> <input type="checkbox"></input>
+                                    <span style="color: #ff0000">Comments(15)</span> <a href="#">Edit</a> <input type="checkbox" />
                                 </div>
                             </div>
                         </div>
@@ -139,7 +126,7 @@
                                     Barack Obama, president, Vietnam
                                 </div>
                                 <div class="short-news-others">
-                                    <span style="color: #ff0000">Comments(84)</span> <a href="#">Edit</a> <input type="checkbox"></input>
+                                    <span style="color: #ff0000">Comments(84)</span> <a href="#">Edit</a> <input type="checkbox" />
                                 </div>
                             </div>
                         </div>
@@ -165,7 +152,7 @@
                                     Barack Obama, president, Vietnam
                                 </div>
                                 <div class="short-news-others">
-                                    <span style="color: #ff0000">Comments(46)</span> <a href="#">Edit</a> <input type="checkbox"></input>
+                                    <span style="color: #ff0000">Comments(46)</span> <a href="#">Edit</a> <input type="checkbox" />
                                 </div>
                             </div>
                         </div>
@@ -188,9 +175,7 @@
                     </div>
                 </div>
             </div>
-            <div id="footer">
-                Copyright @ Epam 2016. All rights reserved.
-            </div>
+            <tiles:insertAttribute name="footer" />
         </div>
     </body>
 </html>

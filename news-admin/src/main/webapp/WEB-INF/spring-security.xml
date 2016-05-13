@@ -6,10 +6,9 @@
 	http://www.springframework.org/schema/security
 	http://www.springframework.org/schema/security/spring-security-3.2.xsd">
 
-	<beans:import resource="classpath*:spring-configuration.xml" />
+    <beans:bean id="customAuthenticationFailureHandler" class="com.epam.newsmanagement.handler.CustomAuthenticationFailureHandler"/>
 
-    <beans:bean id="customAuthenticationFailureHandler"
-                class="com.epam.newsmanagement.handler.CustomAuthenticationFailureHandler"/>
+	<beans:import resource="classpath*:spring-configuration.xml" />
 
 	<http auto-config="true" use-expressions="true">
         <intercept-url pattern="/authors/**" access="isAuthenticated() and hasRole('ADMIN')"/>
@@ -33,9 +32,10 @@
 		<authentication-provider>
 			<jdbc-user-service data-source-ref="dataSource"
                users-by-username-query=
-                   "select LOGIN, PASSWORD from USERS where LOGIN=?"
+                   "select LOGIN, PASSWORD, 1 AS ENABLED from USERS where LOGIN = ?"
                authorities-by-username-query=
-                   "select LOGIN, ROLE from USERS where LOGIN=?" />
+                   "select LOGIN, ROLE_NAME
+                    from ROLES JOIN (select LOGIN, ROLE_ID from USERS where LOGIN = ?) USING (ROLE_ID)" />
 		</authentication-provider>
 	</authentication-manager>
 </beans:beans>

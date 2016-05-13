@@ -12,7 +12,9 @@
         <put-attribute name="navbar" value="/WEB-INF/pages/navbar.jsp" />
     </definition>
 
-    <definition name="login" template="/WEB-INF/pages/login.jsp" extends="base.definition" />
+    <definition name="login" template="/WEB-INF/pages/login.jsp" extends="base.definition" >
+        <put-attribute name="header" value="/WEB-INF/pages/simple-header.jsp" />
+    </definition>
     <definition name="authors" template="/WEB-INF/pages/authors.jsp" extends="extended.definition" />
     <definition name="tags" template="/WEB-INF/pages/tags.jsp" extends="extended.definition" />
     <definition name="news-administration" template="/WEB-INF/pages/news-administration.jsp" extends="extended.definition" />
