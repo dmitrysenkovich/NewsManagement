@@ -1,8 +1,6 @@
 package com.epam.newsmanagement.controller;
 
 import com.epam.newsmanagement.app.exception.ServiceException;
-import com.epam.newsmanagement.app.model.User;
-import com.epam.newsmanagement.app.service.UserService;
 import com.epam.newsmanagement.utils.AuthorizationUtils;
 import org.apache.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -63,31 +61,5 @@ public class LoginController {
         }
         model.setViewName("login");
         return model;
-    }
-
-
-    @RequestMapping(value = "/news-list-administration", method = RequestMethod.GET)
-    public ModelAndView newsListAdministrationStub() {
-        logger.info("News list administration GET request");
-        return new ModelAndView("news-list-administration");
-    }
-
-
-    /**
-     * Dispatches access denying.
-     * @return error page ModelAndView.
-     */
-    @RequestMapping(value = { "/403", "/404" }, method = {RequestMethod.GET, RequestMethod.POST})
-    public ModelAndView error(HttpServletRequest request) {
-        ModelAndView modelAndView = new ModelAndView("error");
-        if (request.getRequestURI().endsWith("403")) {
-            logger.info("403 page request");
-            modelAndView.addObject("errorMessage", "Hey, you are not admin!:\\");
-        }
-        else {
-            logger.info("404 page request");
-            modelAndView.addObject("errorMessage", "Unfortunately we couldn't find the page you wanted:c");
-        }
-        return modelAndView;
     }
 }

@@ -96,4 +96,19 @@ public class CommentServiceImpl implements CommentService {
         }
         logger.info("Successfully deleted comments");
     }
+
+
+    @Override
+    public Long countAllByNews(News news) throws ServiceException {
+        logger.info("Counting all news comments..");
+        Long commentsCount;
+        try {
+            commentsCount = commentRepository.countAllByNews(news);
+        } catch (DaoException e) {
+            logger.error("Failed to count all news comments");
+            throw new ServiceException(e);
+        }
+        logger.info("Successfully counted all news comments");
+        return commentsCount;
+    }
 }

@@ -9,6 +9,8 @@ import java.util.List;
 public class SearchCriteria {
     private Long authorId;
     private List<Long> tagIds;
+    private Long pageIndex;
+    private Long pageSize;
 
     public SearchCriteria() {}
 
@@ -26,5 +28,21 @@ public class SearchCriteria {
 
     public void setTagIds(List<Long> tagIds) {
         this.tagIds = tagIds;
+    }
+
+    public Long getPageIndex() {
+        return pageIndex;
+    }
+
+    public void setPageIndex(Long pageIndex) {
+        this.pageIndex = pageIndex;
+    }
+
+    public Long getPageSize() {
+        return pageSize;
+    }
+
+    public void setPageSize(Long pageSize) {
+        this.pageSize = pageSize;
     }
 }

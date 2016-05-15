@@ -6,13 +6,18 @@ import net.sf.jsqlparser.expression.operators.relational.ExpressionList;
 import net.sf.jsqlparser.parser.CCJSqlParserManager;
 import net.sf.jsqlparser.statement.insert.Insert;
 import org.apache.log4j.Logger;
+import org.springframework.beans.factory.annotation.Autowired;
 
 import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.FileReader;
 import java.io.IOException;
+import java.io.InputStream;
+import java.io.InputStreamReader;
 import java.io.StringReader;
+import java.net.MalformedURLException;
+import java.net.URL;
 import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.NClob;
@@ -32,7 +37,7 @@ public class DatabaseInitializingUtils {
     private static final String ROWS_COUNT_PER_TABLE = "SELECT * FROM " +
             "(SELECT COUNT(*) FROM NEWS NEWS_COUNT), (SELECT COUNT(*) FROM TAGS TAGS_COUNT), " +
             "(SELECT COUNT(*) FROM AUTHORS AUTHORS_COUNT), (SELECT COUNT(*) FROM ROLES ROLES_COUNT)";
-    private static final String DATA_FILE_PATH = "src/main/resources/script/sql/data.sql";
+    private static final String DATA_FILE_NAME = "data.sql";
 
 
     /**
@@ -45,6 +50,12 @@ public class DatabaseInitializingUtils {
         Connection connection = null;
         Statement statement = null;
         try {
+            try {
+                Class.forName("oracle.jdbc.driver.OracleDriver");
+            } catch (ClassNotFoundException e) {
+                logger.error("Error loading database driver");
+                return connection;
+            }
             connection = DriverManager.getConnection("jdbc:oracle:thin:@localhost", "dmitry", "pass");
             statement = connection.createStatement();
             statement.executeQuery(ROWS_COUNT_PER_TABLE);
@@ -83,14 +94,21 @@ public class DatabaseInitializingUtils {
      * @param connection database connection.
      */
     private static void insertData(Connection connection) {
-        FileReader fileReader;
+        URL url;
         try {
-            fileReader = new FileReader(new File(DATA_FILE_PATH));
-        } catch (FileNotFoundException e) {
+            url = new URL(new ScriptFileUtils().getSearchScriptDirectoryPath() + DATA_FILE_NAME);
+        } catch (MalformedURLException e) {
             logger.error("Error while loading data: ", e);
             return;
         }
-        BufferedReader bufferedReader = new BufferedReader(fileReader);
+        BufferedReader bufferedReader;
+        try {
+            InputStream inputStream = url.openStream();
+            bufferedReader = new BufferedReader(new InputStreamReader(inputStream));
+        } catch (IOException e) {
+            logger.error("Error while loading data: ", e);
+            return;
+        }
 
         String buffer;
         List<String> queries = new LinkedList<>();

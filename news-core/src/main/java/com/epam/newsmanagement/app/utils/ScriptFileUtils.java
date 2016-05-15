@@ -3,8 +3,13 @@ package com.epam.newsmanagement.app.utils;
 import org.apache.commons.io.FileUtils;
 import org.apache.log4j.Logger;
 
+import java.io.BufferedReader;
 import java.io.File;
 import java.io.IOException;
+import java.io.InputStream;
+import java.io.InputStreamReader;
+import java.net.MalformedURLException;
+import java.net.URL;
 
 /**
  * Script files utils.
@@ -18,7 +23,12 @@ public class ScriptFileUtils {
      */
     public String getSearchScriptDirectoryPath() {
         String classesDirectoryPath = ScriptFileUtils.class.getProtectionDomain().getCodeSource().getLocation().getPath();
-        String searchScriptDirectoryPath = classesDirectoryPath +
+        String searchScriptDirectoryPath;
+        if (classesDirectoryPath.endsWith("jar"))
+            searchScriptDirectoryPath = "jar:file:" + classesDirectoryPath + "!" +
+                File.separator + "script" + File.separator + "sql" + File.separator;
+        else
+            searchScriptDirectoryPath = classesDirectoryPath +
                 "script" + File.separator +
                 "sql" + File.separator;
         return searchScriptDirectoryPath;
@@ -53,10 +63,34 @@ public class ScriptFileUtils {
                                        Logger logger,
                                        String errorMessage) {
         String scriptPart = "";
-        try {
-            scriptPart = FileUtils.readFileToString(new File(directoryPath + fileName));
-        } catch (IOException e) {
-            logger.error(errorMessage, e);
+        if (directoryPath.startsWith("jar")) {
+            URL url;
+            try {
+                url = new URL(directoryPath + fileName);
+            } catch (MalformedURLException e) {
+                logger.error(errorMessage, e);
+                return "";
+            }
+            try {
+                InputStream inputStream = url.openStream();
+                BufferedReader bufferedReader = new BufferedReader(new InputStreamReader(inputStream));
+                StringBuilder stringBuilder = new StringBuilder();
+                String buff;
+                while ((buff = bufferedReader.readLine()) != null) {
+                    stringBuilder.append(buff);
+                    stringBuilder.append("\n");
+                }
+                scriptPart = stringBuilder.toString();
+            } catch (IOException e) {
+                logger.error(errorMessage, e);
+            }
+        }
+        else {
+            try {
+                scriptPart = FileUtils.readFileToString(new File(directoryPath + fileName));
+            } catch (IOException e) {
+                logger.error(errorMessage, e);
+            }
         }
         scriptPart = scriptPart.trim();
         return scriptPart;

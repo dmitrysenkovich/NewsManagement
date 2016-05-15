@@ -21,7 +21,9 @@ public interface NewsService extends CrudService<News> {
      * if added successfully.
      * @throws ServiceException
      */
-    News add(News news, Author author, List<Tag> tags) throws ServiceException;
+    default News add(News news, Author author, List<Tag> tags) throws ServiceException {
+        throw new ServiceException();
+    }
 
     /**
      * Retrieves all news specified
@@ -30,7 +32,9 @@ public interface NewsService extends CrudService<News> {
      * @return all fit news.
      * @throws ServiceException
      */
-    List<News> search(SearchCriteria searchCriteria) throws ServiceException;
+    default List<News> search(SearchCriteria searchCriteria) throws ServiceException {
+        throw new ServiceException();
+    }
 
     /**
      * Retrieves all news
@@ -39,7 +43,9 @@ public interface NewsService extends CrudService<News> {
      * @return all news sorted by comments count.
      * @throws ServiceException
      */
-    List<News> findAllSorted() throws ServiceException;
+    default List<News> findAllSorted() throws ServiceException {
+        throw new ServiceException();
+    }
 
     /**
      * Counts all news.
@@ -47,5 +53,17 @@ public interface NewsService extends CrudService<News> {
      * finished successfully.
      * @throws ServiceException
      */
-    Long countAll() throws ServiceException;
+    default Long countAll() throws ServiceException {
+        throw new ServiceException();
+    }
+
+    /**
+     * Counts news pages satisfying
+     * search criteria.
+     * @param searchCriteria search criteria.
+     * @return news count.
+     */
+    default Long countPagesBySearchCriteria(SearchCriteria searchCriteria) throws ServiceException {
+        throw new ServiceException();
+    }
 }

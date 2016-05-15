@@ -3,6 +3,7 @@ package com.epam.newsmanagement.app.dao.impl;
 import com.epam.newsmanagement.app.dao.CommentRepository;
 import com.epam.newsmanagement.app.exception.DaoException;
 import com.epam.newsmanagement.app.model.Comment;
+import com.epam.newsmanagement.app.model.News;
 import com.epam.newsmanagement.app.utils.DatabaseUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 
@@ -11,6 +12,7 @@ import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.sql.Statement;
 import java.util.List;
 
 /**
@@ -22,6 +24,9 @@ public class CommentRepositoryImpl implements CommentRepository {
             "FROM COMMENTS WHERE COMMENT_ID = ?";
     private static final String UPDATE = "UPDATE COMMENTS SET COMMENT_TEXT = ? WHERE COMMENT_ID = ?";
     private static final String DELETE = "DELETE FROM COMMENTS WHERE COMMENT_ID = ?";
+    private static final String COUNT_ALL_BY_NEWS = "SELECT COUNT(*) FROM COMMENTS " +
+            "                                        WHERE NEWS_ID = ?" +
+            "                                        GROUP BY NEWS_ID";
 
     @Autowired
     private DataSource dataSource;
@@ -142,5 +147,28 @@ public class CommentRepositoryImpl implements CommentRepository {
         finally {
             databaseUtils.closeConnectionAndStatement(preparedStatement, connection);
         }
+    }
+
+
+    @Override
+    public Long countAllByNews(News news) throws DaoException {
+        Connection connection = null;
+        PreparedStatement preparedStatement = null;
+        Long count = -1L;
+        try {
+            connection = dataSource.getConnection();
+            preparedStatement = connection.prepareStatement(COUNT_ALL_BY_NEWS);
+            preparedStatement.setLong(1, news.getNewsId());
+            ResultSet resultSet = preparedStatement.executeQuery();
+            resultSet.next();
+            count = resultSet.getLong(1);
+        }
+        catch (SQLException e) {
+            throw new DaoException(e);
+        }
+        finally {
+            databaseUtils.closeConnectionAndStatement(preparedStatement, connection);
+        }
+        return count;
     }
 }

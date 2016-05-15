@@ -170,6 +170,7 @@ public class NewsRepositoryImpl implements NewsRepository {
             }
         }
         catch (SQLException e) {
+            System.out.println(e);
             throw new DaoException(e);
         }
         finally {
@@ -230,5 +231,28 @@ public class NewsRepositoryImpl implements NewsRepository {
             databaseUtils.closeConnectionAndStatement(statement, connection);
         }
         return count;
+    }
+
+
+    @Override
+    public Long countPagesBySearchCriteria(final String COUNT_PAGES_BY_SEARCH_CRITERIA_QUERY) throws DaoException {
+        Connection connection = null;
+        Statement statement = null;
+        Long fitNewsCount = -1L;
+        try {
+            connection = dataSource.getConnection();
+            statement = connection.createStatement();
+            ResultSet resultSet = statement.executeQuery(COUNT_PAGES_BY_SEARCH_CRITERIA_QUERY);
+            resultSet.next();
+            fitNewsCount = resultSet.getLong(1);
+        }
+        catch (SQLException e) {
+            System.out.println(e);
+            throw new DaoException(e);
+        }
+        finally {
+            databaseUtils.closeConnectionAndStatement(statement, connection);
+        }
+        return fitNewsCount;
     }
 }

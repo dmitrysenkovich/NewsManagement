@@ -228,7 +228,7 @@ body {
 .short-news-tags {
     margin-right: 5px;
     display: inline-block;
-    width: 40%;
+    width: 70%;
     color: #5c5c3d;
 }
 
@@ -541,4 +541,9 @@ ul.pagination li a:hover:not(.active) {background-color: #ddd;}
     width: 350px;
     top: 50%;
     text-align: center;
+}
+
+.disabled-page-arrow {
+    opacity: 0.5;
+    color: dimgray !important;
 }

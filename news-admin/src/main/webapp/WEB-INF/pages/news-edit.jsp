@@ -13,11 +13,11 @@
         <link href="<c:url value="/resources/assets/prettify.css" />" rel="stylesheet">
         <link href="http://ajax.googleapis.com/ajax/libs/jqueryui/1/themes/ui-lightness/jquery-ui.css" rel="stylesheet">
 
+        <script type="text/javascript" src="http://ajax.googleapis.com/ajax/libs/jquery/1/jquery.js"></script>
+        <script type="text/javascript" src="http://ajax.googleapis.com/ajax/libs/jqueryui/1/jquery-ui.min.js"></script>
         <script type="text/javascript" src="<c:url value="/resources/js/jquery.multiselect.min.js" />"></script>
         <script type="text/javascript" src="<c:url value="/resources/assets/prettify.js" />"></script>
         <script type="text/javascript" src="<c:url value="/resources/js/newsmanagement.js" />"></script>
-        <script type="text/javascript" src="http://ajax.googleapis.com/ajax/libs/jquery/1/jquery.js"></script>
-        <script type="text/javascript" src="http://ajax.googleapis.com/ajax/libs/jqueryui/1/jquery-ui.min.js"></script>
     </head>
     <body>
         <div id="container">

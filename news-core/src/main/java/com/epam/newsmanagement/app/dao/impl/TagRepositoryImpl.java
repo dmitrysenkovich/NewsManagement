@@ -2,6 +2,7 @@ package com.epam.newsmanagement.app.dao.impl;
 
 import com.epam.newsmanagement.app.dao.TagRepository;
 import com.epam.newsmanagement.app.exception.DaoException;
+import com.epam.newsmanagement.app.model.News;
 import com.epam.newsmanagement.app.model.Tag;
 import com.epam.newsmanagement.app.utils.DatabaseUtils;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -11,6 +12,9 @@ import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.sql.Statement;
+import java.util.LinkedList;
+import java.util.List;
 
 /**
  * Tag repository implementation.
@@ -20,6 +24,9 @@ public class TagRepositoryImpl implements TagRepository {
     private static final String FIND = "SELECT TAG_ID, TAG_NAME FROM TAGS WHERE TAG_ID = ?";
     private static final String UPDATE = "UPDATE TAGS SET TAG_NAME = ? WHERE TAG_ID = ?";
     private static final String DELETE = "DELETE FROM TAGS WHERE TAG_ID = ?";
+    private static final String FIND_ALL_BY_NEWS = "SELECT TAG_ID, TAG_NAME FROM TAGS " +
+            "WHERE TAG_ID IN (SELECT TAG_ID FROM NEWS_TAG WHERE NEWS_ID = ?)";
+    private static final String GET_ALL = "SELECT TAG_ID, TAG_NAME FROM TAGS";
 
     @Autowired
     private DataSource dataSource;
@@ -114,5 +121,62 @@ public class TagRepositoryImpl implements TagRepository {
         finally {
             databaseUtils.closeConnectionAndStatement(preparedStatement, connection);
         }
+    }
+
+
+    @Override
+    public List<Tag> getAllByNews(News news) throws DaoException {
+        Connection connection = null;
+        PreparedStatement preparedStatement = null;
+        List<Tag> tagsByNews = null;
+        try {
+            connection = dataSource.getConnection();
+            preparedStatement = connection.prepareStatement(FIND_ALL_BY_NEWS);
+            preparedStatement.setLong(1, news.getNewsId());
+            ResultSet resultSet = preparedStatement.executeQuery();
+
+            tagsByNews = new LinkedList<>();
+            while (resultSet.next()) {
+                Tag tag = new Tag();
+                tag.setTagId(resultSet.getLong(1));
+                tag.setTagName(resultSet.getString(2));
+                tagsByNews.add(tag);
+            }
+        }
+        catch (SQLException e) {
+            throw new DaoException(e);
+        }
+        finally {
+            databaseUtils.closeConnectionAndStatement(preparedStatement, connection);
+        }
+        return tagsByNews;
+    }
+
+
+    @Override
+    public List<Tag> getAll() throws DaoException {
+        Connection connection = null;
+        Statement statement = null;
+        List<Tag> allTags = null;
+        try {
+            connection = dataSource.getConnection();
+            statement = connection.createStatement();
+            ResultSet resultSet = statement.executeQuery(GET_ALL);
+
+            allTags = new LinkedList<>();
+            while (resultSet.next()) {
+                Tag tag = new Tag();
+                tag.setTagId(resultSet.getLong(1));
+                tag.setTagName(resultSet.getString(2));
+                allTags.add(tag);
+            }
+        }
+        catch (SQLException e) {
+            throw new DaoException(e);
+        }
+        finally {
+            databaseUtils.closeConnectionAndStatement(statement, connection);
+        }
+        return allTags;
     }
 }

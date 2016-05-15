@@ -18,7 +18,9 @@ public interface NewsRepository extends CrudRepository<News, Long> {
      * @throws DaoException
      *
      */
-    List<News> search(final String SEARCH_CRITERIA_QUERY) throws DaoException;
+    default List<News> search(final String SEARCH_CRITERIA_QUERY) throws DaoException {
+        throw new DaoException();
+    }
 
     /**
      * Retrieves all news
@@ -27,12 +29,27 @@ public interface NewsRepository extends CrudRepository<News, Long> {
      * @throws DaoException
      * @return all news sorted by comments count.
      */
-    List<News> findAllSorted() throws DaoException;
+    default List<News> findAllSorted() throws DaoException {
+        throw new DaoException();
+    }
 
     /**
      * Counts all news.
      * @return news count.
      * @throws DaoException
      */
-    Long countAll() throws DaoException;
+    default Long countAll() throws DaoException {
+        throw new DaoException();
+    }
+
+    /**
+     * Counts news pages satisfying
+     * search criteria.
+     * @param COUNT_PAGES_BY_SEARCH_CRITERIA_QUERY count news pages by search criteria query.
+     * @return news count.
+     * @throws DaoException
+     */
+    default Long countPagesBySearchCriteria(final String COUNT_PAGES_BY_SEARCH_CRITERIA_QUERY) throws DaoException {
+        throw new DaoException();
+    }
 }

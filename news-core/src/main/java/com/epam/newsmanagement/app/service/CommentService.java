@@ -18,12 +18,28 @@ public interface CommentService extends CrudService<Comment> {
      * if added successfully.
      * @throws ServiceException
      */
-    Comment add(News news, Comment comment) throws ServiceException;
+   default Comment add(News news, Comment comment) throws ServiceException {
+        throw new ServiceException();
+    }
 
     /**
      * Deletes all comments from list.
      * @param comments comments to be deleted.
      * @throws ServiceException
      */
-    void deleteAll(List<Comment> comments) throws ServiceException;
+    default void deleteAll(List<Comment> comments) throws ServiceException {
+        throw new ServiceException();
+    }
+
+    /**
+     * Counts all news comments.
+     * @param news news which comments
+     * will be counted.
+     * @return news count. -1 if not
+     * finished successfully.
+     * @throws ServiceException
+     */
+    default Long countAllByNews(News news) throws ServiceException {
+        throw new ServiceException();
+    }
 }

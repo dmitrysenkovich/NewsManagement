@@ -16,5 +16,7 @@ public interface UserService extends CrudService<User> {
      * if added successfully.
      * @throws ServiceException
      */
-    User add(User user, Role role) throws ServiceException;
+    default User add(User user, Role role) throws ServiceException {
+        throw new ServiceException();
+    }
 }

@@ -29,7 +29,7 @@ DATA_SQL_FILE_PATH = '../sql/data.sql'
 INSERT_NEWS_ROW = 'INSERT INTO NEWS VALUES({0}, \'{1}\', \'{2}\', \'{3}\', TO_TIMESTAMP(\'{4}\', \'YYYY-MM-DD HH24:MI:SS\'), TO_DATE(\'{5}\', \'YYYY-MM-DD\'))\n'
 INSERT_TAG_ROW = 'INSERT INTO TAGS VALUES({0}, \'{1}\')\n'
 INSERT_NEWS_TAG_ROW = 'INSERT INTO NEWS_TAG VALUES({0}, {1})\n'
-INSERT_AUTHOR_ROW = 'INSERT INTO AUTHORS VALUES({0}, \'{1}\', TO_TIMESTAMP(\'{2}\', \'YYYY-MM-DD HH24:MI:SS\'))\n'
+INSERT_AUTHOR_ROW = 'INSERT INTO AUTHORS VALUES({0}, \'{1}\', {2})\n'
 INSERT_NEWS_AUTHOR_ROW = 'INSERT INTO NEWS_AUTHOR VALUES({0}, {1})\n'
 INSERT_COMMENT_ROW = 'INSERT INTO COMMENTS VALUES({0}, {1}, \'{2}\', TO_TIMESTAMP(\'{3}\', \'YYYY-MM-DD HH24:MI:SS\'))\n'
 INSERT_USER_ROW = 'INSERT INTO USERS VALUES({0}, {1}, \'{2}\', \'{3}\', \'{4}\')\n'
@@ -159,8 +159,7 @@ def generate_dataset(full_texts, titles, short_texts, creation_dates, \
     authors_count = len(authors)
     creation_dates_count = len(creation_dates)
     for i in range(authors_count):
-        data_sql_file.write(INSERT_AUTHOR_ROW.format(i+1, MySQLdb.escape_string(authors[i]).decode('UTF-8').replace('\\\'', '\'\''), \
-            creation_dates[i%creation_dates_count]))
+        data_sql_file.write(INSERT_AUTHOR_ROW.format(i+1, MySQLdb.escape_string(authors[i]).decode('UTF-8').replace('\\\'', '\'\''), 'NULL'))
     print('Added authors')
 
     data_sql_file.write('\n')
@@ -239,6 +238,7 @@ def main():
         full_texts.append(full_text)
         tags.extend(tags)
     tags = list(set(tags))
+    authors = list(set(authors))
     print("Parsed reuters news pages html in authors, creation_dates, modification_dates, full_texts and tags\n")
 
 

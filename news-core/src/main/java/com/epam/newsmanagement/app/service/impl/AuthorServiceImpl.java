@@ -4,12 +4,14 @@ import com.epam.newsmanagement.app.dao.AuthorRepository;
 import com.epam.newsmanagement.app.exception.DaoException;
 import com.epam.newsmanagement.app.exception.ServiceException;
 import com.epam.newsmanagement.app.model.Author;
+import com.epam.newsmanagement.app.model.News;
 import com.epam.newsmanagement.app.service.AuthorService;
 import org.apache.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.sql.Timestamp;
+import java.util.List;
 
 /**
  * Author service.
@@ -93,5 +95,37 @@ public class AuthorServiceImpl implements AuthorService {
             throw new ServiceException(e);
         }
         logger.info("Successfully made author expired");
+    }
+
+
+    @Override
+    public List<Author> getAllByNews(News news) throws ServiceException {
+        logger.info("Retrieving news authors..");
+        List<Author> authorsByNews;
+        try {
+            authorsByNews = authorRepository.getAllByNews(news);
+        } catch (DaoException e) {
+            logger.error("Failed to retrieve news authors");
+            throw new ServiceException(e);
+        }
+
+        logger.info("Successfully retrieved news authors");
+        return authorsByNews;
+    }
+
+
+    @Override
+    public List<Author> getNotExpired() throws ServiceException {
+        logger.info("Retrieving not expired authors..");
+        List<Author> notExpiredAuthors;
+        try {
+            notExpiredAuthors = authorRepository.getNotExpired();
+        } catch (DaoException e) {
+            logger.error("Failed to retrieve not expired authors");
+            throw new ServiceException(e);
+        }
+
+        logger.info("Successfully retrieved not expired authors");
+        return notExpiredAuthors;
     }
 }

@@ -171,4 +171,20 @@ public class NewsServiceImpl implements NewsService {
         logger.info("Successfully counted all news");
         return newsCount;
     }
+
+
+    @Override
+    public Long countPagesBySearchCriteria(SearchCriteria searchCriteria) throws ServiceException {
+        logger.info("Searching counted news pages by search criteria..");
+        final String COUNT_PAGES_BY_SEARCH_CRITERIA_QUERY = searchUtils.getCountQuery(searchCriteria);
+        Long fitNewsPagesCount;
+        try {
+            fitNewsPagesCount = newsRepository.countPagesBySearchCriteria(COUNT_PAGES_BY_SEARCH_CRITERIA_QUERY);
+        } catch (DaoException e) {
+            logger.error("Failed to count news pages by search criteria");
+            throw new ServiceException(e);
+        }
+        logger.info("Successfully counted news pages by search criteria");
+        return fitNewsPagesCount;
+    }
 }

@@ -3,11 +3,15 @@ package com.epam.newsmanagement.app.service.impl;
 import com.epam.newsmanagement.app.dao.TagRepository;
 import com.epam.newsmanagement.app.exception.DaoException;
 import com.epam.newsmanagement.app.exception.ServiceException;
+import com.epam.newsmanagement.app.model.Author;
+import com.epam.newsmanagement.app.model.News;
 import com.epam.newsmanagement.app.model.Tag;
 import com.epam.newsmanagement.app.service.TagService;
 import org.apache.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.transaction.annotation.Transactional;
+
+import java.util.List;
 
 /**
  * Tag service implementation.
@@ -75,5 +79,37 @@ public class TagServiceImpl implements TagService {
             throw new ServiceException(e);
         }
         logger.info("Successfully deleted tag");
+    }
+
+
+    @Override
+    public List<Tag> getAllByNews(News news) throws ServiceException {
+        logger.info("Retrieving news tags..");
+        List<Tag> tagsByNews;
+        try {
+            tagsByNews = tagRepository.getAllByNews(news);
+        } catch (DaoException e) {
+            logger.error("Failed to retrieve news tags");
+            throw new ServiceException(e);
+        }
+
+        logger.info("Successfully retrieved news tags");
+        return tagsByNews;
+    }
+
+
+    @Override
+    public List<Tag> getAll() throws ServiceException {
+        logger.info("Retrieving all tags..");
+        List<Tag> allTags;
+        try {
+            allTags = tagRepository.getAll();
+        } catch (DaoException e) {
+            logger.error("Failed to retrieve all tags");
+            throw new ServiceException(e);
+        }
+
+        logger.info("Successfully retrieved all tags");
+        return allTags;
     }
 }
