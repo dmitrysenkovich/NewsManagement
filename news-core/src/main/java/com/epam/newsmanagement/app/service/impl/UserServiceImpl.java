@@ -78,4 +78,19 @@ public class UserServiceImpl implements UserService {
         }
         logger.info("Successfully deleted user");
     }
+
+
+    @Override
+    public String userNameByLogin(String login) throws ServiceException {
+        logger.info("Retrieving user name by login..");
+        String userName;
+        try {
+            userName = userRepository.userNameByLogin(login);
+        } catch (DaoException e) {
+            logger.error("Failed to find user name by login");
+            throw new ServiceException(e);
+        }
+        logger.info("Successfully found user name by login");
+        return userName;
+    }
 }

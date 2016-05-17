@@ -175,7 +175,7 @@ public class NewsServiceImpl implements NewsService {
 
     @Override
     public Long countPagesBySearchCriteria(SearchCriteria searchCriteria) throws ServiceException {
-        logger.info("Searching counted news pages by search criteria..");
+        logger.info("Counting news pages by search criteria..");
         final String COUNT_PAGES_BY_SEARCH_CRITERIA_QUERY = searchUtils.getCountQuery(searchCriteria);
         Long fitNewsPagesCount;
         try {

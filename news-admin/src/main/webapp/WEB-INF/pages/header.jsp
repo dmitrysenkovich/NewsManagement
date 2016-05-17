@@ -3,7 +3,7 @@
     <h1 id="title">News portal - Administration</h1>
     <c:url value="/j_spring_security_logout" var="logoutUrl" />
     <form id="greeting" action="${logoutUrl}" method="post">
-        Hello, admin ${pageContext.request.userPrincipal.name}
+        Hello, admin ${userName}
         <span>
             <input type="hidden" name="${_csrf.parameterName}" value="${_csrf.token}" />
             <input id="logout-button" type="submit" value="Logout">

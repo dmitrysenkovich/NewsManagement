@@ -30,16 +30,16 @@
                 <div id="content" class="scrollable">
                     <div id="filter-row">
                         <select id="authors" name="authors">
-                            <option value="" disabled selected>Please select the author</option>
+                            <option value="default" disabled selected>Please select the author</option>
                             <c:forEach var="author" items="${notExpiredAuthors}">
-                                <option value="${author.authorName}">${author.authorName}</option>
+                                <option value="${author.authorId}">${author.authorName}</option>
                             </c:forEach>
                         </select>
 
                         <select id="tags" multiple="multiple" name="tags">
-                            <option value="" disabled>Please select the tags</option>
+                            <option value="default" disabled>Please select the tags</option>
                             <c:forEach var="tag" items="${tags}">
-                                <option value="${tag.tagName}">${tag.tagName}</option>
+                                <option value="${tag.tagId}">${tag.tagName}</option>
                             </c:forEach>
                         </select>
 
@@ -93,7 +93,7 @@
                                         </c:forEach>
                                     </div>
                                     <div class="short-news-others">
-                                        <span style="color: #ff0000">Comments(${commentsCountByNewsId[news.newsId]})</span> <a href="#">Edit</a> <input type="checkbox" />
+                                        <span style="color: #ff0000">Comments(${commentsCountByNewsId[news.newsId]})</span> <a href="/news-management/edit-news/${news.newsId}">Edit</a> <input type="checkbox" />
                                     </div>
                                 </div>
                             </div>
@@ -102,20 +102,20 @@
                     </div>
                     <div id="pagination-row">
                         <ul class="pagination">
-                            <li><a id="first-page" class="disabled-page-arrow" href="#">«</a></li>
-                            <li><a id="previous-page" class="disabled-page-arrow" href="#">❮</a></li>
+                            <li><a id="first-page" class="disabled-page-arrow" href="javascript:void(0)">«</a></li>
+                            <li><a id="previous-page" class="disabled-page-arrow" href="javascript:void(0)">❮</a></li>
                             <c:forEach begin="1" end="${pagesCount > 5 ? 5 : pagesCount}" var="i">
                                 <c:choose>
                                     <c:when test="${i == 1}">
-                                        <li><a class="active" href="#">${i}</a></li>
+                                        <li><a class="page-link active" href="javascript:void(0)">${i}</a></li>
                                     </c:when>
                                     <c:otherwise>
-                                        <li><a href="#">${i}</a></li>
+                                        <li><a href="javascript:void(0)" class="page-link">${i}</a></li>
                                     </c:otherwise>
                                 </c:choose>
                             </c:forEach>
-                            <li><a id="next-page" class="${pagesCount == 1 ? 'disabled-page-arrow' : ''}" href="#">❯</a></li>
-                            <li><a id="last-page" class="${pagesCount < 6 ? 'disabled-page-arrow' : ''}" href="#">»</a></li>
+                            <li><a id="next-page" class="${pagesCount == 1 ? 'disabled-page-arrow' : ''}" href="javascript:void(0)">❯</a></li>
+                            <li><a id="last-page" class="${pagesCount < 6 ? 'disabled-page-arrow' : ''}" href="javascript:void(0)">»</a></li>
                         </ul>
                     </div>
                 </div>

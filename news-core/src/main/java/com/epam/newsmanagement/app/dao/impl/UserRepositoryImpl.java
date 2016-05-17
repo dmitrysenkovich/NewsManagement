@@ -22,6 +22,7 @@ public class UserRepositoryImpl implements UserRepository {
     private static final String UPDATE = "UPDATE USERS SET ROLE_ID = ?, USER_NAME = ?, LOGIN = ?, PASSWORD = ? " +
             "WHERE USER_ID = ?";
     private static final String DELETE = "DELETE FROM USERS WHERE USER_ID = ?";
+    private static final String USER_NAME_BY_LOGIN = "SELECT USER_NAME FROM USERS WHERE LOGIN = ?";
 
     @Autowired
     private DataSource dataSource;
@@ -125,5 +126,28 @@ public class UserRepositoryImpl implements UserRepository {
         finally {
             databaseUtils.closeConnectionAndStatement(preparedStatement, connection);
         }
+    }
+
+
+    @Override
+    public String userNameByLogin(String login) throws DaoException {
+        Connection connection = null;
+        PreparedStatement preparedStatement = null;
+        String userName = "";
+        try {
+            connection = dataSource.getConnection();
+            preparedStatement = connection.prepareStatement(USER_NAME_BY_LOGIN);
+            preparedStatement.setString(1, login);
+            ResultSet resultSet = preparedStatement.executeQuery();
+            resultSet.next();
+            userName = resultSet.getString(1);
+        }
+        catch (SQLException e) {
+            throw new DaoException(e);
+        }
+        finally {
+            databaseUtils.closeConnectionAndStatement(preparedStatement, connection);
+        }
+        return userName;
     }
 }

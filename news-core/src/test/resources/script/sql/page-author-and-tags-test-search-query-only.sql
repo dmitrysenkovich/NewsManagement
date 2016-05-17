@@ -20,6 +20,6 @@ FROM
                           FROM NEWS_TAG
                           WHERE TAG_ID IN (1, 2)
                           GROUP BY NEWS_ID
-                          HAVING COUNT(*) = 2)
+                          HAVING COUNT(DISTINCT TAG_ID) = 2)
         ORDER BY COMMENTS_COUNT DESC, MODIFICATION_DATE) APPROPRIATE_NEWS) NEWS_PAGE
-WHERE R BETWEEN 1 AND 2;
+WHERE R BETWEEN 1 AND 2

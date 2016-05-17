@@ -138,13 +138,13 @@ public class SearchUtils {
 
         String[] queryParts = getQueryParts(searchCriteria);
         String where = "";
-        if (!queryParts[0].isEmpty() || !queryParts[1].isEmpty())
+        if (!queryParts[0].isEmpty() || !queryParts[2].isEmpty())
             where = "WHERE ";
 
         String searchQuery = MessageFormat.format(PAGE_MAIN_PART, where,
                 queryParts[0], queryParts[1], queryParts[2],
                 ((pageIndex-1)*pageSize+1), (pageIndex)*pageSize);
-        return searchQuery;
+            return searchQuery;
     }
 
 
@@ -172,7 +172,7 @@ public class SearchUtils {
         String[] queryParts = getQueryParts(searchCriteria);
 
         String where = "";
-        if (!queryParts[0].isEmpty() || !queryParts[1].isEmpty())
+        if (!queryParts[0].isEmpty() || !queryParts[2].isEmpty())
             where = "WHERE ";
 
         Long pageSize = searchCriteria.getPageSize();

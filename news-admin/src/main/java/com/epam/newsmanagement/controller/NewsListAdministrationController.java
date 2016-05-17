@@ -12,18 +12,23 @@ import com.epam.newsmanagement.app.service.AuthorService;
 import com.epam.newsmanagement.app.service.CommentService;
 import com.epam.newsmanagement.app.service.NewsService;
 import com.epam.newsmanagement.app.service.TagService;
+import com.epam.newsmanagement.app.service.UserService;
 import com.epam.newsmanagement.app.utils.SearchCriteria;
 import com.epam.newsmanagement.model.NewsInfo;
 import com.sun.org.apache.xpath.internal.operations.Mod;
 import org.apache.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.access.annotation.Secured;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Controller;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.servlet.ModelAndView;
 
+import javax.servlet.http.HttpServletRequest;
 import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
@@ -46,6 +51,8 @@ public class NewsListAdministrationController {
     private NewsService newsService;
     @Autowired
     private TagService tagService;
+    @Autowired
+    private UserService userService;
 
 
     @RequestMapping(value = "/news-list-administration", method = RequestMethod.GET)
@@ -71,6 +78,11 @@ public class NewsListAdministrationController {
         modelAndView.addObject("commentsCountByNewsId", newsInfo.getCommentsCountByNewsId());
         modelAndView.addObject("pagesCount", newsInfo.getPagesCount());
 
+        Authentication auth = SecurityContextHolder.getContext().getAuthentication();
+        String login = auth.getName();
+        String userName = userService.userNameByLogin(login);
+        modelAndView.addObject("userName", userName);
+
         return modelAndView;
     }
 
@@ -82,6 +94,35 @@ public class NewsListAdministrationController {
 
         SearchCriteria searchCriteria = new SearchCriteria();
         searchCriteria.setPageIndex(1L);
+        List<News> newsList = newsService.search(searchCriteria);
+        NewsInfo newsInfo = fillNewsInfo(newsList, searchCriteria);
+
+        return newsInfo;
+    }
+
+
+    @RequestMapping(value = "/news-list-administration/filter", method = RequestMethod.POST)
+    @ResponseBody
+    public NewsInfo filter(@RequestBody SearchCriteria searchCriteria) throws ServiceException {
+        logger.info("Filter POST request");
+
+        List<News> newsList = newsService.search(searchCriteria);
+        NewsInfo newsInfo = fillNewsInfo(newsList, searchCriteria);
+
+        return newsInfo;
+    }
+
+
+    @RequestMapping(value = "/news-list-administration/page", method = RequestMethod.POST)
+    @ResponseBody
+    public NewsInfo page(@RequestBody SearchCriteria searchCriteria) throws ServiceException {
+        logger.info("Page POST request");
+
+        if (searchCriteria.getPageIndex() == null) {
+            Long pagesCount = newsService.countPagesBySearchCriteria(searchCriteria);
+            searchCriteria.setPageIndex(pagesCount);
+        }
+
         List<News> newsList = newsService.search(searchCriteria);
         NewsInfo newsInfo = fillNewsInfo(newsList, searchCriteria);
 

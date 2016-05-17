@@ -547,3 +547,7 @@ ul.pagination li a:hover:not(.active) {background-color: #ddd;}
     opacity: 0.5;
     color: dimgray !important;
 }
+
+#no-news-found-message {
+    padding-top: 10px;
+}
