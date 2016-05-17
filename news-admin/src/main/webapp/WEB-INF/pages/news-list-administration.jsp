@@ -122,6 +122,6 @@
             </div>
             <tiles:insertAttribute name="footer" />
         </div>
-        <script type="text/javascript" src="<c:url value="/resources/js/newsmanagement.js" />"></script>
+        <script type="text/javascript" src="<c:url value="/resources/js/news-list-administration.js" />"></script>
     </body>
 </html>

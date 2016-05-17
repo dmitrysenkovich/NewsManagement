@@ -1,9 +1,5 @@
 package com.epam.newsmanagement.controller;
 
-import com.epam.newsmanagement.app.dao.AuthorRepository;
-import com.epam.newsmanagement.app.dao.CommentRepository;
-import com.epam.newsmanagement.app.dao.NewsRepository;
-import com.epam.newsmanagement.app.dao.TagRepository;
 import com.epam.newsmanagement.app.exception.ServiceException;
 import com.epam.newsmanagement.app.model.Author;
 import com.epam.newsmanagement.app.model.News;
@@ -15,21 +11,20 @@ import com.epam.newsmanagement.app.service.TagService;
 import com.epam.newsmanagement.app.service.UserService;
 import com.epam.newsmanagement.app.utils.SearchCriteria;
 import com.epam.newsmanagement.model.NewsInfo;
-import com.sun.org.apache.xpath.internal.operations.Mod;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import org.apache.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.security.access.annotation.Secured;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.servlet.ModelAndView;
 
-import javax.servlet.http.HttpServletRequest;
-import java.util.Arrays;
+import java.io.IOException;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -53,6 +48,9 @@ public class NewsListAdministrationController {
     private TagService tagService;
     @Autowired
     private UserService userService;
+
+    @Autowired
+    private ObjectMapper objectMapper;
 
 
     @RequestMapping(value = "/news-list-administration", method = RequestMethod.GET)
@@ -87,10 +85,10 @@ public class NewsListAdministrationController {
     }
 
 
-    @RequestMapping(value = "/news-list-administration/reset", method = RequestMethod.POST)
+    @RequestMapping(value = "/news-list-administration/reset", method = RequestMethod.GET)
     @ResponseBody
     public NewsInfo reset() throws ServiceException {
-        logger.info("Reset POST request");
+        logger.info("Reset GET request");
 
         SearchCriteria searchCriteria = new SearchCriteria();
         searchCriteria.setPageIndex(1L);
@@ -101,11 +99,12 @@ public class NewsListAdministrationController {
     }
 
 
-    @RequestMapping(value = "/news-list-administration/filter", method = RequestMethod.POST)
+    @RequestMapping(value = "/news-list-administration/filter", method = RequestMethod.GET)
     @ResponseBody
-    public NewsInfo filter(@RequestBody SearchCriteria searchCriteria) throws ServiceException {
-        logger.info("Filter POST request");
+    public NewsInfo filter(@RequestParam("searchCriteria") String searchCriteriaInString) throws ServiceException, IOException {
+        logger.info("Filter GET request");
 
+        SearchCriteria searchCriteria = objectMapper.readValue(searchCriteriaInString, SearchCriteria.class);
         List<News> newsList = newsService.search(searchCriteria);
         NewsInfo newsInfo = fillNewsInfo(newsList, searchCriteria);
 
@@ -113,11 +112,12 @@ public class NewsListAdministrationController {
     }
 
 
-    @RequestMapping(value = "/news-list-administration/page", method = RequestMethod.POST)
+    @RequestMapping(value = "/news-list-administration/page", method = RequestMethod.GET)
     @ResponseBody
-    public NewsInfo page(@RequestBody SearchCriteria searchCriteria) throws ServiceException {
-        logger.info("Page POST request");
+    public NewsInfo page(@RequestParam("searchCriteria") String searchCriteriaInString) throws ServiceException, IOException {
+        logger.info("Page GET request");
 
+        SearchCriteria searchCriteria = objectMapper.readValue(searchCriteriaInString, SearchCriteria.class);
         if (searchCriteria.getPageIndex() == null) {
             Long pagesCount = newsService.countPagesBySearchCriteria(searchCriteria);
             searchCriteria.setPageIndex(pagesCount);
