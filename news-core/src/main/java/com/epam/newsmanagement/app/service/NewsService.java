@@ -66,4 +66,13 @@ public interface NewsService extends CrudService<News> {
     default Long countPagesBySearchCriteria(SearchCriteria searchCriteria) throws ServiceException {
         throw new ServiceException();
     }
+
+    /**
+     * Deletes all news with id from list.
+     * @param newsIds ids of news to be deleted.
+     * @throws ServiceException
+     */
+    default void deleteAll(List<Long> newsIds) throws ServiceException {
+        throw new ServiceException();
+    }
 }

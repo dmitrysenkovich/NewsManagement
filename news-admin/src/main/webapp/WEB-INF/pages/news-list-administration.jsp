@@ -47,6 +47,9 @@
                         <button id="reset-button">Reset</button>
                     </div>
                     <div id="news-list">
+                        <c:if test="${empty newsList}">
+                            <div id='no-news-found-message'>No news found:c</div>
+                        </c:if>
                         <c:forEach var="news" items="${newsList}">
                             <div class="short-news">
                                 <div class="short-news-title-row">
@@ -93,12 +96,14 @@
                                         </c:forEach>
                                     </div>
                                     <div class="short-news-others">
-                                        <span style="color: #ff0000">Comments(${commentsCountByNewsId[news.newsId]})</span> <a href="/news-management/edit-news/${news.newsId}">Edit</a> <input type="checkbox" />
+                                        <span style="color: #ff0000">Comments(${commentsCountByNewsId[news.newsId]})</span> <a href="/news-management/edit-news/${news.newsId}">Edit</a> <input id="${news.newsId}" type="checkbox" />
                                     </div>
                                 </div>
                             </div>
                         </c:forEach>
-                        <button id="delete-button">Delete</button>
+                        <c:if test="${not empty newsList}">
+                            <button id="delete-button">Delete</button>
+                        </c:if>
                     </div>
                     <div id="pagination-row">
                         <ul class="pagination">
@@ -114,8 +119,8 @@
                                     </c:otherwise>
                                 </c:choose>
                             </c:forEach>
-                            <li><a id="next-page" class="${pagesCount == 1 ? 'disabled-page-arrow' : ''}" href="javascript:void(0)">❯</a></li>
-                            <li><a id="last-page" class="${pagesCount < 6 ? 'disabled-page-arrow' : ''}" href="javascript:void(0)">»</a></li>
+                            <li><a id="next-page" class="${pagesCount <= 1 ? 'disabled-page-arrow' : ''}" href="javascript:void(0)">❯</a></li>
+                            <li><a id="last-page" class="${pagesCount <= 1 ? 'disabled-page-arrow' : ''}" href="javascript:void(0)">»</a></li>
                         </ul>
                     </div>
                 </div>

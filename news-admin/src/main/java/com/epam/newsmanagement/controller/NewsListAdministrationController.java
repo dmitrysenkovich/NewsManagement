@@ -11,6 +11,8 @@ import com.epam.newsmanagement.app.service.TagService;
 import com.epam.newsmanagement.app.service.UserService;
 import com.epam.newsmanagement.app.utils.SearchCriteria;
 import com.epam.newsmanagement.model.NewsInfo;
+import com.fasterxml.jackson.core.type.TypeReference;
+import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.apache.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -121,6 +123,32 @@ public class NewsListAdministrationController {
         if (searchCriteria.getPageIndex() == null) {
             Long pagesCount = newsService.countPagesBySearchCriteria(searchCriteria);
             searchCriteria.setPageIndex(pagesCount);
+        }
+
+        List<News> newsList = newsService.search(searchCriteria);
+        NewsInfo newsInfo = fillNewsInfo(newsList, searchCriteria);
+
+        return newsInfo;
+    }
+
+
+    @RequestMapping(value = "/news-list-administration/delete", method = RequestMethod.POST)
+    @ResponseBody
+    public NewsInfo deleteNews(@RequestBody String requestBody) throws IOException, ServiceException {
+        logger.info("Delete news POST request");
+
+        JsonNode jsonNode = objectMapper.readTree(requestBody);
+        List<Long> newsIds = objectMapper.convertValue(jsonNode.get("newsIds"), new TypeReference<List<Long>>(){});
+        SearchCriteria searchCriteria = objectMapper.convertValue(jsonNode.get("searchCriteria"), SearchCriteria.class);
+
+        newsService.deleteAll(newsIds);
+
+        Long pagesCount = newsService.countPagesBySearchCriteria(searchCriteria);
+        if (pagesCount == 0) {
+            return null;
+        }
+        else if (searchCriteria.getPageIndex() - 1 == pagesCount) {
+            searchCriteria.setPageIndex(searchCriteria.getPageIndex() - 1);
         }
 
         List<News> newsList = newsService.search(searchCriteria);

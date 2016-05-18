@@ -52,4 +52,13 @@ public interface NewsRepository extends CrudRepository<News, Long> {
     default Long countPagesBySearchCriteria(final String COUNT_PAGES_BY_SEARCH_CRITERIA_QUERY) throws DaoException {
         throw new DaoException();
     }
+
+    /**
+     * Deletes all news with id from list.
+     * @param newsIds ids of news to be deleted.
+     * @throws DaoException
+     */
+    default void deleteAll(List<Long> newsIds) throws DaoException {
+        throw new DaoException();
+    }
 }

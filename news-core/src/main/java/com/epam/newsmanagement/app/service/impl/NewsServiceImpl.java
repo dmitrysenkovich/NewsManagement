@@ -187,4 +187,18 @@ public class NewsServiceImpl implements NewsService {
         logger.info("Successfully counted news pages by search criteria");
         return fitNewsPagesCount;
     }
+
+
+    @Override
+    @Transactional(rollbackFor = ServiceException.class)
+    public void deleteAll(List<Long> newsIds) throws ServiceException {
+        logger.info("Deleting list of news..");
+        try {
+            newsRepository.deleteAll(newsIds);
+        } catch (DaoException e) {
+            logger.error("Failed to delete list of news");
+            throw new ServiceException(e);
+        }
+        logger.info("Successfully deleted list of news");
+    }
 }

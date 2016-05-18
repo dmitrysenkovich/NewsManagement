@@ -255,4 +255,26 @@ public class NewsRepositoryImpl implements NewsRepository {
         }
         return fitNewsCount;
     }
+
+
+    @Override
+    public void deleteAll(List<Long> newsIds) throws DaoException {
+        Connection connection = null;
+        PreparedStatement preparedStatement = null;
+        try {
+            connection = dataSource.getConnection();
+            preparedStatement = connection.prepareStatement(DELETE);
+            for (Long newsId : newsIds) {
+                preparedStatement.setLong(1, newsId);
+                preparedStatement.addBatch();
+            }
+            preparedStatement.executeBatch();
+        }
+        catch (SQLException e) {
+            throw new DaoException(e);
+        }
+        finally {
+            databaseUtils.closeConnectionAndStatement(preparedStatement, connection);
+        }
+    }
 }

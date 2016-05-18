@@ -51,7 +51,7 @@ var newNewsTemplate = "<div class='short-news'>\
                                 <div class='short-news-tags'>\
                                 {5}</div>\
                                 <div class='short-news-others'>\
-                                    <span style='color: #ff0000'>Comments({6})</span> <a href='/news-management/edit-news/{7}'>Edit</a> <input type='checkbox' />\
+                                    <span style='color: #ff0000'>Comments({6})</span> <a href='/news-management/edit-news/{7}'>Edit</a> <input id={8} type='checkbox' />\
                                 </div>\
                             </div>\
                       </div>";
@@ -66,30 +66,22 @@ var searchCriteria = null;
 var processing = false;
 
 
-function refreshNewsList(newsInfo) {
+var header = $("meta[name='_csrf_header']").attr("content");
+var token = $("meta[name='_csrf']").attr("content");
+
+
+function fillNewsList(newsInfo, excludedNewsIds) {
     var newsList = newsInfo.newsList;
-    if ($('#no-news-found-message').length && newsList.length == 0) {
-        processing = false;
-        return;
-    }
-
-    var childs = $('#news-list').children();
-    for (var i = 0; i < childs.length; i++) {
-        $(childs[i]).toggle("slide", 500, function() { $(this).remove(); });
-    }
-
-    if (newsList.length == 0) {
-        $("<div id='no-news-found-message'>No news found:c</div>").appendTo($('#news-list')).slideDown('fast');
-        processing = false;
-        return;
-    }
-    $('#no-news-found-message').toggle("slide", 500, function() { $(this).remove(); });
-
     var authorsByNewsId = newsInfo.authorsByNewsId;
     var tagsByNewsId = newsInfo.tagsByNewsId;
     var commentsCountByNewsId = newsInfo.commentsCountByNewsId;
     for (var i = 0; i < newsList.length; i++) {
         var news = newsList[i];
+
+        if (excludedNewsIds)
+            if ($.inArray(news.newsId, excludedNewsIds) != -1)
+                continue;
+
         var authorsString = '(by {0})'.format(authorsByNewsId[news.newsId]
             .map(function(author) {return author.authorName;}).join(', '));
         var tagsString = tagsByNewsId[news.newsId]
@@ -104,18 +96,42 @@ function refreshNewsList(newsInfo) {
             day: 'numeric',
         });
         var newsNewsRow = newNewsTemplate
-            .format(news.newsId, news.title, authorsString, lastEditDate,
-                news.shortText.replace(/[^\w\s]/gi, ''), tagsString, commentsCount, news.newsId);
+            .format(news.newsId, news.title, authorsString,
+                lastEditDate, news.shortText.replace(/[^\w\s]/gi, ''),
+                tagsString, commentsCount, news.newsId, news.newsId);
         $(newsNewsRow).appendTo($('#news-list')).slideDown('fast');
     }
     $("<button id='delete-button'>Delete</button>").appendTo($('#news-list')).slideDown('fast');
+}
+
+
+function refreshNewsList(newsInfo) {
+    var newsList = newsInfo.newsList;
+    if ($('#no-news-found-message').length && (!newsList || newsList.length == 0)) {
+        processing = false;
+        return;
+    }
+
+    var childs = $('#news-list').children();
+    for (var i = 0; i < childs.length; i++) {
+        $(childs[i]).toggle("slide", 500, function() { $(this).remove(); });
+    }
+
+    if (!newsList || newsList.length == 0) {
+        $("<div id='no-news-found-message'>No news found:c</div>").appendTo($('#news-list')).slideDown('fast');
+        processing = false;
+        return;
+    }
+    $('#no-news-found-message').toggle("slide", 500, function() { $(this).remove(); });
+
+    fillNewsList(newsInfo);
 
     processing = false;
 }
 
 
 function refreshPaginationRow(newsInfo, pageIndex) {
-    if ($('#no-news-found-message').length && newsInfo.newsList.length == 0)
+    if ($('#no-news-found-message').length && (!newsInfo || newsInfo.newsList.length == 0))
         return;
 
     var pageLinks = $('.pagination > li > a');
@@ -128,19 +144,16 @@ function refreshPaginationRow(newsInfo, pageIndex) {
     var firstValue = isNaN(currentFirstPageLinkValue) ? 1 : currentFirstPageLinkValue;
     if (!isNaN(currentFirstPageLinkValue) && pageIndex == currentFirstPageLinkValue - 1)
         firstValue = currentFirstPageLinkValue - 1;
-    else if (!isNaN(currentFirstPageLinkValue) && pageIndex < currentFirstPageLinkValue) {
+    else if (!isNaN(currentFirstPageLinkValue) && pageIndex < currentFirstPageLinkValue)
         firstValue = 1;
-    }
-    else if (!isNaN(currentLastPageLinkValue) && pageIndex == currentLastPageLinkValue + 1) {
+    else if (!isNaN(currentLastPageLinkValue) && pageIndex == currentLastPageLinkValue + 1)
         firstValue = currentFirstPageLinkValue + 1;
-    }
-    else if (!isNaN(currentLastPageLinkValue) && pageIndex > currentLastPageLinkValue) {
-        firstValue = pageIndex - 4;
-    }
+    else if (!isNaN(currentLastPageLinkValue) && (pageIndex > currentLastPageLinkValue || pageIndex == currentLastPageLinkValue - 1))
+        firstValue = pageIndex - pagesCount + 1;
     var activePageLinkIndex = pageIndex - firstValue;
 
-    var firstLinksClass = (activePageLinkIndex == 0 && firstValue == 1) || pagesCount == 0 ? 'disabled-page-arrow' : '';
-    var secondLinksClass = ((firstValue + pagesCount == newsInfo.pagesCount + 1) && activePageLinkIndex == pagesCount - 1) || pagesCount == 0 ? 'disabled-page-arrow' : '';
+    var firstLinksClass = !pagesCount || pagesCount == 0 || (activePageLinkIndex == 0 && firstValue == 1) ? 'disabled-page-arrow' : '';
+    var secondLinksClass = !pagesCount || pagesCount == 0 || ((firstValue + pagesCount == newsInfo.pagesCount + 1) && activePageLinkIndex == pagesCount - 1) ? 'disabled-page-arrow' : '';
 
     $('.pagination').children().each(function () {
         $(this).toggle("slide", 500, function() { $(this).remove(); });
@@ -368,6 +381,72 @@ $(document).on('click', '#next-page', function () {
         success: function(newsInfo) {
             refreshPaginationRow(newsInfo, pageIndex);
             refreshNewsList(newsInfo);
+        }
+    });
+});
+
+
+$(document).on('click', '#delete-button', function () {
+    var newsIds = [];
+    var excludedNewsIds = [];
+    var checkboxes = $('.short-news > .short-news-footer-row > .short-news-others > input');
+    for (var i = 0; i < checkboxes.length; i++) {
+        var checkbox = checkboxes[i];
+        if (checkboxes[i].checked)
+            newsIds.push(parseInt(checkbox.id));
+        else
+            excludedNewsIds.push(parseInt(checkbox.id));
+    }
+
+    if (newsIds.length == 0)
+        return;
+
+    var pageIndex = -1;
+    var childs = $('.pagination > li > a');
+    for (var i = 0; i < childs.length; i++) {
+        if ($(childs[i]).hasClass('active'))
+            pageIndex = parseInt($(childs[i]).text());
+    }
+
+    if (!searchCriteria) {
+        fillSearchCriteria();
+    }
+    searchCriteria.pageIndex = pageIndex;
+    searchCriteria.pageSize = 5;
+
+    $.ajax({
+        url: '/news-management/news-list-administration/delete',
+        type: 'POST',
+        data:  JSON.stringify({
+            newsIds: newsIds,
+            searchCriteria: searchCriteria
+        }),
+        contentType: "application/json",
+        beforeSend: function(xhr){
+            xhr.setRequestHeader(header, token);
+        },
+        success: function(newsInfo) {
+            var newsCount = checkboxes.length;
+            var remainedNewsCount = newsCount - newsIds.length;
+            if (remainedNewsCount == 0) {
+                if (pageIndex > 1)
+                    pageIndex -= 1;
+
+                refreshPaginationRow(newsInfo, pageIndex);
+                refreshNewsList(newsInfo);
+            }
+            else {
+                for (var i = 0; i < checkboxes.length; i++) {
+                    var checkbox = checkboxes[i];
+                    if ($.inArray(parseInt(checkbox.id), newsIds) != -1) {
+                        var news = $(checkbox).parent().parent().parent();
+                        $(news).toggle("slide", 500, function() { $(this).remove(); });
+                    }
+                }
+                $('#delete-button').toggle("slide", 500, function() { $(this).remove(); });
+                fillNewsList(newsInfo, excludedNewsIds);
+                refreshPaginationRow(newsInfo, pageIndex);
+            }
         }
     });
 });
