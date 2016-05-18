@@ -101,10 +101,10 @@
                                 </div>
                             </div>
                         </c:forEach>
-                        <c:if test="${not empty newsList}">
-                            <button id="delete-button">Delete</button>
-                        </c:if>
                     </div>
+                    <c:if test="${not empty newsList}">
+                        <button id="delete-button">Delete</button>
+                    </c:if>
                     <div id="pagination-row">
                         <ul class="pagination">
                             <li><a id="first-page" class="disabled-page-arrow" href="javascript:void(0)">«</a></li>

@@ -101,7 +101,8 @@ function fillNewsList(newsInfo, excludedNewsIds) {
                 tagsString, commentsCount, news.newsId, news.newsId);
         $(newsNewsRow).appendTo($('#news-list')).slideDown('fast');
     }
-    $("<button id='delete-button'>Delete</button>").appendTo($('#news-list')).slideDown('fast');
+    if (newsInfo && newsInfo.newsList.length > 0 && !$('#delete-button').length)
+        $("<button id='delete-button'>Delete</button>").appendTo($('#news-list')).slideDown('fast');
 }
 
 
@@ -139,6 +140,7 @@ function refreshPaginationRow(newsInfo, pageIndex) {
     var currentFirstPageLinkValue = parseInt($(firstPageLink).text());
     var lastPageLink = pageLinks[pageLinks.length - 3];
     var currentLastPageLinkValue = parseInt($(lastPageLink).text());
+    var currentActivePageLinkValue = parseInt($('.active').text());
 
     var pagesCount = newsInfo.pagesCount > 5 ? 5 : newsInfo.pagesCount;
     var firstValue = isNaN(currentFirstPageLinkValue) ? 1 : currentFirstPageLinkValue;
@@ -148,7 +150,7 @@ function refreshPaginationRow(newsInfo, pageIndex) {
         firstValue = 1;
     else if (!isNaN(currentLastPageLinkValue) && pageIndex == currentLastPageLinkValue + 1)
         firstValue = currentFirstPageLinkValue + 1;
-    else if (!isNaN(currentLastPageLinkValue) && (pageIndex > currentLastPageLinkValue || pageIndex == currentLastPageLinkValue - 1))
+    else if (!isNaN(currentLastPageLinkValue) && (pageIndex > currentLastPageLinkValue || currentActivePageLinkValue == newsInfo.pagesCount+1))
         firstValue = pageIndex - pagesCount + 1;
     var activePageLinkIndex = pageIndex - firstValue;
 
@@ -426,6 +428,9 @@ $(document).on('click', '#delete-button', function () {
             xhr.setRequestHeader(header, token);
         },
         success: function(newsInfo) {
+            if (!newsInfo)
+                $('#delete-button').toggle("slide", 500, function() { $(this).remove(); });
+
             var newsCount = checkboxes.length;
             var remainedNewsCount = newsCount - newsIds.length;
             if (remainedNewsCount == 0) {
@@ -443,7 +448,6 @@ $(document).on('click', '#delete-button', function () {
                         $(news).toggle("slide", 500, function() { $(this).remove(); });
                     }
                 }
-                $('#delete-button').toggle("slide", 500, function() { $(this).remove(); });
                 fillNewsList(newsInfo, excludedNewsIds);
                 refreshPaginationRow(newsInfo, pageIndex);
             }
