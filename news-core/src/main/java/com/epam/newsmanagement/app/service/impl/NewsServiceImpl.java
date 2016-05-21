@@ -201,4 +201,20 @@ public class NewsServiceImpl implements NewsService {
         }
         logger.info("Successfully deleted list of news");
     }
+
+
+    @Override
+    public Long rowNumberBySearchCriteria(SearchCriteria searchCriteria, News news) throws ServiceException {
+        logger.info("Retrieving news row number by search criteria..");
+        final String ROW_NUMBER_BY_SEARCH_CRITERIA_QUERY = searchUtils.getRowNumberQuery(searchCriteria, news.getNewsId());
+        Long newsRowNumber;
+        try {
+            newsRowNumber = newsRepository.rowNumberBySearchCriteria(ROW_NUMBER_BY_SEARCH_CRITERIA_QUERY);
+        } catch (DaoException e) {
+            logger.error("Failed to retrieve news row number by search criteria");
+            throw new ServiceException(e);
+        }
+        logger.info("Successfully retrieved news row number by search criteria");
+        return newsRowNumber;
+    }
 }

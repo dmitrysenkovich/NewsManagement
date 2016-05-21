@@ -16,6 +16,7 @@ public class SearchUtils {
     private static final String SEARCH_MAIN_PART_FILE_NAME = "search-main.sql";
     private static final String COUNT_MAIN_PART_FILE_NAME = "count-main.sql";
     private static final String PAGE_MAIN_PART_FILE_NAME = "page-search-main.sql";
+    private static final String ROW_NUMBER_SEARCH_MAIN_PART_FILE_NAME = "row-number-search-main.sql";
     private static final String AUTHOR_PART_FILE_NAME = "search-author-part.sql";
     private static final String TAGS_PART_FILE_NAME = "search-tags-part.sql";
 
@@ -25,6 +26,7 @@ public class SearchUtils {
     private String SEARCH_MAIN_PART;
     private String COUNT_MAIN_PART;
     private String PAGE_MAIN_PART;
+    private String ROW_NUMBER_MAIN_PART;
     private String AUTHOR_PART;
     private String TAGS_PART;
 
@@ -44,11 +46,14 @@ public class SearchUtils {
                 "Error reading main part of count script");
         PAGE_MAIN_PART = scriptFileUtils.getScriptPart(searchScriptDirectoryPath, PAGE_MAIN_PART_FILE_NAME, logger,
                 "Error reading main part of page search script");
+        ROW_NUMBER_MAIN_PART = scriptFileUtils.getScriptPart(searchScriptDirectoryPath, ROW_NUMBER_SEARCH_MAIN_PART_FILE_NAME, logger,
+                "Error reading  main part of row number search script");
         AUTHOR_PART = scriptFileUtils.getScriptPart(searchScriptDirectoryPath, AUTHOR_PART_FILE_NAME, logger,
                 "Error reading author part of search script");
         TAGS_PART = scriptFileUtils.getScriptPart(searchScriptDirectoryPath, TAGS_PART_FILE_NAME, logger,
                 "Error reading tags part of search script");
-        if (!SEARCH_MAIN_PART.equals("") && !COUNT_MAIN_PART.equals("") && !PAGE_MAIN_PART.equals("") && !AUTHOR_PART.equals("") && !TAGS_PART.equals(""))
+        if (!SEARCH_MAIN_PART.equals("") && !COUNT_MAIN_PART.equals("") && !PAGE_MAIN_PART.equals("") &&
+                !ROW_NUMBER_MAIN_PART.equals("") && !AUTHOR_PART.equals("") && !TAGS_PART.equals(""))
             logger.info("Successfully read all search script parts");
         else
             logger.error("Error while reading script parts");
@@ -182,5 +187,25 @@ public class SearchUtils {
         String countQuery = MessageFormat.format(COUNT_MAIN_PART, pageSize,
                 where, queryParts[0], queryParts[1], queryParts[2]);
         return countQuery;
+    }
+
+
+    /**
+     * Returns row number query string satisfying
+     * all search criteria clauses for certain news.
+     * @param searchCriteria search criteria.
+     * @param newsId news which row number are to be retrieved.
+     * @return sql query.
+     */
+    public String getRowNumberQuery(SearchCriteria searchCriteria, Long newsId) {
+        String[] queryParts = getQueryParts(searchCriteria);
+
+        String where = "";
+        if (!queryParts[0].isEmpty() || !queryParts[2].isEmpty())
+            where = "WHERE ";
+
+        String rowNumberQuery = MessageFormat.format(ROW_NUMBER_MAIN_PART,
+                where, queryParts[0], queryParts[1], queryParts[2], newsId);
+        return rowNumberQuery;
     }
 }

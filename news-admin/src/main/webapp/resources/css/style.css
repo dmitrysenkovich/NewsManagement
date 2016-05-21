@@ -302,6 +302,7 @@ ul.pagination li a:hover:not(.active) {background-color: #ddd;}
 .news {
     margin: 50px;
     margin-top: 10px;
+    margin-bottom: 10px;
     display: block;
     text-align: left;
 }
@@ -386,7 +387,7 @@ ul.pagination li a:hover:not(.active) {background-color: #ddd;}
     text-align: right;
 }
 
-.delete-post-button-span {
+.delete-comment-button-span {
     float: right;
 }
 
@@ -550,4 +551,19 @@ ul.pagination li a:hover:not(.active) {background-color: #ddd;}
 
 #no-news-found-message {
     padding-top: 10px;
+}
+
+#new-comment {
+    margin: 50px;
+    margin-top: 0px;
+    display: block;
+    text-align: left;
+}
+
+.disabled-page-link {opacity: 0.5;
+    color: dimgray !important;
+}
+
+.invalid-comment-text {
+    border-color: red;
 }

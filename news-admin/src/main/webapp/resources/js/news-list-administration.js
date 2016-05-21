@@ -10,19 +10,7 @@ $("#tags").multiselect({
     noneSelectedText: "Please select the tag"
 });
 
-var url = window.location.pathname;
-if (url.indexOf('news-list-administration', url.length - 'news-list-administration'.length) !== -1) {
-    $('#news-list-link').css('font-weight', 'bold');
-}
-else if (url.indexOf('add-news', url.length - 'add-news'.length) !== -1) {
-    $('#add-news-link').css('font-weight', 'bold');
-}
-else if (url.indexOf('authors', url.length - 'authors'.length) !== -1) {
-    $('#authors-link').css('font-weight', 'bold');
-}
-else if (url.indexOf('tags', url.length - 'tags'.length) !== -1) {
-    $('#tags-link').css('font-weight', 'bold');
-}
+$('#news-list-link').css('font-weight', 'bold');
 
 String.prototype.format = function() {
     var formatted = this;
@@ -30,6 +18,11 @@ String.prototype.format = function() {
         formatted = formatted.replace("{" + arg + "}", arguments[arg]);
     }
     return formatted;
+};
+
+String.prototype.replaceAll = function(search, replacement) {
+    var target = this;
+    return target.split(search).join(replacement);
 };
 
 var newNewsTemplate = "<div class='short-news'>\
@@ -70,11 +63,11 @@ var header = $("meta[name='_csrf_header']").attr("content");
 var token = $("meta[name='_csrf']").attr("content");
 
 
-function fillNewsList(newsInfo, excludedNewsIds) {
-    var newsList = newsInfo.newsList;
-    var authorsByNewsId = newsInfo.authorsByNewsId;
-    var tagsByNewsId = newsInfo.tagsByNewsId;
-    var commentsCountByNewsId = newsInfo.commentsCountByNewsId;
+function fillNewsList(newsListInfo, excludedNewsIds) {
+    var newsList = newsListInfo.newsList;
+    var authorsByNewsId = newsListInfo.authorsByNewsId;
+    var tagsByNewsId = newsListInfo.tagsByNewsId;
+    var commentsCountByNewsId = newsListInfo.commentsCountByNewsId;
     for (var i = 0; i < newsList.length; i++) {
         var news = newsList[i];
 
@@ -83,9 +76,9 @@ function fillNewsList(newsInfo, excludedNewsIds) {
                 continue;
 
         var authorsString = '(by {0})'.format(authorsByNewsId[news.newsId]
-            .map(function(author) {return author.authorName;}).join(', '));
+            .map(function(author) { return author.authorName; }).join(', '));
         var tagsString = tagsByNewsId[news.newsId]
-            .map(function(tag) {return tag.tagName;}).join(', ');
+            .map(function(tag) { return tag.tagName; }).join(', ');
         var commentsCount = commentsCountByNewsId[news.newsId];
         var localeCode = 'En';
         var lastEditDate = news.modificationDate ? news.modificationDate : news.creationDate;
@@ -95,19 +88,19 @@ function fillNewsList(newsInfo, excludedNewsIds) {
             month: 'long',
             day: 'numeric',
         });
-        var newsNewsRow = newNewsTemplate
+        var newNewsRow = newNewsTemplate
             .format(news.newsId, news.title, authorsString,
-                lastEditDate, news.shortText.replace(/[^\w\s]/gi, ''),
+                lastEditDate, news.shortText.replaceAll(/[^\w\s]/gi, ''),
                 tagsString, commentsCount, news.newsId, news.newsId);
-        $(newsNewsRow).appendTo($('#news-list')).slideDown('fast');
+        $(newNewsRow).appendTo($('#news-list')).slideDown('fast');
     }
-    if (newsInfo && newsInfo.newsList.length > 0 && !$('#delete-button').length)
+    if (newsListInfo && newsListInfo.newsList.length > 0 && !$('#delete-button').length)
         $("<button id='delete-button'>Delete</button>").appendTo($('#news-list')).slideDown('fast');
 }
 
 
-function refreshNewsList(newsInfo) {
-    var newsList = newsInfo.newsList;
+function refreshNewsList(newsListInfo) {
+    var newsList = newsListInfo.newsList;
     if ($('#no-news-found-message').length && (!newsList || newsList.length == 0)) {
         processing = false;
         return;
@@ -125,14 +118,14 @@ function refreshNewsList(newsInfo) {
     }
     $('#no-news-found-message').toggle("slide", 500, function() { $(this).remove(); });
 
-    fillNewsList(newsInfo);
+    fillNewsList(newsListInfo);
 
     processing = false;
 }
 
 
-function refreshPaginationRow(newsInfo, pageIndex) {
-    if ($('#no-news-found-message').length && (!newsInfo || newsInfo.newsList.length == 0))
+function refreshPaginationRow(newsListInfo, pageIndex) {
+    if ($('#no-news-found-message').length && (!newsListInfo || newsListInfo.newsList.length == 0))
         return;
 
     var pageLinks = $('.pagination > li > a');
@@ -142,7 +135,7 @@ function refreshPaginationRow(newsInfo, pageIndex) {
     var currentLastPageLinkValue = parseInt($(lastPageLink).text());
     var currentActivePageLinkValue = parseInt($('.active').text());
 
-    var pagesCount = newsInfo.pagesCount > 5 ? 5 : newsInfo.pagesCount;
+    var pagesCount = newsListInfo.pagesCount > 5 ? 5 : newsListInfo.pagesCount;
     var firstValue = isNaN(currentFirstPageLinkValue) ? 1 : currentFirstPageLinkValue;
     if (!isNaN(currentFirstPageLinkValue) && pageIndex == currentFirstPageLinkValue - 1)
         firstValue = currentFirstPageLinkValue - 1;
@@ -150,12 +143,12 @@ function refreshPaginationRow(newsInfo, pageIndex) {
         firstValue = 1;
     else if (!isNaN(currentLastPageLinkValue) && pageIndex == currentLastPageLinkValue + 1)
         firstValue = currentFirstPageLinkValue + 1;
-    else if (!isNaN(currentLastPageLinkValue) && (pageIndex > currentLastPageLinkValue || currentActivePageLinkValue == newsInfo.pagesCount+1))
+    else if (!isNaN(currentLastPageLinkValue) && (pageIndex > currentLastPageLinkValue || currentActivePageLinkValue == newsListInfo.pagesCount+1))
         firstValue = pageIndex - pagesCount + 1;
     var activePageLinkIndex = pageIndex - firstValue;
 
     var firstLinksClass = !pagesCount || pagesCount == 0 || (activePageLinkIndex == 0 && firstValue == 1) ? 'disabled-page-arrow' : '';
-    var secondLinksClass = !pagesCount || pagesCount == 0 || ((firstValue + pagesCount == newsInfo.pagesCount + 1) && activePageLinkIndex == pagesCount - 1) ? 'disabled-page-arrow' : '';
+    var secondLinksClass = !pagesCount || pagesCount == 0 || ((firstValue + pagesCount == newsListInfo.pagesCount + 1) && activePageLinkIndex == pagesCount - 1) ? 'disabled-page-arrow' : '';
 
     $('.pagination').children().each(function () {
         $(this).toggle("slide", 500, function() { $(this).remove(); });
@@ -166,7 +159,7 @@ function refreshPaginationRow(newsInfo, pageIndex) {
     var previousPageLinkRow = previousPageLinkTemplate.format(firstLinksClass);
     $(previousPageLinkRow).appendTo($('.pagination')).slideDown('fast');
 
-    if (newsInfo.pagesCount > 0) {
+    if (newsListInfo.pagesCount > 0) {
         for (var i = 0; i < pagesCount; i++) {
             var active = firstValue + i == pageIndex ? 'active' : '';
             var pageLink = newPageLinkTemplate.format(active, firstValue + i);
@@ -205,13 +198,13 @@ $('#reset-button').on('click', function () {
     $.ajax({
         url: '/news-management/news-list-administration/reset',
         type: 'GET',
-        success: function(newsInfo) {
+        success: function(newsListInfo) {
             searchCriteria = null;
             $('#authors').multiselect('uncheckAll');
             $('#tags').multiselect('uncheckAll');
 
-            refreshPaginationRow(newsInfo, 1);
-            refreshNewsList(newsInfo);
+            refreshPaginationRow(newsListInfo, 1);
+            refreshNewsList(newsListInfo);
         }
     });
 });
@@ -227,9 +220,9 @@ $('#filter-button').on('click', function () {
     $.ajax({
         url: '/news-management/news-list-administration/filter?searchCriteria=' + encodeURIComponent(JSON.stringify(searchCriteria)),
         type: 'GET',
-        success: function(newsInfo) {
-            refreshPaginationRow(newsInfo, 1);
-            refreshNewsList(newsInfo);
+        success: function(newsListInfo) {
+            refreshPaginationRow(newsListInfo, 1);
+            refreshNewsList(newsListInfo);
         }
     });
 });
@@ -251,11 +244,11 @@ $(document).on('click', '.page-link', function (event) {
     $.ajax({
         url: '/news-management/news-list-administration/page?searchCriteria=' + encodeURIComponent(JSON.stringify(searchCriteria)),
         type: 'GET',
-        success: function(newsInfo) {
+        success: function(newsListInfo) {
             $('.pagination > li > a').removeClass('active');
             $(event.target).addClass('active');
 
-            var pagesCount = newsInfo.pagesCount;
+            var pagesCount = newsListInfo.pagesCount;
             var currentPageIndex = parseInt($(event.target).text());
             if (currentPageIndex == 1) {
                 $('#first-page').addClass('disabled-page-arrow');
@@ -282,7 +275,7 @@ $(document).on('click', '.page-link', function (event) {
                 $('#next-page').addClass('disabled-page-arrow');
             }
 
-            refreshNewsList(newsInfo);
+            refreshNewsList(newsListInfo);
         }
     });
 });
@@ -302,9 +295,9 @@ $(document).on('click', '#first-page', function () {
     $.ajax({
         url: '/news-management/news-list-administration/page?searchCriteria=' + encodeURIComponent(JSON.stringify(searchCriteria)),
         type: 'GET',
-        success: function(newsInfo) {
-            refreshPaginationRow(newsInfo, 1);
-            refreshNewsList(newsInfo);
+        success: function(newsListInfo) {
+            refreshPaginationRow(newsListInfo, 1);
+            refreshNewsList(newsListInfo);
         }
     });
 });
@@ -323,9 +316,9 @@ $(document).on('click', '#last-page', function () {
     $.ajax({
         url: '/news-management/news-list-administration/page?searchCriteria=' + encodeURIComponent(JSON.stringify(searchCriteria)),
         type: 'GET',
-        success: function(newsInfo) {
-            refreshPaginationRow(newsInfo, newsInfo.pagesCount);
-            refreshNewsList(newsInfo);
+        success: function(newsListInfo) {
+            refreshPaginationRow(newsListInfo, newsListInfo.pagesCount);
+            refreshNewsList(newsListInfo);
         }
     });
 });
@@ -351,9 +344,9 @@ $(document).on('click', '#previous-page', function () {
     $.ajax({
         url: '/news-management/news-list-administration/page?searchCriteria=' + encodeURIComponent(JSON.stringify(searchCriteria)),
         type: 'GET',
-        success: function(newsInfo) {
-            refreshPaginationRow(newsInfo, pageIndex);
-            refreshNewsList(newsInfo);
+        success: function(newsListInfo) {
+            refreshPaginationRow(newsListInfo, pageIndex);
+            refreshNewsList(newsListInfo);
         }
     });
 });
@@ -380,9 +373,9 @@ $(document).on('click', '#next-page', function () {
     $.ajax({
         url: '/news-management/news-list-administration/page?searchCriteria=' + encodeURIComponent(JSON.stringify(searchCriteria)),
         type: 'GET',
-        success: function(newsInfo) {
-            refreshPaginationRow(newsInfo, pageIndex);
-            refreshNewsList(newsInfo);
+        success: function(newsListInfo) {
+            refreshPaginationRow(newsListInfo, pageIndex);
+            refreshNewsList(newsListInfo);
         }
     });
 });
@@ -427,8 +420,8 @@ $(document).on('click', '#delete-button', function () {
         beforeSend: function(xhr){
             xhr.setRequestHeader(header, token);
         },
-        success: function(newsInfo) {
-            if (!newsInfo)
+        success: function(newsListInfo) {
+            if (!newsListInfo)
                 $('#delete-button').toggle("slide", 500, function() { $(this).remove(); });
 
             var newsCount = checkboxes.length;
@@ -437,8 +430,8 @@ $(document).on('click', '#delete-button', function () {
                 if (pageIndex > 1)
                     pageIndex -= 1;
 
-                refreshPaginationRow(newsInfo, pageIndex);
-                refreshNewsList(newsInfo);
+                refreshPaginationRow(newsListInfo, pageIndex);
+                refreshNewsList(newsListInfo);
             }
             else {
                 for (var i = 0; i < checkboxes.length; i++) {
@@ -448,8 +441,8 @@ $(document).on('click', '#delete-button', function () {
                         $(news).toggle("slide", 500, function() { $(this).remove(); });
                     }
                 }
-                fillNewsList(newsInfo, excludedNewsIds);
-                refreshPaginationRow(newsInfo, pageIndex);
+                fillNewsList(newsListInfo, excludedNewsIds);
+                refreshPaginationRow(newsListInfo, pageIndex);
             }
         }
     });

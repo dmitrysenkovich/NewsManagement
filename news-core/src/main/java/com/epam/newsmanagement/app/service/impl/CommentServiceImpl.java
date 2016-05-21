@@ -111,4 +111,19 @@ public class CommentServiceImpl implements CommentService {
         logger.info("Successfully counted all news comments");
         return commentsCount;
     }
+
+
+    @Override
+    public List<Comment> getAllByNews(News news) throws ServiceException {
+        logger.info("Retrieving all news comments..");
+        List<Comment> commentsByNews;
+        try {
+            commentsByNews = commentRepository.getAllByNews(news);
+        } catch (DaoException e) {
+            logger.error("Failed to retrieve all news comments");
+            throw new ServiceException(e);
+        }
+        logger.info("Successfully retrieved all news comments");
+        return commentsByNews;
+    }
 }

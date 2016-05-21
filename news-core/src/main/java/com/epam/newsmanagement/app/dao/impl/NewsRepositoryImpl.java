@@ -277,4 +277,27 @@ public class NewsRepositoryImpl implements NewsRepository {
             databaseUtils.closeConnectionAndStatement(preparedStatement, connection);
         }
     }
+
+
+    @Override
+    public Long rowNumberBySearchCriteria(final String ROW_NUMBER_BY_SEARCH_CRITERIA_QUERY) throws DaoException {
+        Connection connection = null;
+        Statement statement = null;
+        Long newsRowNumber = -1L;
+        try {
+            connection = dataSource.getConnection();
+            statement = connection.createStatement();
+            ResultSet resultSet = statement.executeQuery(ROW_NUMBER_BY_SEARCH_CRITERIA_QUERY);
+            resultSet.next();
+            newsRowNumber = resultSet.getLong(1);
+        }
+        catch (SQLException e) {
+            System.out.println(e);
+            throw new DaoException(e);
+        }
+        finally {
+            databaseUtils.closeConnectionAndStatement(statement, connection);
+        }
+        return newsRowNumber;
+    }
 }

@@ -75,4 +75,16 @@ public interface NewsService extends CrudService<News> {
     default void deleteAll(List<Long> newsIds) throws ServiceException {
         throw new ServiceException();
     }
+
+    /**
+     * Returns news row number in search query
+     * satisfying search criteria.
+     * @param searchCriteria search criteria.
+     * @param news news which row will be found.
+     * @return news row number.
+     * @throws ServiceException
+     */
+    default Long rowNumberBySearchCriteria(SearchCriteria searchCriteria, News news) throws ServiceException {
+        throw new ServiceException();
+    }
 }

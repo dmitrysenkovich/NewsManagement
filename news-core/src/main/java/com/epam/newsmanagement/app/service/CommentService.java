@@ -42,4 +42,15 @@ public interface CommentService extends CrudService<Comment> {
     default Long countAllByNews(News news) throws ServiceException {
         throw new ServiceException();
     }
+
+    /**
+     * Returns all news comments
+     * @param news news which comments
+     * will be retrieved.
+     * @return news comments.
+     * @throws ServiceException
+     */
+    default List<Comment> getAllByNews(News news) throws ServiceException {
+        throw new ServiceException();
+    }
 }

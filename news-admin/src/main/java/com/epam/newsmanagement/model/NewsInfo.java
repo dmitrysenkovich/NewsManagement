@@ -1,61 +1,59 @@
 package com.epam.newsmanagement.model;
 
 import com.epam.newsmanagement.app.model.Author;
+import com.epam.newsmanagement.app.model.Comment;
 import com.epam.newsmanagement.app.model.News;
-import com.epam.newsmanagement.app.model.Tag;
 
 import java.util.List;
-import java.util.Map;
 
 /**
  * Contains all info needed to
- * render new news list.
+ * render new news.
  */
 public class NewsInfo {
-    private List<News> newsList;
-    private Map<Long, List<Author>> authorsByNewsId;
-    private Map<Long, List<Tag>> tagsByNewsId;
-    private Map<Long, Long> commentsCountByNewsId;
+    private News news;
+    private List<Author> authors;
+    private List<Comment> comments;
+    private Boolean first;
+    private Boolean last;
 
-    private Long pagesCount;
-
-    public List<News> getNewsList() {
-        return newsList;
+    public News getNews() {
+        return news;
     }
 
-    public void setNewsList(List<News> newsList) {
-        this.newsList = newsList;
+    public void setNews(News news) {
+        this.news = news;
     }
 
-    public Map<Long, List<Author>> getAuthorsByNewsId() {
-        return authorsByNewsId;
+    public List<Author> getAuthors() {
+        return authors;
     }
 
-    public void setAuthorsByNewsId(Map<Long, List<Author>> authorsByNewsId) {
-        this.authorsByNewsId = authorsByNewsId;
+    public void setAuthors(List<Author> authors) {
+        this.authors = authors;
     }
 
-    public Map<Long, List<Tag>> getTagsByNewsId() {
-        return tagsByNewsId;
+    public List<Comment> getComments() {
+        return comments;
     }
 
-    public void setTagsByNewsId(Map<Long, List<Tag>> tagsByNewsId) {
-        this.tagsByNewsId = tagsByNewsId;
+    public void setComments(List<Comment> comments) {
+        this.comments = comments;
     }
 
-    public Map<Long, Long> getCommentsCountByNewsId() {
-        return commentsCountByNewsId;
+    public Boolean getFirst() {
+        return first;
     }
 
-    public void setCommentsCountByNewsId(Map<Long, Long> commentsCountByNewsId) {
-        this.commentsCountByNewsId = commentsCountByNewsId;
+    public void setFirst(Boolean first) {
+        this.first = first;
     }
 
-    public Long getPagesCount() {
-        return pagesCount;
+    public Boolean getLast() {
+        return last;
     }
 
-    public void setPagesCount(Long pagesCount) {
-        this.pagesCount = pagesCount;
+    public void setLast(Boolean last) {
+        this.last = last;
     }
 }

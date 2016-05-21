@@ -19,7 +19,6 @@ public interface CommentRepository extends CrudRepository<Comment, Long> {
         throw new DaoException();
     }
 
-
     /**
      * Counts news comments count.
      * @param news news which comments
@@ -28,6 +27,17 @@ public interface CommentRepository extends CrudRepository<Comment, Long> {
      * @throws DaoException
      */
     default Long countAllByNews(News news) throws DaoException {
+        throw new DaoException();
+    }
+
+    /**
+     * Returns all news comments
+     * @param news news which comments
+     * will be retrieved.
+     * @return news comments.
+     * @throws DaoException
+     */
+    default List<Comment> getAllByNews(News news) throws DaoException {
         throw new DaoException();
     }
 }

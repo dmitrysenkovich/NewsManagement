@@ -61,4 +61,15 @@ public interface NewsRepository extends CrudRepository<News, Long> {
     default void deleteAll(List<Long> newsIds) throws DaoException {
         throw new DaoException();
     }
+
+    /**
+     * Returns news row number in search query
+     * satisfying search criteria.
+     * @param ROW_NUMBER_BY_SEARCH_CRITERIA_QUERY row number by search criteria query.
+     * @return news row number.
+     * @throws DaoException
+     */
+    default Long rowNumberBySearchCriteria(final String ROW_NUMBER_BY_SEARCH_CRITERIA_QUERY) throws DaoException {
+        throw new DaoException();
+    }
 }

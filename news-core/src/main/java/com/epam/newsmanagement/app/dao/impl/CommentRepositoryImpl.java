@@ -13,6 +13,7 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
+import java.util.LinkedList;
 import java.util.List;
 
 /**
@@ -27,6 +28,8 @@ public class CommentRepositoryImpl implements CommentRepository {
     private static final String COUNT_ALL_BY_NEWS = "SELECT COUNT(*) FROM COMMENTS " +
             "                                        WHERE NEWS_ID = ?" +
             "                                        GROUP BY NEWS_ID";
+    private static final String FIND_ALL_BY_NEWS = "SELECT COMMENT_ID, NEWS_ID, COMMENT_TEXT, CREATION_DATE " +
+            "FROM COMMENTS WHERE NEWS_ID = ?";
 
     @Autowired
     private DataSource dataSource;
@@ -170,5 +173,36 @@ public class CommentRepositoryImpl implements CommentRepository {
             databaseUtils.closeConnectionAndStatement(preparedStatement, connection);
         }
         return count;
+    }
+
+
+    @Override
+    public List<Comment> getAllByNews(News news) throws DaoException {
+        Connection connection = null;
+        PreparedStatement preparedStatement = null;
+        List<Comment> commentsByNews = null;
+        try {
+            connection = dataSource.getConnection();
+            preparedStatement = connection.prepareStatement(FIND_ALL_BY_NEWS);
+            preparedStatement.setLong(1, news.getNewsId());
+            ResultSet resultSet = preparedStatement.executeQuery();
+
+            commentsByNews = new LinkedList<>();
+            while (resultSet.next()) {
+                Comment comment = new Comment();
+                comment.setCommentId(resultSet.getLong(1));
+                comment.setNewsId(resultSet.getLong(2));
+                comment.setCommentText(resultSet.getString(3));
+                comment.setCreationDate(resultSet.getTimestamp(4));
+                commentsByNews.add(comment);
+            }
+        }
+        catch (SQLException e) {
+            throw new DaoException(e);
+        }
+        finally {
+            databaseUtils.closeConnectionAndStatement(preparedStatement, connection);
+        }
+        return commentsByNews;
     }
 }

@@ -9,6 +9,8 @@
 
         <title>News Management | News</title>
 
+        <sec:csrfMetaTags/>
+
         <link href="<c:url value="/resources/css/style.css" />" rel="stylesheet">
         <link href="<c:url value="/resources/css/jquery.multiselect.css" />" rel="stylesheet">
         <link href="<c:url value="/resources/assets/style.css" />" rel="stylesheet">
@@ -19,8 +21,6 @@
         <script type="text/javascript" src="http://ajax.googleapis.com/ajax/libs/jqueryui/1/jquery-ui.min.js"></script>
         <script type="text/javascript" src="<c:url value="/resources/js/jquery.multiselect.min.js" />"></script>
         <script type="text/javascript" src="<c:url value="/resources/assets/prettify.js" />"></script>
-
-        <sec:csrfMetaTags/>
     </head>
     <body>
         <div id="container">
@@ -54,23 +54,23 @@
                             <div class="short-news">
                                 <div class="short-news-title-row">
                                     <div class="short-news-title">
-                                        <a href="/news-admin/${news.newsId}">
+                                        <a href="/news-management/view-news/${news.newsId}">
                                             ${news.title}
                                         </a>
                                     </div>
                                     <div class="short-news-authors">
-                                        ( by
+                                        <c:set var="authorsNames" value="" />
                                         <c:forEach var="author" items="${authorsByNewsId[news.newsId]}" varStatus="loopStatus">
                                             <c:choose>
                                                 <c:when test="${loopStatus.first}">
-                                                    <c:out value="${author.authorName}" />
+                                                    <c:set var="authorsNames" value="${authorsNames}${author.authorName}" />
                                                 </c:when>
                                                 <c:otherwise>
-                                                    <c:out value=", ${author.authorName}" />
+                                                    <c:set var="authorsNames" value="${authorsNames}, ${author.authorName}" />
                                                 </c:otherwise>
                                             </c:choose>
                                         </c:forEach>
-                                        )
+                                        (by ${authorsNames})
                                     </div>
                                     <div class="short-news-last-edit">
                                         <u><fmt:formatDate
@@ -84,16 +84,18 @@
                                 </div>
                                 <div class="short-news-footer-row">
                                     <div class="short-news-tags">
+                                        <c:set var="tagsNames" value="" />
                                         <c:forEach var="tag" items="${tagsByNewsId[news.newsId]}" varStatus="loopStatus">
                                             <c:choose>
                                                 <c:when test="${loopStatus.first}">
-                                                    <c:out value="${tag.tagName}" />
+                                                    <c:set var="tagsNames" value="${tagsNames}${tag.tagName}" />
                                                 </c:when>
                                                 <c:otherwise>
-                                                    <c:out value=", ${tag.tagName}" />
+                                                    <c:set var="tagsNames" value="${tagsNames}, ${tag.tagName}" />
                                                 </c:otherwise>
                                             </c:choose>
                                         </c:forEach>
+                                        (by ${tagsNames})
                                     </div>
                                     <div class="short-news-others">
                                         <span style="color: #ff0000">Comments(${commentsCountByNewsId[news.newsId]})</span> <a href="/news-management/edit-news/${news.newsId}">Edit</a> <input id="${news.newsId}" type="checkbox" />

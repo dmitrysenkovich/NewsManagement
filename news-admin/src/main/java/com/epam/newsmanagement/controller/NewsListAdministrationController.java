@@ -10,7 +10,7 @@ import com.epam.newsmanagement.app.service.NewsService;
 import com.epam.newsmanagement.app.service.TagService;
 import com.epam.newsmanagement.app.service.UserService;
 import com.epam.newsmanagement.app.utils.SearchCriteria;
-import com.epam.newsmanagement.model.NewsInfo;
+import com.epam.newsmanagement.model.NewsListInfo;
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -26,6 +26,8 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.servlet.ModelAndView;
 
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpSession;
 import java.io.IOException;
 import java.util.HashMap;
 import java.util.List;
@@ -72,11 +74,11 @@ public class NewsListAdministrationController {
         List<News> newsList = newsService.search(searchCriteria);
         modelAndView.addObject("newsList", newsList);
 
-        NewsInfo newsInfo = fillNewsInfo(newsList, searchCriteria);
-        modelAndView.addObject("authorsByNewsId", newsInfo.getAuthorsByNewsId());
-        modelAndView.addObject("tagsByNewsId", newsInfo.getTagsByNewsId());
-        modelAndView.addObject("commentsCountByNewsId", newsInfo.getCommentsCountByNewsId());
-        modelAndView.addObject("pagesCount", newsInfo.getPagesCount());
+        NewsListInfo newsListInfo = fillNewsListInfo(newsList, searchCriteria);
+        modelAndView.addObject("authorsByNewsId", newsListInfo.getAuthorsByNewsId());
+        modelAndView.addObject("tagsByNewsId", newsListInfo.getTagsByNewsId());
+        modelAndView.addObject("commentsCountByNewsId", newsListInfo.getCommentsCountByNewsId());
+        modelAndView.addObject("pagesCount", newsListInfo.getPagesCount());
 
         Authentication auth = SecurityContextHolder.getContext().getAuthentication();
         String login = auth.getName();
@@ -89,34 +91,42 @@ public class NewsListAdministrationController {
 
     @RequestMapping(value = "/news-list-administration/reset", method = RequestMethod.GET)
     @ResponseBody
-    public NewsInfo reset() throws ServiceException {
+    public NewsListInfo reset(HttpServletRequest request) throws ServiceException {
         logger.info("Reset GET request");
 
         SearchCriteria searchCriteria = new SearchCriteria();
         searchCriteria.setPageIndex(1L);
-        List<News> newsList = newsService.search(searchCriteria);
-        NewsInfo newsInfo = fillNewsInfo(newsList, searchCriteria);
+        HttpSession session = request.getSession(false);
+        session.setAttribute("searchCriteria", searchCriteria);
 
-        return newsInfo;
+        List<News> newsList = newsService.search(searchCriteria);
+        NewsListInfo newsListInfo = fillNewsListInfo(newsList, searchCriteria);
+
+        return newsListInfo;
     }
 
 
     @RequestMapping(value = "/news-list-administration/filter", method = RequestMethod.GET)
     @ResponseBody
-    public NewsInfo filter(@RequestParam("searchCriteria") String searchCriteriaInString) throws ServiceException, IOException {
+    public NewsListInfo filter(@RequestParam("searchCriteria") String searchCriteriaInString,
+                               HttpServletRequest request) throws ServiceException, IOException {
         logger.info("Filter GET request");
 
         SearchCriteria searchCriteria = objectMapper.readValue(searchCriteriaInString, SearchCriteria.class);
-        List<News> newsList = newsService.search(searchCriteria);
-        NewsInfo newsInfo = fillNewsInfo(newsList, searchCriteria);
+        HttpSession session = request.getSession(false);
+        session.setAttribute("searchCriteria", searchCriteria);
 
-        return newsInfo;
+        List<News> newsList = newsService.search(searchCriteria);
+        NewsListInfo newsListInfo = fillNewsListInfo(newsList, searchCriteria);
+
+        return newsListInfo;
     }
 
 
     @RequestMapping(value = "/news-list-administration/page", method = RequestMethod.GET)
     @ResponseBody
-    public NewsInfo page(@RequestParam("searchCriteria") String searchCriteriaInString) throws ServiceException, IOException {
+    public NewsListInfo page(@RequestParam("searchCriteria") String searchCriteriaInString,
+                             HttpServletRequest request) throws ServiceException, IOException {
         logger.info("Page GET request");
 
         SearchCriteria searchCriteria = objectMapper.readValue(searchCriteriaInString, SearchCriteria.class);
@@ -124,17 +134,20 @@ public class NewsListAdministrationController {
             Long pagesCount = newsService.countPagesBySearchCriteria(searchCriteria);
             searchCriteria.setPageIndex(pagesCount);
         }
+        HttpSession session = request.getSession(false);
+        session.setAttribute("searchCriteria", searchCriteria);
 
         List<News> newsList = newsService.search(searchCriteria);
-        NewsInfo newsInfo = fillNewsInfo(newsList, searchCriteria);
+        NewsListInfo newsListInfo = fillNewsListInfo(newsList, searchCriteria);
 
-        return newsInfo;
+        return newsListInfo;
     }
 
 
     @RequestMapping(value = "/news-list-administration/delete", method = RequestMethod.POST)
     @ResponseBody
-    public NewsInfo deleteNews(@RequestBody String requestBody) throws IOException, ServiceException {
+    public NewsListInfo deleteNews(@RequestBody String requestBody,
+                                   HttpServletRequest request) throws IOException, ServiceException {
         logger.info("Delete news POST request");
 
         JsonNode jsonNode = objectMapper.readTree(requestBody);
@@ -151,41 +164,44 @@ public class NewsListAdministrationController {
             searchCriteria.setPageIndex(searchCriteria.getPageIndex() - 1);
         }
 
-        List<News> newsList = newsService.search(searchCriteria);
-        NewsInfo newsInfo = fillNewsInfo(newsList, searchCriteria);
+        HttpSession session = request.getSession(false);
+        session.setAttribute("searchCriteria", searchCriteria);
 
-        return newsInfo;
+        List<News> newsList = newsService.search(searchCriteria);
+        NewsListInfo newsListInfo = fillNewsListInfo(newsList, searchCriteria);
+
+        return newsListInfo;
     }
 
 
-    private NewsInfo fillNewsInfo(List<News> newsList, SearchCriteria searchCriteria) throws ServiceException {
-        NewsInfo newsInfo = new NewsInfo();
-        newsInfo.setNewsList(newsList);
+    private NewsListInfo fillNewsListInfo(List<News> newsList, SearchCriteria searchCriteria) throws ServiceException {
+        NewsListInfo newsListInfo = new NewsListInfo();
+        newsListInfo.setNewsList(newsList);
 
         Map<Long, List<Author>> authorsByNewsId = new HashMap<>();
         for (News news : newsList) {
             List<Author> authorsByNews = authorService.getAllByNews(news);
             authorsByNewsId.put(news.getNewsId(), authorsByNews);
         }
-        newsInfo.setAuthorsByNewsId(authorsByNewsId);
+        newsListInfo.setAuthorsByNewsId(authorsByNewsId);
 
         Map<Long, List<Tag>> tagsByNewsId = new HashMap<>();
         for (News news : newsList) {
             List<Tag> tagsByNews = tagService.getAllByNews(news);
             tagsByNewsId.put(news.getNewsId(), tagsByNews);
         }
-        newsInfo.setTagsByNewsId(tagsByNewsId);
+        newsListInfo.setTagsByNewsId(tagsByNewsId);
 
         Map<Long, Long> commentsCountByNewsId = new HashMap<>();
         for (News news : newsList) {
             Long newsCommentsCount = commentService.countAllByNews(news);
             commentsCountByNewsId.put(news.getNewsId(), newsCommentsCount);
         }
-        newsInfo.setCommentsCountByNewsId(commentsCountByNewsId);
+        newsListInfo.setCommentsCountByNewsId(commentsCountByNewsId);
 
         Long pagesCount = newsService.countPagesBySearchCriteria(searchCriteria);
-        newsInfo.setPagesCount(pagesCount);
+        newsListInfo.setPagesCount(pagesCount);
 
-        return newsInfo;
+        return newsListInfo;
     }
 }
