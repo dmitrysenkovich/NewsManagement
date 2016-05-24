@@ -191,7 +191,9 @@ public class NewsRepositoryTest {
     @Test
     public void searchSuccessfulNoTags() throws Exception {
         SearchCriteria searchCriteria = new SearchCriteria();
-        searchCriteria.setAuthorId(2L);
+        List<Long> authorIds = new LinkedList<>();
+        authorIds.add(1L);
+        searchCriteria.setAuthorIds(authorIds);
         String searchQuery = searchUtils.getSearchQuery(searchCriteria);
         List<News> foundNews = newsRepository.search(searchQuery);
 
@@ -201,7 +203,7 @@ public class NewsRepositoryTest {
 
 
     @Test
-    public void searchSuccessfulNoAuthor() throws Exception {
+    public void searchSuccessfulNoAuthors() throws Exception {
         SearchCriteria searchCriteria = new SearchCriteria();
         List<Long> tagIds = new LinkedList<>();
         tagIds.add(1L);
@@ -219,7 +221,9 @@ public class NewsRepositoryTest {
     @Test
     public void searchSuccessful() throws Exception {
         SearchCriteria searchCriteria = new SearchCriteria();
-        searchCriteria.setAuthorId(1L);
+        List<Long> authorIds = new LinkedList<>();
+        authorIds.add(1L);
+        searchCriteria.setAuthorIds(authorIds);
         List<Long> tagIds = new LinkedList<>();
         tagIds.add(2L);
         searchCriteria.setTagIds(tagIds);
@@ -249,7 +253,9 @@ public class NewsRepositoryTest {
     @Test
     public void searchNothingFound() throws Exception {
         SearchCriteria searchCriteria = new SearchCriteria();
-        searchCriteria.setAuthorId(3L);
+        List<Long> authorIds = new LinkedList<>();
+        authorIds.add(3L);
+        searchCriteria.setAuthorIds(authorIds);
         String searchQuery = searchUtils.getSearchQuery(searchCriteria);
         List<News> foundNews = newsRepository.search(searchQuery);
 

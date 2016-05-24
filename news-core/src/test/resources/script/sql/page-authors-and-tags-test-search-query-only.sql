@@ -14,8 +14,11 @@ FROM
         FROM NEWS
         WHERE NEWS_ID NOT IN(SELECT NEWS_ID
                              FROM COMMENTS))) ALL_NEWS_STAT
-        WHERE EXISTS(SELECT * FROM NEWS_AUTHOR NA
-                     WHERE NA.NEWS_ID = ALL_NEWS_STAT.NEWS_ID AND AUTHOR_ID = 1)
+        WHERE NEWS_ID IN (SELECT NEWS_ID
+                  FROM NEWS_AUTHOR
+                  WHERE AUTHOR_ID IN (1)
+                  GROUP BY NEWS_ID
+                  HAVING COUNT(DISTINCT AUTHOR_ID) = 1)
             AND NEWS_ID IN (SELECT NEWS_ID
                           FROM NEWS_TAG
                           WHERE TAG_ID IN (1, 2)

@@ -7,19 +7,19 @@ import java.util.List;
  * to encapsulate search parameters.
  */
 public class SearchCriteria {
-    private Long authorId;
+    private List<Long> authorIds;
     private List<Long> tagIds;
     private Long pageIndex;
     private Long pageSize;
 
     public SearchCriteria() {}
 
-    public Long getAuthorId() {
-        return authorId;
+    public List<Long> getAuthorIds() {
+        return authorIds;
     }
 
-    public void setAuthorId(Long authorId) {
-        this.authorId = authorId;
+    public void setAuthorIds(List<Long> authorIds) {
+        this.authorIds = authorIds;
     }
 
     public List<Long> getTagIds() {

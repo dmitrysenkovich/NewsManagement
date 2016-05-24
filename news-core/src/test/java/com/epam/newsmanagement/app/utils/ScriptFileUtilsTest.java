@@ -1,6 +1,5 @@
 package com.epam.newsmanagement.app.utils;
 
-import com.epam.newsmanagement.app.utils.ScriptFileUtils;
 import org.apache.log4j.Logger;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -20,8 +19,8 @@ import static org.junit.Assert.assertTrue;
 public class ScriptFileUtilsTest {
     private static final Logger testLogger = Logger.getLogger(ScriptFileUtils.class);
     private static final String TEST_ERROR_MESSAGE = "test";
-    private static final String TEST_AUTHOR_AND_TAGS_SEARCH_SCRIPT_FILE_NAME
-            = "author-and-tags-test-search-query.sql";
+    private static final String TEST_AUTHORS_AND_TAGS_SEARCH_SCRIPT_FILE_NAME
+            = "authors-and-tags-test-search-query.sql";
 
     @Autowired
     private ScriptFileUtils scriptFileUtils;
@@ -31,7 +30,7 @@ public class ScriptFileUtilsTest {
     public void validSearchScriptDirectoryAndFileName() {
         String searchScriptDirectory = scriptFileUtils.getTestSearchScriptDirectoryPath();
         String scriptPart = scriptFileUtils.getScriptPart(searchScriptDirectory,
-                TEST_AUTHOR_AND_TAGS_SEARCH_SCRIPT_FILE_NAME, null, null);
+                TEST_AUTHORS_AND_TAGS_SEARCH_SCRIPT_FILE_NAME, null, null);
 
         assertNotEquals("", scriptPart);
     }
@@ -54,7 +53,7 @@ public class ScriptFileUtilsTest {
     public void invalidSearchScriptDirectory() {
         String invalidSearchScriptDirectory = "test";
         String scriptPart = scriptFileUtils.getScriptPart(invalidSearchScriptDirectory,
-                TEST_AUTHOR_AND_TAGS_SEARCH_SCRIPT_FILE_NAME, testLogger, TEST_ERROR_MESSAGE);
+                TEST_AUTHORS_AND_TAGS_SEARCH_SCRIPT_FILE_NAME, testLogger, TEST_ERROR_MESSAGE);
 
         assertEquals("", scriptPart);
     }

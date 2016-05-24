@@ -1,13 +1,11 @@
 $("#authors").multiselect({
-    multiple: false,
-    header: "Please select the author",
-    noneSelectedText: "Please select the author",
-    selectedList: 1
+    header: "Please select authors",
+    noneSelectedText: "Please select authors"
 });
 
 $("#tags").multiselect({
-    header: "Please select the tag",
-    noneSelectedText: "Please select the tag"
+    header: "Please select tags",
+    noneSelectedText: "Please select tags"
 });
 
 $('#news-list-link').css('font-weight', 'bold');
@@ -175,7 +173,12 @@ function refreshPaginationRow(newsListInfo, pageIndex) {
 
 
 function fillSearchCriteria() {
-    var checkedAuthorId = parseInt($('#authors').multiselect('getChecked').val());
+    var checkedAuthors = $('#authors').multiselect('getChecked');
+    var checkedAuthorsIds = [];
+    for (var i = 0; i < checkedAuthors.length; i++) {
+        var checkedAuthorId = $(checkedAuthors[i]).val();
+        checkedAuthorsIds.push(parseInt(checkedAuthorId));
+    }
     var checkedTags = $('#tags').multiselect('getChecked');
     var checkedTagsIds = [];
     for (var i = 0; i < checkedTags.length; i++) {
@@ -183,7 +186,7 @@ function fillSearchCriteria() {
         checkedTagsIds.push(parseInt(checkedTagId));
     }
     searchCriteria = {
-        authorId : checkedAuthorId,
+        authorIds : checkedAuthorsIds,
         tagIds : checkedTagsIds,
         pageIndex : 1
     };

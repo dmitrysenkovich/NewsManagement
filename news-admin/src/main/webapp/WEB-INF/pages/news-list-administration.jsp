@@ -29,15 +29,15 @@
                 <tiles:insertAttribute name="navbar" />
                 <div id="content" class="scrollable">
                     <div id="filter-row">
-                        <select id="authors" name="authors">
-                            <option value="default" disabled selected>Please select the author</option>
+                        <select id="authors" multiple="multiple" name="authors">
+                            <option value="default" disabled>Please select authors</option>
                             <c:forEach var="author" items="${notExpiredAuthors}">
                                 <option value="${author.authorId}">${author.authorName}</option>
                             </c:forEach>
                         </select>
 
                         <select id="tags" multiple="multiple" name="tags">
-                            <option value="default" disabled>Please select the tags</option>
+                            <option value="default" disabled>Please select tags</option>
                             <c:forEach var="tag" items="${tags}">
                                 <option value="${tag.tagId}">${tag.tagName}</option>
                             </c:forEach>

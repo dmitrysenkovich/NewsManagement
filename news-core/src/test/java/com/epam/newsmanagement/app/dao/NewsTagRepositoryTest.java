@@ -4,7 +4,6 @@ import com.epam.newsmanagement.app.exception.DaoException;
 import com.epam.newsmanagement.app.model.News;
 import com.epam.newsmanagement.app.model.NewsTag;
 import com.epam.newsmanagement.app.model.Tag;
-import com.epam.newsmanagement.app.dao.NewsTagRepository;
 import com.github.springtestdbunit.DbUnitTestExecutionListener;
 import com.github.springtestdbunit.annotation.DatabaseSetup;
 import org.dbunit.DefaultDatabaseTester;

@@ -17,7 +17,7 @@ public class SearchUtils {
     private static final String COUNT_MAIN_PART_FILE_NAME = "count-main.sql";
     private static final String PAGE_MAIN_PART_FILE_NAME = "page-search-main.sql";
     private static final String ROW_NUMBER_SEARCH_MAIN_PART_FILE_NAME = "row-number-search-main.sql";
-    private static final String AUTHOR_PART_FILE_NAME = "search-author-part.sql";
+    private static final String AUTHORS_PART_FILE_NAME = "search-authors-part.sql";
     private static final String TAGS_PART_FILE_NAME = "search-tags-part.sql";
 
     private static final Long DEFAULT_PAGE_INDEX = 0L;
@@ -27,7 +27,7 @@ public class SearchUtils {
     private String COUNT_MAIN_PART;
     private String PAGE_MAIN_PART;
     private String ROW_NUMBER_MAIN_PART;
-    private String AUTHOR_PART;
+    private String AUTHORS_PART;
     private String TAGS_PART;
 
     @Autowired
@@ -48,12 +48,12 @@ public class SearchUtils {
                 "Error reading main part of page search script");
         ROW_NUMBER_MAIN_PART = scriptFileUtils.getScriptPart(searchScriptDirectoryPath, ROW_NUMBER_SEARCH_MAIN_PART_FILE_NAME, logger,
                 "Error reading  main part of row number search script");
-        AUTHOR_PART = scriptFileUtils.getScriptPart(searchScriptDirectoryPath, AUTHOR_PART_FILE_NAME, logger,
-                "Error reading author part of search script");
+        AUTHORS_PART = scriptFileUtils.getScriptPart(searchScriptDirectoryPath, AUTHORS_PART_FILE_NAME, logger,
+                "Error reading authors part of search script");
         TAGS_PART = scriptFileUtils.getScriptPart(searchScriptDirectoryPath, TAGS_PART_FILE_NAME, logger,
                 "Error reading tags part of search script");
         if (!SEARCH_MAIN_PART.equals("") && !COUNT_MAIN_PART.equals("") && !PAGE_MAIN_PART.equals("") &&
-                !ROW_NUMBER_MAIN_PART.equals("") && !AUTHOR_PART.equals("") && !TAGS_PART.equals(""))
+                !ROW_NUMBER_MAIN_PART.equals("") && !AUTHORS_PART.equals("") && !TAGS_PART.equals(""))
             logger.info("Successfully read all search script parts");
         else
             logger.error("Error while reading script parts");
@@ -69,7 +69,7 @@ public class SearchUtils {
         if (searchCriteria == null)
             return true;
 
-        if (searchCriteria.getAuthorId() == null &&
+        if ((searchCriteria.getAuthorIds() == null || searchCriteria.getAuthorIds().isEmpty())  &&
                 (searchCriteria.getTagIds() == null || searchCriteria.getTagIds().isEmpty()))
             return true;
 
@@ -83,9 +83,17 @@ public class SearchUtils {
      * @return
      */
     private String[] getQueryParts(SearchCriteria searchCriteria) {
-        String authorMatchingChecking = "";
-        if (searchCriteria.getAuthorId() != null)
-            authorMatchingChecking = MessageFormat.format(AUTHOR_PART, searchCriteria.getAuthorId());
+        String authorsMatchingChecking = "";
+        if (searchCriteria.getAuthorIds() != null && !searchCriteria.getAuthorIds().isEmpty()) {
+            List<Long> authorIds = searchCriteria.getAuthorIds();
+            StringBuilder authorIdsInString = new StringBuilder();
+            for (Long authorId : authorIds)
+                authorIdsInString.append(authorId + ", ");
+            authorIdsInString.insert(0, "(");
+            authorIdsInString.deleteCharAt(authorIdsInString.length() - 1);
+            authorIdsInString.setCharAt(authorIdsInString.length() - 1, ')');
+            authorsMatchingChecking = MessageFormat.format(AUTHORS_PART, authorIdsInString, authorIds.size());
+        }
 
         String tagsMatchingChecking = "";
         if (searchCriteria.getTagIds() != null && !searchCriteria.getTagIds().isEmpty()) {
@@ -100,10 +108,10 @@ public class SearchUtils {
         }
 
         String and = "";
-        if (!authorMatchingChecking.equals("") && !tagsMatchingChecking.equals(""))
+        if (!authorsMatchingChecking.equals("") && !tagsMatchingChecking.equals(""))
             and = "\n    AND ";
 
-        return new String[]{ authorMatchingChecking, and, tagsMatchingChecking };
+        return new String[]{ authorsMatchingChecking, and, tagsMatchingChecking };
     }
 
 

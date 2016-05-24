@@ -22,8 +22,8 @@ import static org.junit.Assert.assertNull;
 @RunWith(SpringJUnit4ClassRunner.class)
 @ContextConfiguration(locations = {"classpath:META-INF/repository-test-context.xml"})
 public class SearchUtilsTest {
-    private static final String TEST_AUTHOR_AND_TAGS_SEARCH_SCRIPT_FILE_NAME = "author-and-tags-test-search-query.sql";
-    private static final String TEST_AUTHOR_ONLY_SEARCH_SCRIPT_FILE_NAME = "author-only-test-search-query.sql";
+    private static final String TEST_AUTHORS_AND_TAGS_SEARCH_SCRIPT_FILE_NAME = "authors-and-tags-test-search-query.sql";
+    private static final String TEST_AUTHORS_ONLY_SEARCH_SCRIPT_FILE_NAME = "authors-only-test-search-query.sql";
     private static final String TEST_TAGS_ONLY_SEARCH_SCRIPT_FILE_NAME = "tags-only-test-search-query.sql";
 
     @Autowired
@@ -41,31 +41,35 @@ public class SearchUtilsTest {
     @Test
     public void searchCriteriaIsValidAuthorIsNotNullTagsAreNotNull() throws Exception {
         String testAuthorAndTagsSearchScript = scriptFileUtils.getScriptPart(TEST_SEARCH_SCRIPT_DIRECTORY,
-                TEST_AUTHOR_AND_TAGS_SEARCH_SCRIPT_FILE_NAME, null, null);
+                TEST_AUTHORS_AND_TAGS_SEARCH_SCRIPT_FILE_NAME, null, null);
         SearchCriteria searchCriteria = new SearchCriteria();
-        searchCriteria.setAuthorId(1L);
+        List<Long> authorIds = new LinkedList<>();
+        authorIds.add(1L);
+        searchCriteria.setAuthorIds(authorIds);
         List<Long> tagIds = new LinkedList<>();
         tagIds.add(1L);
         tagIds.add(2L);
         searchCriteria.setTagIds(tagIds);
-        String generatedAuthorAndTagsSearchScript = searchUtils.getSearchQuery(searchCriteria);
+        String generatedAuthorsAndTagsSearchScript = searchUtils.getSearchQuery(searchCriteria);
 
-        assertEquals(testAuthorAndTagsSearchScript, generatedAuthorAndTagsSearchScript);
+        assertEquals(testAuthorAndTagsSearchScript, generatedAuthorsAndTagsSearchScript);
     }
 
     @Test
-    public void searchCriteriaIsValidAuthorIsNotNullTagsAreNull() throws Exception {
+    public void searchCriteriaIsValidAuthorsIsNotNullTagsAreNull() throws Exception {
         String testAuthorOnlySearchScript = scriptFileUtils.getScriptPart(TEST_SEARCH_SCRIPT_DIRECTORY,
-                TEST_AUTHOR_ONLY_SEARCH_SCRIPT_FILE_NAME, null, null);
+                TEST_AUTHORS_ONLY_SEARCH_SCRIPT_FILE_NAME, null, null);
         SearchCriteria searchCriteria = new SearchCriteria();
-        searchCriteria.setAuthorId(1L);
-        String generatedAuthorOnlySearchScript = searchUtils.getSearchQuery(searchCriteria);
+        List<Long> authorIds = new LinkedList<>();
+        authorIds.add(1L);
+        searchCriteria.setAuthorIds(authorIds);
+        String generatedAuthorsOnlySearchScript = searchUtils.getSearchQuery(searchCriteria);
 
-        assertEquals(testAuthorOnlySearchScript, generatedAuthorOnlySearchScript);
+        assertEquals(testAuthorOnlySearchScript, generatedAuthorsOnlySearchScript);
     }
 
     @Test
-    public void searchCriteriaIsValidAuthorIsNullTagsAreNotNull() throws Exception {
+    public void searchCriteriaIsValidAuthorsIsNullTagsAreNotNull() throws Exception {
         String testTagsOnlySearchScript = scriptFileUtils.getScriptPart(TEST_SEARCH_SCRIPT_DIRECTORY,
                 TEST_TAGS_ONLY_SEARCH_SCRIPT_FILE_NAME, null, null);
         SearchCriteria searchCriteria = new SearchCriteria();
@@ -87,9 +91,9 @@ public class SearchUtilsTest {
     }
 
     @Test
-    public void searchCriteriaAuthorIsNull() {
+    public void searchCriteriaAuthorsIsNull() {
         SearchCriteria searchCriteria = new SearchCriteria();
-        searchCriteria.setAuthorId(null);
+        searchCriteria.setAuthorIds(null);
         String searchQuery = searchUtils.getSearchQuery(searchCriteria);
 
         assertNull(searchQuery);
@@ -105,9 +109,9 @@ public class SearchUtilsTest {
     }
 
     @Test
-    public void searchCriteriaAuthorIsNullAndNoTags() {
+    public void searchCriteriaAuthorsIsNullAndNoTags() {
         SearchCriteria searchCriteria = new SearchCriteria();
-        searchCriteria.setAuthorId(null);
+        searchCriteria.setAuthorIds(null);
         searchCriteria.setTagIds(new LinkedList<>());
         String searchQuery = searchUtils.getSearchQuery(searchCriteria);
 

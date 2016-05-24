@@ -1,7 +1,6 @@
 package com.epam.newsmanagement.app.dao;
 
 import com.epam.newsmanagement.app.exception.DaoException;
-import com.epam.newsmanagement.app.dao.RoleRepository;
 import com.epam.newsmanagement.app.model.Role;
 import com.github.springtestdbunit.DbUnitTestExecutionListener;
 import com.github.springtestdbunit.annotation.DatabaseSetup;
