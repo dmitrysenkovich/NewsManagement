@@ -13,8 +13,9 @@
 	<http auto-config="true" use-expressions="true">
         <intercept-url pattern="/authors/**" access="isAuthenticated() and hasRole('ADMIN')"/>
         <intercept-url pattern="/tags/**" access="isAuthenticated() and hasRole('ADMIN')"/>
-        <intercept-url pattern="/views-news/**" access="isAuthenticated() and hasRole('ADMIN')"/>
-		<intercept-url pattern="/news-edit/**" access="isAuthenticated() and hasRole('ADMIN')"/>
+        <intercept-url pattern="/view-news/**" access="isAuthenticated() and hasRole('ADMIN')"/>
+		<intercept-url pattern="/edit-news/**" access="isAuthenticated() and hasRole('ADMIN')"/>
+		<intercept-url pattern="/add-news/**" access="isAuthenticated() and hasRole('ADMIN')"/>
 		<intercept-url pattern="/news-list-administration/**" access="isAuthenticated() and hasRole('ADMIN')"/>
         <access-denied-handler error-page="/403" />
 		<form-login

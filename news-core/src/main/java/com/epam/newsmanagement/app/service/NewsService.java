@@ -15,13 +15,24 @@ public interface NewsService extends CrudService<News> {
     /**
      * Adds news.
      * @param news news.
-     * @param author news author.
+     * @param authors news authors.
      * @param tags news tags.
      * @return this news with id set
      * if added successfully.
      * @throws ServiceException
      */
-    default News add(News news, Author author, List<Tag> tags) throws ServiceException {
+    default News add(News news, List<Author> authors, List<Tag> tags) throws ServiceException {
+        throw new ServiceException();
+    }
+
+    /**
+     * Updates news.
+     * @param news news.
+     * @param authors news authors.
+     * @param tags news tags.
+     * @throws ServiceException
+     */
+    default void updateNewsAuthorsAndTags(News news, List<Author> authors, List<Tag> tags) throws ServiceException {
         throw new ServiceException();
     }
 

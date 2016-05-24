@@ -74,7 +74,7 @@
                                     </div>
                                     <div class="short-news-last-edit">
                                         <u><fmt:formatDate
-                                                value="${not empty news.modificationDate ? news.modificationDate : news.creationDate}"
+                                                value="${news.modificationDate}"
                                                 dateStyle="long" />
                                         </u>
                                     </div>

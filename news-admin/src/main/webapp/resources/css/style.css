@@ -437,7 +437,7 @@ ul.pagination li a:hover:not(.active) {background-color: #ddd;}
     text-align: left;
 }
 
-#new-news {
+.new-news {
     margin: 50px;
 }
 
@@ -566,4 +566,22 @@ ul.pagination li a:hover:not(.active) {background-color: #ddd;}
 
 .invalid-comment-text {
     border-color: red;
+}
+
+#invalid-news {
+    text-align: center;
+    color: red;
+    padding-bottom: 10px;
+}
+
+#no-author-or-tag-selected {
+    text-align: center;
+    color: red;
+    padding-bottom: 10px;
+}
+
+#news-saved {
+    text-align: center;
+    color: #006666;
+    padding-bottom: 10px;
 }

@@ -20,6 +20,7 @@ import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
 import org.powermock.modules.junit4.PowerMockRunner;
 
+import java.util.ArrayList;
 import java.util.LinkedList;
 import java.util.List;
 
@@ -59,7 +60,7 @@ public class NewsServiceTest {
 
 
     @Test
-    public void addedNewsAuthorIsNullTagsAreNull() throws Exception {
+    public void addedNewsAuthorsIsNullTagsAreNull() throws Exception {
         News news = new News();
         news.setNewsId(1L);
         when(newsRepository.add(news)).thenReturn(1L);
@@ -73,12 +74,14 @@ public class NewsServiceTest {
 
 
     @Test
-    public void addedNewsAuthorIsNotNullTagsAreNull() throws Exception {
+    public void addedNewsAuthorsIsNotNullTagsAreNull() throws Exception {
         News news = new News();
         news.setNewsId(1L);
+        List<Author> authors = new LinkedList<>();
+        authors.add(new Author());
         when(newsRepository.add(news)).thenReturn(1L);
         doNothing().when(newsAuthorRepository).add(any(NewsAuthor.class));
-        news = newsService.add(news, new Author(), null);
+        news = newsService.add(news, authors, null);
 
         assertEquals((Long) 1L, news.getNewsId());
         verify(newsRepository, times(1)).add(news);
@@ -88,7 +91,7 @@ public class NewsServiceTest {
 
 
     @Test
-    public void addedNewsAuthorIsNullTagsAreNotNull() throws Exception {
+    public void addedNewsAuthorsIsNullTagsAreNotNull() throws Exception {
         News news = new News();
         news.setNewsId(1L);
         List<Tag> tags = new LinkedList<>();
@@ -105,15 +108,17 @@ public class NewsServiceTest {
 
 
     @Test
-    public void addedNewsAuthorIsNotNullTagsAreNotNull() throws Exception {
+    public void addedNewsAuthorsIsNotNullTagsAreNotNull() throws Exception {
         News news = new News();
         news.setNewsId(1L);
+        List<Author> authors = new LinkedList<>();
+        authors.add(new Author());
         List<Tag> tags = new LinkedList<>();
         tags.add(new Tag());
         when(newsRepository.add(news)).thenReturn(1L);
         doNothing().when(newsAuthorRepository).add(any(NewsAuthor.class));
         doNothing().when(newsTagRepository).addAll(any(News.class), any(List.class));
-        news = newsService.add(news, new Author(), tags);
+        news = newsService.add(news, authors, tags);
 
         assertEquals((Long) 1L, news.getNewsId());
         verify(newsRepository, times(1)).add(news);
@@ -123,7 +128,7 @@ public class NewsServiceTest {
 
 
     @Test
-    public void notAddedNewsAuthorIsNullTagsAreNullNewsFailure() throws Exception {
+    public void notAddedNewsAuthorsIsNullTagsAreNullNewsFailure() throws Exception {
         doThrow(new DaoException()).when(newsRepository).add(any(News.class));
         catchException(() -> newsService.add(new News(), null, null));
         assert caughtException() instanceof ServiceException;
@@ -135,9 +140,11 @@ public class NewsServiceTest {
 
 
     @Test
-    public void notAddedNewsAuthorIsNotNullTagsAreNullNewsFailure() throws Exception {
+    public void notAddedNewsAuthorsIsNotNullTagsAreNullNewsFailure() throws Exception {
+        List<Author> authors = new LinkedList<>();
+        authors.add(new Author());
         doThrow(new DaoException()).when(newsRepository).add(any(News.class));
-        catchException(() -> newsService.add(new News(), new Author(), null));
+        catchException(() -> newsService.add(new News(), authors, null));
         assert caughtException() instanceof ServiceException;
 
         verify(newsRepository, times(1)).add(any(News.class));
@@ -147,7 +154,7 @@ public class NewsServiceTest {
 
 
     @Test
-    public void notAddedNewsAuthorIsNullTagsAreNotNullNewsFailure() throws Exception {
+    public void notAddedNewsAuthorsIsNullTagsAreNotNullNewsFailure() throws Exception {
         List<Tag> tags = new LinkedList<>();
         tags.add(new Tag());
         doThrow(new DaoException()).when(newsRepository).add(any(News.class));
@@ -161,11 +168,13 @@ public class NewsServiceTest {
 
 
     @Test
-    public void notAddedNewsAuthorIsNotNullTagsAreNotNullNewsFailure() throws Exception {
+    public void notAddedNewsAuthorsIsNotNullTagsAreNotNullNewsFailure() throws Exception {
+        List<Author> authors = new LinkedList<>();
+        authors.add(new Author());
         List<Tag> tags = new LinkedList<>();
         tags.add(new Tag());
         doThrow(new DaoException()).when(newsRepository).add(any(News.class));
-        catchException(() -> newsService.add(new News(), new Author(), tags));
+        catchException(() -> newsService.add(new News(), authors, tags));
         assert caughtException() instanceof ServiceException;
 
         verify(newsRepository, times(1)).add(any(News.class));
@@ -175,10 +184,12 @@ public class NewsServiceTest {
 
 
     @Test
-    public void notAddedNewsTagsAreNullAuthorFailure() throws Exception {
+    public void notAddedNewsTagsAreNullAuthorsFailure() throws Exception {
+        List<Author> authors = new LinkedList<>();
+        authors.add(new Author());
         when(newsRepository.add(any(News.class))).thenReturn(1L);
         doThrow(new DaoException()).when(newsAuthorRepository).add(any(NewsAuthor.class));
-        catchException(() -> newsService.add(new News(), new Author(), null));
+        catchException(() -> newsService.add(new News(), authors, null));
         assert caughtException() instanceof ServiceException;
 
         verify(newsRepository, times(1)).add(any(News.class));
@@ -188,12 +199,14 @@ public class NewsServiceTest {
 
 
     @Test
-    public void notAddedNewsTagsAreNotNullAuthorFailure() throws Exception {
+    public void notAddedNewsTagsAreNotNullAuthorsFailure() throws Exception {
+        List<Author> authors = new LinkedList<>();
+        authors.add(new Author());
         List<Tag> tags = new LinkedList<>();
         tags.add(new Tag());
         when(newsRepository.add(any(News.class))).thenReturn(1L);
         doThrow(new DaoException()).when(newsAuthorRepository).add(any(NewsAuthor.class));
-        catchException(() -> newsService.add(new News(), new Author(), tags));
+        catchException(() -> newsService.add(new News(), authors, tags));
         assert caughtException() instanceof ServiceException;
 
         verify(newsRepository, times(1)).add(any(News.class));
@@ -203,7 +216,7 @@ public class NewsServiceTest {
 
 
     @Test
-    public void notAddedNewsAuthorIsNullTagsFailure() throws Exception {
+    public void notAddedNewsAuthorsIsNullTagsFailure() throws Exception {
         List<Tag> tags = new LinkedList<>();
         tags.add(new Tag());
         when(newsRepository.add(any(News.class))).thenReturn(1L);
@@ -219,13 +232,15 @@ public class NewsServiceTest {
 
 
     @Test
-    public void notAddedNewsAuthorIsNotNullTagsFailure() throws Exception {
+    public void notAddedNewsAuthorsIsNotNullTagsFailure() throws Exception {
+        List<Author> authors = new LinkedList<>();
+        authors.add(new Author());
         List<Tag> tags = new LinkedList<>();
         tags.add(new Tag());
         when(newsRepository.add(any(News.class))).thenReturn(1L);
         doNothing().when(newsAuthorRepository).add(any(NewsAuthor.class));
         doThrow(new DaoException()).when(newsTagRepository).addAll(any(News.class), any(List.class));
-        catchException(() -> newsService.add(new News(), new Author(), tags));
+        catchException(() -> newsService.add(new News(), authors, tags));
         assert caughtException() instanceof ServiceException;
 
         verify(newsRepository, times(1)).add(any(News.class));

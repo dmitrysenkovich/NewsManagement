@@ -163,8 +163,9 @@ public class CommentRepositoryImpl implements CommentRepository {
             preparedStatement = connection.prepareStatement(COUNT_ALL_BY_NEWS);
             preparedStatement.setLong(1, news.getNewsId());
             ResultSet resultSet = preparedStatement.executeQuery();
-            resultSet.next();
-            count = resultSet.getLong(1);
+            count = 0L;
+            while (resultSet.next())
+                count = resultSet.getLong(1);
         }
         catch (SQLException e) {
             throw new DaoException(e);

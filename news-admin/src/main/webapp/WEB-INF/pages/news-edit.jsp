@@ -1,11 +1,15 @@
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core"%>
+<%@ taglib prefix="tiles" uri="http://tiles.apache.org/tags-tiles"%>
+<%@ taglib prefix="fmt" uri="http://java.sun.com/jsp/jstl/fmt" %>
+<%@ taglib prefix="sec" uri="http://www.springframework.org/security/tags" %>
 <%@ page session="false" contentType="text/html; charset=UTF-8" %>
-<%@ taglib uri="http://tiles.apache.org/tags-tiles" prefix="tiles"%>
 <html>
     <head>
         <meta charset="utf-8">
 
         <title>News Management | News</title>
+
+        <sec:csrfMetaTags/>
 
         <link href="<c:url value="/resources/css/style.css" />" rel="stylesheet">
         <link href="<c:url value="/resources/css/jquery.multiselect.css" />" rel="stylesheet">
@@ -17,7 +21,6 @@
         <script type="text/javascript" src="http://ajax.googleapis.com/ajax/libs/jqueryui/1/jquery-ui.min.js"></script>
         <script type="text/javascript" src="<c:url value="/resources/js/jquery.multiselect.min.js" />"></script>
         <script type="text/javascript" src="<c:url value="/resources/assets/prettify.js" />"></script>
-        <script type="text/javascript" src="<c:url value="/resources/js/news-list-administration.js" />"></script>
     </head>
     <body>
         <div id="container">
@@ -25,13 +28,13 @@
             <div id="crutch">
                 <tiles:insertAttribute name="navbar" />
                 <div id="content" class="scrollable news-content">
-                    <div id="new-news">
+                    <div id="${not empty news ? news.newsId : ''}" class="new-news">
                         <div id="new-news-title-row">
                             <div id="new-news-title-label">
                                 Title:
                             </div>
                             <div id="new-news-title">
-                                <input id="new-news-textarea" type="text" value="">
+                                <input id="new-news-textarea" type="text" value="${not empty news ? news.title : ''}">
                             </div>
                         </div>
                         <div id="date-row">
@@ -39,7 +42,17 @@
                                 Date:
                             </div>
                             <div id="date">
-                                <input id="date-textarea" type="text" value="">
+                                <jsp:useBean id="now" class="java.util.Date" scope="request" />
+                                <c:set var="newsDate" ><fmt:formatDate
+                                        value="${now}"
+                                        dateStyle="long" /></c:set>
+                                <c:if test="${not empty news}">
+                                    <c:set var="newsDate" ><fmt:formatDate
+                                            value="${not empty news.modificationDate ? news.modificationDate : news.creationDate}"
+                                            dateStyle="long" />
+                                    </c:set>
+                                </c:if>
+                                <input id="date-textarea" type="text" value="${newsDate}" disabled>
                             </div>
                         </div>
                         <div id="short-text-row">
@@ -47,8 +60,7 @@
                                 Brief:
                             </div>
                             <div id="short-text">
-                                <textarea id="short-text-textarea" rows="4" >
-                                </textarea>
+                                <textarea id="short-text-textarea" rows="4" >${not empty news ? news.shortText.replace('\\n', '&#13;&#10;') : ''}</textarea>
                             </div>
                         </div>
                         <div id="text-row">
@@ -56,32 +68,41 @@
                                 Content:
                             </div>
                             <div id="text">
-                                <textarea id="text-textarea" rows="6" >
-                                </textarea>
+                                <textarea id="text-textarea" rows="6" >${not empty news ? news.fullText.replace('\\n', '&#13;&#10;') : ''}</textarea>
                             </div>
                         </div>
                     </div>
                     <div id="filter-row">
-                        <select id="authors" name="authors">
-                            <option value="" disabled selected>Please select the author</option>
-                            <option value="Chris Kahn">Chris Kahn</option>
-                            <option value="Jeff Mason">Jeff Mason</option>
-                            <option value="Ginger Gibson">Ginger Gibson</option>
-                            <option value="My Pham">My Pham</option>
-                            <option value="David Lawder">David Lawder</option>
-                            <option value="Lindsay Dunsmuird">Lindsay Dunsmuird</option>
+                        <select id="authors" multiple="multiple" name="authors">
+                            <option value="default" disabled>Please select authors</option>
+                            <c:choose>
+                                <c:when test="${empty news}">
+                                    <c:forEach var="author" items="${notExpiredAuthors}">
+                                        <option value="${author.authorId}">${author.authorName}</option>
+                                    </c:forEach>
+                                </c:when>
+                                <c:otherwise>
+                                    <c:forEach var="author" items="${notExpiredAuthors}">
+                                        <option value="${author.authorId}" ${newsAuthors.contains(author) ? 'selected' : ''}>${author.authorName}</option>
+                                    </c:forEach>
+                                </c:otherwise>
+                            </c:choose>
                         </select>
 
                         <select id="tags" multiple="multiple" name="tags">
-                            <option value="" disabled>Please select the tag</option>
-                            <option value="politics">politics</option>
-                            <option value="election">election</option>
-                            <option value="republican">republican</option>
-                            <option value="Donald Trump">Donald Trump</option>
-                            <option value="White House">White House</option>
-                            <option value="Barack Obama">Barack Obama</option>
-                            <option value="president">president</option>
-                            <option value="Vietnam">Vietnam</option>
+                            <option value="default" disabled>Please select tags</option>
+                            <c:choose>
+                                <c:when test="${empty news}">
+                                    <c:forEach var="tag" items="${tags}">
+                                        <option value="${tag.tagId}">${tag.tagName}</option>
+                                    </c:forEach>
+                                </c:when>
+                                <c:otherwise>
+                                    <c:forEach var="tag" items="${tags}">
+                                        <option value="${tag.tagId}" ${newsTags.contains(tag) ? 'selected' : ''}>${tag.tagName}</option>
+                                    </c:forEach>
+                                </c:otherwise>
+                            </c:choose>
                         </select>
                     </div>
                     <div id="save-news-button-wrapper">
@@ -91,5 +112,6 @@
             </div>
             <tiles:insertAttribute name="footer" />
         </div>
+        <script type="text/javascript" src="<c:url value="/resources/js/news-edit.js" />"></script>
     </body>
 </html>

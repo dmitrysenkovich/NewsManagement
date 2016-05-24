@@ -39,7 +39,7 @@ public class NewsServiceImpl implements NewsService {
 
     @Override
     @Transactional(rollbackFor = ServiceException.class)
-    public News add(News news, Author author, List<Tag> tags) throws ServiceException {
+    public News add(News news, List<Author> authors, List<Tag> tags) throws ServiceException {
         logger.info("Adding news..");
         news.setCreationDate(new Timestamp(new java.util.Date().getTime()));
         news.setModificationDate(new Date(new java.util.Date().getTime()));
@@ -51,19 +51,17 @@ public class NewsServiceImpl implements NewsService {
             throw new ServiceException(e);
         }
 
-        if (author != null) {
-            logger.info("Adding author to news..");
-            NewsAuthor newsAuthor = new NewsAuthor();
-            newsAuthor.setNewsId(news.getNewsId());
-            newsAuthor.setAuthorId(author.getAuthorId());
+        if (authors != null && !authors.isEmpty()) {
+            logger.info("Adding authors to news..");
+
             try {
-                newsAuthorRepository.add(newsAuthor);
+                newsAuthorRepository.addAll(news, authors);
             } catch (DaoException e) {
-                logger.error("Failed to add author to news");
+                logger.error("Failed to add authors to news");
                 logger.error("Failed to add news");
                 throw new ServiceException(e);
             }
-            logger.info("Successfully added author to news");
+            logger.info("Successfully added authors to news");
         }
 
         if (tags != null && !tags.isEmpty()) {
@@ -85,6 +83,51 @@ public class NewsServiceImpl implements NewsService {
 
 
     @Override
+    @Transactional(rollbackFor = ServiceException.class)
+    public void updateNewsAuthorsAndTags(News news, List<Author> authors, List<Tag> tags) throws ServiceException {
+        logger.info("Updating news authors and tags..");
+
+        try {
+            logger.info("Deleting all news authors..");
+            newsAuthorRepository.deleteAll(news);
+        } catch (DaoException e) {
+            logger.error("Failed to delete all news authors");
+            logger.error("Failed to update news authors and tags");
+            throw new ServiceException(e);
+        }
+
+        try {
+            logger.info("Deleting all news tags..");
+            newsTagRepository.deleteAll(news);
+        } catch (DaoException e) {
+            logger.error("Failed to delete all news tags");
+            logger.error("Failed to update news authors and tags");
+            throw new ServiceException(e);
+        }
+
+        try {
+            logger.info("Adding all news to authors relations..");
+            newsAuthorRepository.addAll(news, authors);
+        } catch (DaoException e) {
+            logger.error("Failed to add all news authors");
+            logger.error("Failed to update news authors and tags");
+            throw new ServiceException(e);
+        }
+
+        try {
+            logger.info("Adding all news to tags relations..");
+            newsTagRepository.addAll(news, tags);
+        } catch (DaoException e) {
+            logger.error("Failed to add all news tags");
+            logger.error("Failed to update news authors and tags");
+            throw new ServiceException(e);
+        }
+
+        logger.info("Successfully updated news authors and tags");
+    }
+
+
+    @Override
     public News find(Long newsId) throws ServiceException {
         logger.info("Retrieving news..");
         News news;
@@ -102,6 +145,7 @@ public class NewsServiceImpl implements NewsService {
     @Override
     @Transactional(rollbackFor = ServiceException.class)
     public void update(News news) throws ServiceException {
+        news.setModificationDate(new Date(new java.util.Date().getTime()));
         logger.info("Updating news..");
         try {
             newsRepository.update(news);

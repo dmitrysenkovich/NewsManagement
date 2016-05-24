@@ -20,6 +20,7 @@ import java.util.List;
 public class NewsTagRepositoryImpl implements NewsTagRepository {
     private static final String ADD = "INSERT INTO NEWS_TAG(NEWS_ID, TAG_ID) VALUES(?, ?)";
     private static final String DELETE = "DELETE FROM NEWS_TAG WHERE NEWS_ID = ? AND TAG_ID = ?";
+    private static final String DELETE_ALL = "DELETE FROM NEWS_TAG WHERE NEWS_ID = ?";
 
     @Autowired
     private DataSource dataSource;
@@ -81,6 +82,25 @@ public class NewsTagRepositoryImpl implements NewsTagRepository {
                 preparedStatement.addBatch();
             }
             preparedStatement.executeBatch();
+        }
+        catch (SQLException e) {
+            throw new DaoException(e);
+        }
+        finally {
+            databaseUtils.closeConnectionAndStatement(preparedStatement, connection);
+        }
+    }
+
+
+    @Override
+    public void deleteAll(News news) throws DaoException {
+        Connection connection = null;
+        PreparedStatement preparedStatement = null;
+        try {
+            connection = dataSource.getConnection();
+            preparedStatement = connection.prepareStatement(DELETE_ALL);
+            preparedStatement.setLong(1, news.getNewsId());
+            preparedStatement.executeUpdate();
         }
         catch (SQLException e) {
             throw new DaoException(e);
