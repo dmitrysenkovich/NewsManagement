@@ -84,18 +84,20 @@
                                 </div>
                                 <div class="short-news-footer-row">
                                     <div class="short-news-tags">
-                                        <c:set var="tagsNames" value="" />
-                                        <c:forEach var="tag" items="${tagsByNewsId[news.newsId]}" varStatus="loopStatus">
-                                            <c:choose>
-                                                <c:when test="${loopStatus.first}">
-                                                    <c:set var="tagsNames" value="${tagsNames}${tag.tagName}" />
-                                                </c:when>
-                                                <c:otherwise>
-                                                    <c:set var="tagsNames" value="${tagsNames}, ${tag.tagName}" />
-                                                </c:otherwise>
-                                            </c:choose>
-                                        </c:forEach>
-                                        (by ${tagsNames})
+                                        <c:if test="${not empty tagsByNewsId[news.newsId]}">
+                                            <c:set var="tagsNames" value="" />
+                                            <c:forEach var="tag" items="${tagsByNewsId[news.newsId]}" varStatus="loopStatus">
+                                                <c:choose>
+                                                    <c:when test="${loopStatus.first}">
+                                                        <c:set var="tagsNames" value="${tagsNames}${tag.tagName}" />
+                                                    </c:when>
+                                                    <c:otherwise>
+                                                        <c:set var="tagsNames" value="${tagsNames}, ${tag.tagName}" />
+                                                    </c:otherwise>
+                                                </c:choose>
+                                            </c:forEach>
+                                            (by ${tagsNames})
+                                        </c:if>
                                     </div>
                                     <div class="short-news-others">
                                         <span style="color: #ff0000">Comments(${commentsCountByNewsId[news.newsId]})</span> <a href="/news-management/edit-news/${news.newsId}">Edit</a> <input id="${news.newsId}" type="checkbox" />

@@ -27,6 +27,7 @@ public class TagRepositoryImpl implements TagRepository {
     private static final String FIND_ALL_BY_NEWS = "SELECT TAG_ID, TAG_NAME FROM TAGS " +
             "WHERE TAG_ID IN (SELECT TAG_ID FROM NEWS_TAG WHERE NEWS_ID = ?)";
     private static final String GET_ALL = "SELECT TAG_ID, TAG_NAME FROM TAGS";
+    private static final String EXISTS = "SELECT CASE WHEN COUNT(*) > 0 THEN 1 ELSE 0 END FROM TAGS WHERE TAG_NAME = ?";
 
     @Autowired
     private DataSource dataSource;
@@ -178,5 +179,28 @@ public class TagRepositoryImpl implements TagRepository {
             databaseUtils.closeConnectionAndStatement(statement, connection);
         }
         return allTags;
+    }
+
+
+    @Override
+    public boolean exists(Tag tag) throws DaoException {
+        Connection connection = null;
+        PreparedStatement preparedStatement = null;
+        boolean exists = true;
+        try {
+            connection = dataSource.getConnection();
+            preparedStatement = connection.prepareStatement(EXISTS);
+            preparedStatement.setString(1, tag.getTagName());
+            ResultSet resultSet = preparedStatement.executeQuery();
+            resultSet.next();
+            exists = resultSet.getBoolean(1);
+        }
+        catch (SQLException e) {
+            throw new DaoException(e);
+        }
+        finally {
+            databaseUtils.closeConnectionAndStatement(preparedStatement, connection);
+        }
+        return exists;
     }
 }

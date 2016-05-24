@@ -29,4 +29,14 @@ public interface TagRepository extends CrudRepository<Tag, Long> {
     default List<Tag> getAll() throws DaoException {
         throw new DaoException();
     }
+
+    /**
+     * Checks if tag exists.
+     * @param tag tag to be checked.
+     * @return check result.
+     * @throws DaoException
+     */
+    default boolean exists(Tag tag) throws DaoException {
+        throw new DaoException();
+    }
 }

@@ -433,7 +433,7 @@ ul.pagination li a:hover:not(.active) {background-color: #ddd;}
 
 #save-item-link {
     margin-left: 10px;
-    width: 30%;
+    width: 20%;
     text-align: left;
 }
 
@@ -574,7 +574,7 @@ ul.pagination li a:hover:not(.active) {background-color: #ddd;}
     padding-bottom: 10px;
 }
 
-#no-author-or-tag-selected {
+#no-author-selected {
     text-align: center;
     color: red;
     padding-bottom: 10px;
@@ -583,5 +583,35 @@ ul.pagination li a:hover:not(.active) {background-color: #ddd;}
 #news-saved {
     text-align: center;
     color: #006666;
+    padding-bottom: 10px;
+}
+
+#invalid-tag-name {
+    text-align: center;
+    color: red;
+    padding-bottom: 10px;
+}
+
+#tag-added {
+    text-align: center;
+    color: #006666;
+    padding-bottom: 10px;
+}
+
+#tag-updated {
+    text-align: center;
+    color: #006666;
+    padding-bottom: 10px;
+}
+
+#tag-deleted {
+    text-align: center;
+    color: #006666;
+    padding-bottom: 10px;
+}
+
+#tag-exists {
+    text-align: center;
+    color: red;
     padding-bottom: 10px;
 }

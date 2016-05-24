@@ -42,14 +42,10 @@ $('#save-news-button').click(function () {
     processing = true;
 
     var newsId = parseInt($('.new-news').attr('id'));
-    console.log(newsId);
 
     var title = $('#new-news-textarea').val();
-    console.log(title);
     var shortText = $('#short-text-textarea').val();
-    console.log(shortText);
     var fullText = $('#text-textarea').val();
-    console.log(fullText);
 
     if (title == '' || shortText == '' || fullText == '') {
         if ($('#no-author-or-tag-selected').length)
@@ -66,29 +62,27 @@ $('#save-news-button').click(function () {
         var checkedAuthorId = $(checkedAuthors[i]).val();
         checkedAuthorsIds.push(parseInt(checkedAuthorId));
     }
-    var checkedTags = $('#tags').multiselect('getChecked');
-    var checkedTagsIds = [];
-    for (var i = 0; i < checkedTags.length; i++) {
-        var checkedTagId = $(checkedTags[i]).val();
-        checkedTagsIds.push(parseInt(checkedTagId));
-    }
 
-    if (checkedAuthorsIds.length == 0 || checkedTagsIds.length == 0) {
+    if (checkedAuthorsIds.length == 0) {
         if ($('#invalid-news').length)
             $('#invalid-news').toggle("slide", 500, function() { $(this).remove(); });
-        if (!$('#no-author-or-tag-selected').length)
-            $("<div id='no-author-or-tag-selected'>Every news must have its author and at least one tag.</div>").prependTo($('.new-news')).slideDown('fast');
+        if (!$('#no-author-selected').length)
+            $("<div id='no-author-selected'>Every news must have at least one author.</div>").prependTo($('.new-news')).slideDown('fast');
         processing = false;
         return;
     }
 
     if ($('#invalid-news').length)
         $('#invalid-news').toggle("slide", 500, function() { $(this).remove(); });
-    if ($('#no-author-or-tag-selected').length)
-        $('#no-author-or-tag-selected').toggle("slide", 500, function() { $(this).remove(); });
+    if ($('#no-author-selected').length)
+        $('#no-author-selected').toggle("slide", 500, function() { $(this).remove(); });
 
-    console.log(checkedAuthorsIds);
-    console.log(checkedTagsIds);
+    var checkedTags = $('#tags').multiselect('getChecked');
+    var checkedTagsIds = [];
+    for (var i = 0; i < checkedTags.length; i++) {
+        var checkedTagId = $(checkedTags[i]).val();
+        checkedTagsIds.push(parseInt(checkedTagId));
+    }
 
     var news = {
         newsId: newsId,
@@ -102,9 +96,6 @@ $('#save-news-button').click(function () {
     var tags = [];
     for (var i = 0; i < checkedTagsIds.length; i++)
         tags.push({ tagId: checkedTagsIds[i] });
-
-    console.log(authors);
-    console.log(tags);
 
     var data = {
         news: news,
@@ -125,7 +116,6 @@ $('#save-news-button').click(function () {
             $('#news-saved').delay(3000).fadeOut(function() { $(this).remove(); });
             if (!newsId)
                 $('.new-news').attr('id', newNewsId);
-            console.log(newNewsId);
             processing = false;
         }
     });

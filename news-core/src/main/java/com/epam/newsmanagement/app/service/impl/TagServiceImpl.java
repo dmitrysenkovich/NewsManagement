@@ -112,4 +112,20 @@ public class TagServiceImpl implements TagService {
         logger.info("Successfully retrieved all tags");
         return allTags;
     }
+
+
+    @Override
+    public boolean exists(Tag tag) throws ServiceException {
+        logger.info("Checking tag existence..");
+        boolean exists;
+        try {
+            exists = tagRepository.exists(tag);
+        } catch (DaoException e) {
+            logger.error("Failed to check tag existence");
+            throw new ServiceException(e);
+        }
+
+        logger.info("Successfully checked tag existence");
+        return exists;
+    }
 }

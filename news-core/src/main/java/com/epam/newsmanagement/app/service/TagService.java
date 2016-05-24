@@ -30,4 +30,14 @@ public interface TagService extends CrudService<Tag> {
     default List<Tag> getAll() throws ServiceException {
         throw new ServiceException();
     }
+
+    /**
+     * Checks if tag exists.
+     * @param tag tag to be checked.
+     * @return check result.
+     * @throws ServiceException
+     */
+    default boolean exists(Tag tag) throws ServiceException {
+        throw new ServiceException();
+    }
 }
