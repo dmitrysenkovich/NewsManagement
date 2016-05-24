@@ -80,7 +80,7 @@
                                     </div>
                                 </div>
                                 <div class="short-news-short-text-row">
-                                    ${news.shortText}
+                                    ${news.shortText.replace('\\n', '<br>')}
                                 </div>
                                 <div class="short-news-footer-row">
                                     <div class="short-news-tags">

@@ -10,7 +10,7 @@ $("#tags").multiselect({
 
 
 var uri = window.location.pathname;
-if (uri == '/add-news')
+if (uri == '/news-management/add-news')
     $('#add-news-link').css('font-weight', 'bold');
 
 
@@ -93,8 +93,8 @@ $('#save-news-button').click(function () {
     var news = {
         newsId: newsId,
         title: title,
-        shortText: shortText,
-        fullText: fullText
+        shortText: shortText.replaceAll('\n', '\\n'),
+        fullText: fullText.replaceAll('\n', '\\n')
     };
     var authors = [];
     for (var i = 0; i < checkedAuthorsIds.length; i++)

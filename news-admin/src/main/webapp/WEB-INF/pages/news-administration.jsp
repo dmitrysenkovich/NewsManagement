@@ -64,7 +64,7 @@
                                     <div class="comment-text-wrapper">
                                         <span class="delete-comment-button-span"><button id="${comment.commentId}" class="delete-comment-button">&times;</button></span>
                                         <div class="comment-text">
-                                            ${comment.commentText}
+                                            ${comment.commentText.replace('\\n', '<br>')}
                                         </div>
                                     </div>
                                 </div>

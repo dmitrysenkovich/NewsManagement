@@ -90,7 +90,7 @@ function fillNewsList(newsListInfo, excludedNewsIds) {
         });
         var newNewsRow = newNewsTemplate
             .format(news.newsId, news.title, authorsString,
-                lastEditDate, news.shortText.replaceAll(/[^\w\s]/gi, ''),
+                lastEditDate, news.shortText.replaceAll('\\n', '<br>'),
                 tagsString, commentsCount, news.newsId, news.newsId);
         $(newNewsRow).appendTo($('#news-list')).slideDown('fast');
     }

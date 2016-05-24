@@ -90,7 +90,7 @@ function refreshNews(newsInfo) {
         commentsDiv += newCommentRow;
     }
 
-    var newNewsRow = newsTemplate.format(news.title.replaceAll(/[^\w\s]/gi, ''),
+    var newNewsRow = newsTemplate.format(news.title,
         authorsString, lastEditDate, news.fullText.replaceAll('\\n', '<br>'), commentsDiv);
 
     $("#content").animate({ scrollTop: 0 }, "slow", function() {
@@ -170,7 +170,7 @@ $(document).on('click', '#post-comment-button', function () {
 
     processing = true;
 
-    var commentText = $('#new-post-textarea').val();
+    var commentText = $('#new-post-textarea').val().replaceAll('\n', '\\n');
     if (!commentText || commentText == '') {
         $('#new-post-textarea').addClass('invalid-comment-text');
         processing = false;
@@ -194,7 +194,7 @@ $(document).on('click', '#post-comment-button', function () {
                 month: 'long',
                 day: 'numeric',
             });
-            var newCommentRow = commentTemplate.format(date, comment.commentId, comment.commentText.replaceAll(/[^\w\s]/gi, ''));
+            var newCommentRow = commentTemplate.format(date, comment.commentId, comment.commentText.replaceAll('\\n', '<br>'));
             $(newCommentRow).appendTo($('#comments')).slideDown('slow');
             $('#new-post-textarea').val('');
             processing = false;
