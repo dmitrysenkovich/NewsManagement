@@ -41,4 +41,23 @@ public interface AuthorService extends CrudService<Author> {
     default List<Author> getNotExpired() throws ServiceException {
         throw new ServiceException();
     }
+
+    /**
+     * Returns all authors.
+     * @return all authors.
+     * @throws ServiceException
+     */
+    default List<Author> getAll() throws ServiceException {
+        throw new ServiceException();
+    }
+
+    /**
+     * Checks if author exists.
+     * @param author author to be checked.
+     * @return check result.
+     * @throws ServiceException
+     */
+    default boolean exists(Author author) throws ServiceException {
+        throw new ServiceException();
+    }
 }

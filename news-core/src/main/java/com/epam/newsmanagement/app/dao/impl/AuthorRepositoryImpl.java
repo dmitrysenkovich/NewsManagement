@@ -4,7 +4,6 @@ import com.epam.newsmanagement.app.dao.AuthorRepository;
 import com.epam.newsmanagement.app.exception.DaoException;
 import com.epam.newsmanagement.app.model.Author;
 import com.epam.newsmanagement.app.model.News;
-import com.epam.newsmanagement.app.model.Tag;
 import com.epam.newsmanagement.app.utils.DatabaseUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 
@@ -30,6 +29,8 @@ public class AuthorRepositoryImpl implements AuthorRepository {
             "WHERE AUTHOR_ID IN (SELECT AUTHOR_ID FROM NEWS_AUTHOR WHERE NEWS_ID = ?)";
     private static final String GET_NOT_EXPIRED = "SELECT AUTHOR_ID, AUTHOR_NAME, EXPIRED FROM AUTHORS " +
             "WHERE EXPIRED IS NULL";
+    private static final String GET_ALL = "SELECT AUTHOR_ID, AUTHOR_NAME, EXPIRED FROM AUTHORS";
+    private static final String EXISTS = "SELECT CASE WHEN COUNT(*) > 0 THEN 1 ELSE 0 END FROM AUTHORS WHERE AUTHOR_NAME = ?";
 
     @Autowired
     private DataSource dataSource;
@@ -186,5 +187,57 @@ public class AuthorRepositoryImpl implements AuthorRepository {
             databaseUtils.closeConnectionAndStatement(statement, connection);
         }
         return notExpiredAuthors;
+    }
+
+
+    @Override
+    public List<Author> getAll() throws DaoException {
+        Connection connection = null;
+        Statement statement = null;
+        List<Author> allAuthors = null;
+        try {
+            connection = dataSource.getConnection();
+            statement = connection.createStatement();
+            ResultSet resultSet = statement.executeQuery(GET_ALL);
+
+            allAuthors = new LinkedList<>();
+            while (resultSet.next()) {
+                Author author = new Author();
+                author.setAuthorId(resultSet.getLong(1));
+                author.setAuthorName(resultSet.getString(2));
+                author.setExpired(resultSet.getTimestamp(3));
+                allAuthors.add(author);
+            }
+        }
+        catch (SQLException e) {
+            throw new DaoException(e);
+        }
+        finally {
+            databaseUtils.closeConnectionAndStatement(statement, connection);
+        }
+        return allAuthors;
+    }
+
+
+    @Override
+    public boolean exists(Author author) throws DaoException {
+        Connection connection = null;
+        PreparedStatement preparedStatement = null;
+        boolean exists = true;
+        try {
+            connection = dataSource.getConnection();
+            preparedStatement = connection.prepareStatement(EXISTS);
+            preparedStatement.setString(1, author.getAuthorName());
+            ResultSet resultSet = preparedStatement.executeQuery();
+            resultSet.next();
+            exists = resultSet.getBoolean(1);
+        }
+        catch (SQLException e) {
+            throw new DaoException(e);
+        }
+        finally {
+            databaseUtils.closeConnectionAndStatement(preparedStatement, connection);
+        }
+        return exists;
     }
 }

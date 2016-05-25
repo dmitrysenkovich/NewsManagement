@@ -128,4 +128,36 @@ public class AuthorServiceImpl implements AuthorService {
         logger.info("Successfully retrieved not expired authors");
         return notExpiredAuthors;
     }
+
+
+    @Override
+    public List<Author> getAll() throws ServiceException {
+        logger.info("Retrieving all authors..");
+        List<Author> allAuthors;
+        try {
+            allAuthors = authorRepository.getAll();
+        } catch (DaoException e) {
+            logger.error("Failed to retrieve all authors");
+            throw new ServiceException(e);
+        }
+
+        logger.info("Successfully retrieved all authors");
+        return allAuthors;
+    }
+
+
+    @Override
+    public boolean exists(Author author) throws ServiceException {
+        logger.info("Checking author existence..");
+        boolean exists;
+        try {
+            exists = authorRepository.exists(author);
+        } catch (DaoException e) {
+            logger.error("Failed to check author existence");
+            throw new ServiceException(e);
+        }
+
+        logger.info("Successfully checked author existence");
+        return exists;
+    }
 }

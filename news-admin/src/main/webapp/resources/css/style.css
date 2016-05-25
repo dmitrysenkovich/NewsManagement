@@ -592,13 +592,13 @@ ul.pagination li a:hover:not(.active) {background-color: #ddd;}
     padding-bottom: 10px;
 }
 
-#tag-added {
+#item-added {
     text-align: center;
     color: #006666;
     padding-bottom: 10px;
 }
 
-#tag-updated {
+#item-updated {
     text-align: center;
     color: #006666;
     padding-bottom: 10px;
@@ -610,7 +610,13 @@ ul.pagination li a:hover:not(.active) {background-color: #ddd;}
     padding-bottom: 10px;
 }
 
-#tag-exists {
+#author-expired{
+    text-align: center;
+    color: #006666;
+    padding-bottom: 10px;
+}
+
+#item-exists {
     text-align: center;
     color: red;
     padding-bottom: 10px;

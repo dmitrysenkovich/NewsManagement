@@ -3,7 +3,6 @@ package com.epam.newsmanagement.app.dao;
 import com.epam.newsmanagement.app.exception.DaoException;
 import com.epam.newsmanagement.app.model.Author;
 import com.epam.newsmanagement.app.model.News;
-import com.epam.newsmanagement.app.model.Tag;
 
 import java.util.List;
 
@@ -38,6 +37,25 @@ public interface AuthorRepository extends CrudRepository<Author, Long> {
      * @throws DaoException
      */
     default List<Author> getNotExpired() throws DaoException {
+        throw new DaoException();
+    }
+
+    /**
+     * Returns all authors.
+     * @return all authors.
+     * @throws DaoException
+     */
+    default List<Author> getAll() throws DaoException {
+        throw new DaoException();
+    }
+
+    /**
+     * Checks if author exists.
+     * @param author author to be checked.
+     * @return check result.
+     * @throws DaoException
+     */
+    default boolean exists(Author author) throws DaoException {
         throw new DaoException();
     }
 }
