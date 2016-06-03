@@ -10,7 +10,8 @@ import com.epam.newsmanagement.app.service.NewsService;
 import com.epam.newsmanagement.app.service.TagService;
 import com.epam.newsmanagement.app.service.UserService;
 import com.epam.newsmanagement.app.utils.SearchCriteria;
-import com.epam.newsmanagement.model.NewsListInfo;
+import com.epam.newsmanagement.utils.InfoUtils;
+import com.epam.newsmanagement.utils.NewsListInfo;
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -45,13 +46,14 @@ public class NewsListAdministrationController {
     @Autowired
     private AuthorService authorService;
     @Autowired
-    private CommentService commentService;
-    @Autowired
     private NewsService newsService;
     @Autowired
     private TagService tagService;
     @Autowired
     private UserService userService;
+
+    @Autowired
+    private InfoUtils infoUtils;
 
     @Autowired
     private ObjectMapper objectMapper;
@@ -74,7 +76,7 @@ public class NewsListAdministrationController {
         List<News> newsList = newsService.search(searchCriteria);
         modelAndView.addObject("newsList", newsList);
 
-        NewsListInfo newsListInfo = fillNewsListInfo(newsList, searchCriteria);
+        NewsListInfo newsListInfo = infoUtils.getNewsListInfo(newsList, searchCriteria);
         modelAndView.addObject("authorsByNewsId", newsListInfo.getAuthorsByNewsId());
         modelAndView.addObject("tagsByNewsId", newsListInfo.getTagsByNewsId());
         modelAndView.addObject("commentsCountByNewsId", newsListInfo.getCommentsCountByNewsId());
@@ -100,7 +102,7 @@ public class NewsListAdministrationController {
         session.setAttribute("searchCriteria", searchCriteria);
 
         List<News> newsList = newsService.search(searchCriteria);
-        NewsListInfo newsListInfo = fillNewsListInfo(newsList, searchCriteria);
+        NewsListInfo newsListInfo = infoUtils.getNewsListInfo(newsList, searchCriteria);
 
         return newsListInfo;
     }
@@ -117,7 +119,7 @@ public class NewsListAdministrationController {
         session.setAttribute("searchCriteria", searchCriteria);
 
         List<News> newsList = newsService.search(searchCriteria);
-        NewsListInfo newsListInfo = fillNewsListInfo(newsList, searchCriteria);
+        NewsListInfo newsListInfo = infoUtils.getNewsListInfo(newsList, searchCriteria);
 
         return newsListInfo;
     }
@@ -138,7 +140,7 @@ public class NewsListAdministrationController {
         session.setAttribute("searchCriteria", searchCriteria);
 
         List<News> newsList = newsService.search(searchCriteria);
-        NewsListInfo newsListInfo = fillNewsListInfo(newsList, searchCriteria);
+        NewsListInfo newsListInfo = infoUtils.getNewsListInfo(newsList, searchCriteria);
 
         return newsListInfo;
     }
@@ -168,39 +170,7 @@ public class NewsListAdministrationController {
         session.setAttribute("searchCriteria", searchCriteria);
 
         List<News> newsList = newsService.search(searchCriteria);
-        NewsListInfo newsListInfo = fillNewsListInfo(newsList, searchCriteria);
-
-        return newsListInfo;
-    }
-
-
-    private NewsListInfo fillNewsListInfo(List<News> newsList, SearchCriteria searchCriteria) throws ServiceException {
-        NewsListInfo newsListInfo = new NewsListInfo();
-        newsListInfo.setNewsList(newsList);
-
-        Map<Long, List<Author>> authorsByNewsId = new HashMap<>();
-        for (News news : newsList) {
-            List<Author> authorsByNews = authorService.getAllByNews(news);
-            authorsByNewsId.put(news.getNewsId(), authorsByNews);
-        }
-        newsListInfo.setAuthorsByNewsId(authorsByNewsId);
-
-        Map<Long, List<Tag>> tagsByNewsId = new HashMap<>();
-        for (News news : newsList) {
-            List<Tag> tagsByNews = tagService.getAllByNews(news);
-            tagsByNewsId.put(news.getNewsId(), tagsByNews);
-        }
-        newsListInfo.setTagsByNewsId(tagsByNewsId);
-
-        Map<Long, Long> commentsCountByNewsId = new HashMap<>();
-        for (News news : newsList) {
-            Long newsCommentsCount = commentService.countAllByNews(news);
-            commentsCountByNewsId.put(news.getNewsId(), newsCommentsCount);
-        }
-        newsListInfo.setCommentsCountByNewsId(commentsCountByNewsId);
-
-        Long pagesCount = newsService.countPagesBySearchCriteria(searchCriteria);
-        newsListInfo.setPagesCount(pagesCount);
+        NewsListInfo newsListInfo = infoUtils.getNewsListInfo(newsList, searchCriteria);
 
         return newsListInfo;
     }

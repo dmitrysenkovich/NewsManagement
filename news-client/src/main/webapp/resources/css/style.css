@@ -77,12 +77,24 @@ body {
     margin-bottom: 5px;
 }
 
+#error-message-login {
+    text-align: center;
+    margin-bottom: 10px;
+    color: red;
+}
+
+#message-login {
+    text-align: center;
+    margin-bottom: 10px;
+    color: #006666;
+}
+
 #crutch {
     border-left: solid;
     border-right: solid;
     height: 100%;
     display: block;
-    margin-top: 5px;
+    margin-top: 5px !important;
     margin-left: 5px;
     margin-right: 5px;
     overflow: hidden;
@@ -108,13 +120,14 @@ body {
 #user-content {
     position: absolute;
     top: 76px;
-    bottom: 35px;
+    bottom: 65px;
     left: 15px;
     right: 15px;
-    overflow-y: scroll;
+    overflow-y: auto;
     overflow-x: hidden;
     border: solid;
     border-color: #CCCCCC;
+    text-align: center;
 }
 
 #footer {
@@ -216,7 +229,7 @@ body {
 .short-news-tags {
     margin-right: 5px;
     display: inline-block;
-    width: 40%;
+    width: 70%;
     color: #5c5c3d;
 }
 
@@ -290,6 +303,7 @@ ul.pagination li a:hover:not(.active) {background-color: #ddd;}
 .news {
     margin: 50px;
     margin-top: 10px;
+    margin-bottom: 10px;
     display: block;
     text-align: left;
 }
@@ -374,7 +388,7 @@ ul.pagination li a:hover:not(.active) {background-color: #ddd;}
     text-align: right;
 }
 
-#delete-post-button-span {
+.delete-comment-button-span {
     float: right;
 }
 
@@ -420,11 +434,11 @@ ul.pagination li a:hover:not(.active) {background-color: #ddd;}
 
 #save-item-link {
     margin-left: 10px;
-    width: 30%;
+    width: 20%;
     text-align: left;
 }
 
-#new-news {
+.new-news {
     margin: 50px;
 }
 
@@ -515,8 +529,97 @@ ul.pagination li a:hover:not(.active) {background-color: #ddd;}
 
 #back-link {
     margin: 10px;
+    text-align: left;
 }
 
 #news-list-bottom-space {
     height: 50px;
+}
+
+#error-div {
+    position: absolute;
+    left: 50%;
+    margin-left: -175px;
+    margin-top: -50px;
+    width: 350px;
+    top: 50%;
+    text-align: center;
+}
+
+.disabled-page-arrow {
+    opacity: 0.5;
+    color: dimgray !important;
+}
+
+#no-news-found-message {
+    padding-top: 10px;
+}
+
+#new-comment {
+    margin: 50px;
+    margin-top: 0px;
+    display: block;
+    text-align: left;
+}
+
+.disabled-page-link {opacity: 0.5;
+    color: dimgray !important;
+}
+
+.invalid-comment-text {
+    border-color: red;
+}
+
+#invalid-news {
+    text-align: center;
+    color: red;
+    padding-bottom: 10px;
+}
+
+#no-author-selected {
+    text-align: center;
+    color: red;
+    padding-bottom: 10px;
+}
+
+#news-saved {
+    text-align: center;
+    color: #006666;
+    padding-bottom: 10px;
+}
+
+#invalid-tag-name {
+    text-align: center;
+    color: red;
+    padding-bottom: 10px;
+}
+
+#item-added {
+    text-align: center;
+    color: #006666;
+    padding-bottom: 10px;
+}
+
+#item-updated {
+    text-align: center;
+    color: #006666;
+    padding-bottom: 10px;
+}
+
+#tag-deleted {
+    text-align: center;
+    color: #006666;
+    padding-bottom: 10px;
+}
+
+#author-expired{
+    text-align: center;
+    color: #006666;
+    padding-bottom: 10px;
+}
+
+#item-exists {
+    text-align: center;
+    color: red;
+    padding-bottom: 10px;
 }

@@ -1,15 +1,14 @@
 package com.epam.newsmanagement.controller;
 
 import com.epam.newsmanagement.app.exception.ServiceException;
-import com.epam.newsmanagement.app.model.Author;
 import com.epam.newsmanagement.app.model.Comment;
 import com.epam.newsmanagement.app.model.News;
-import com.epam.newsmanagement.app.service.AuthorService;
 import com.epam.newsmanagement.app.service.CommentService;
 import com.epam.newsmanagement.app.service.NewsService;
 import com.epam.newsmanagement.app.service.UserService;
 import com.epam.newsmanagement.app.utils.SearchCriteria;
-import com.epam.newsmanagement.model.NewsInfo;
+import com.epam.newsmanagement.utils.InfoUtils;
+import com.epam.newsmanagement.utils.NewsInfo;
 import org.apache.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.Authentication;
@@ -24,7 +23,6 @@ import org.springframework.web.servlet.ModelAndView;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;
-import java.util.List;
 
 /**
  * News administration controller.
@@ -34,13 +32,14 @@ public class NewsAdministrationController {
     private static final Logger logger = Logger.getLogger(NewsAdministrationController.class);
 
     @Autowired
-    private AuthorService authorService;
-    @Autowired
     private CommentService commentService;
     @Autowired
     private NewsService newsService;
     @Autowired
     private UserService userService;
+
+    @Autowired
+    private InfoUtils infoUtils;
 
 
     @RequestMapping(value = "/view-news/{newsId}", method = RequestMethod.GET)
@@ -60,7 +59,7 @@ public class NewsAdministrationController {
         Long newsRowNumber = newsService.rowNumberBySearchCriteria(searchCriteria, news);
         session.setAttribute("newsRowNumber", newsRowNumber);
 
-        NewsInfo newsInfo = fillNewsInfo(news, searchCriteria, newsRowNumber);
+        NewsInfo newsInfo = infoUtils.getNewsInfo(news, searchCriteria, newsRowNumber);
         modelAndView.addObject("news", news);
         modelAndView.addObject("authors", newsInfo.getAuthors());
         modelAndView.addObject("comments", newsInfo.getComments());
@@ -93,7 +92,7 @@ public class NewsAdministrationController {
         searchCriteria.setPageSize(1L);
         News news = newsService.search(searchCriteria).get(0);
 
-        NewsInfo newsInfo = fillNewsInfo(news, searchCriteria, newsRowNumber);
+        NewsInfo newsInfo = infoUtils.getNewsInfo(news, searchCriteria, newsRowNumber);
 
         return newsInfo;
     }
@@ -113,7 +112,7 @@ public class NewsAdministrationController {
         searchCriteria.setPageSize(1L);
         News news = newsService.search(searchCriteria).get(0);
 
-        NewsInfo newsInfo = fillNewsInfo(news, searchCriteria, newsRowNumber);
+        NewsInfo newsInfo = infoUtils.getNewsInfo(news, searchCriteria, newsRowNumber);
 
         return newsInfo;
     }
@@ -148,30 +147,5 @@ public class NewsAdministrationController {
         comment = commentService.add(news, comment);
 
         return comment;
-    }
-
-
-    private NewsInfo fillNewsInfo(News news, SearchCriteria searchCriteria, Long newsRowNumber) throws ServiceException {
-        NewsInfo newsInfo = new NewsInfo();
-        newsInfo.setNews(news);
-
-        List<Author> authors = authorService.getAllByNews(news);
-        newsInfo.setAuthors(authors);
-
-        List<Comment> comments = commentService.getAllByNews(news);
-        newsInfo.setComments(comments);
-
-        searchCriteria.setPageSize(1L);
-        Long newsCount = newsService.countPagesBySearchCriteria(searchCriteria);
-        if (newsRowNumber == 1)
-            newsInfo.setFirst(true);
-        else
-            newsInfo.setFirst(false);
-        if (newsRowNumber == newsCount)
-            newsInfo.setLast(true);
-        else
-            newsInfo.setLast(false);
-
-        return newsInfo;
     }
 }

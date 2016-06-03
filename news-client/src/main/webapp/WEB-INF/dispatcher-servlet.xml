@@ -1,0 +1,24 @@
+<beans xmlns="http://www.springframework.org/schema/beans"
+       xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+       xsi:schemaLocation="
+        http://www.springframework.org/schema/beans
+        http://www.springframework.org/schema/beans/spring-beans-3.0.xsd">
+
+    <import resource="classpath*:spring-configuration.xml" />
+
+    <bean id="errorCommand" class="com.epam.newsmanagement.command.error.ErrorCommand" />
+    <bean id="commentCommand" class="com.epam.newsmanagement.command.news.CommentCommand" />
+    <bean id="newsCommand" class="com.epam.newsmanagement.command.news.NewsCommand" />
+    <bean id="nextNewsCommand" class="com.epam.newsmanagement.command.news.NextNewsCommand" />
+    <bean id="previousNewsCommand" class="com.epam.newsmanagement.command.news.PreviousNewsCommand" />
+    <bean id="filterCommand" class="com.epam.newsmanagement.command.newslist.FilterCommand" />
+    <bean id="newsListCommand" class="com.epam.newsmanagement.command.newslist.NewsListCommand" />
+    <bean id="pageCommand" class="com.epam.newsmanagement.command.newslist.PageCommand" />
+    <bean id="resetCommand" class="com.epam.newsmanagement.command.newslist.ResetCommand" />
+
+    <bean id="commandBuilder" class="com.epam.newsmanagement.utils.CommandBuilder" />
+    <bean id="infoUtils" class="com.epam.newsmanagement.utils.InfoUtils" />
+    <bean id="jsonWriter" class="com.epam.newsmanagement.utils.JsonWriter" />
+    <bean id="objectMapper" class="org.codehaus.jackson.map.ObjectMapper" />
+
+</beans>

@@ -19,10 +19,10 @@ public class ErrorController {
 
 
     /**
-     * Dispatches access denying.
+     * Dispatches access various types of errors.
      * @return error page ModelAndView.
      */
-    @RequestMapping(value = { "/403", "/404" }, method = {RequestMethod.GET, RequestMethod.POST})
+    @RequestMapping(value = { "/403", "/404", "/500" }, method = { RequestMethod.GET, RequestMethod.POST })
     public ModelAndView error(HttpServletRequest request) {
         ModelAndView modelAndView = new ModelAndView("error");
         if (request.getRequestURI().endsWith("403")) {

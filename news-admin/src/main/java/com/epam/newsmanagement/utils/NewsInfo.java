@@ -1,4 +1,4 @@
-package com.epam.newsmanagement.model;
+package com.epam.newsmanagement.utils;
 
 import com.epam.newsmanagement.app.model.Author;
 import com.epam.newsmanagement.app.model.Comment;

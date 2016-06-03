@@ -58,6 +58,7 @@
     <mvc:default-servlet-handler/>
 
     <bean id="authorizationUtils" class="com.epam.newsmanagement.utils.AuthorizationUtils" />
+    <bean id="infoUtils" class="com.epam.newsmanagement.utils.InfoUtils" />
     <bean id="objectMapper" class="com.fasterxml.jackson.databind.ObjectMapper" />
 
 </beans>

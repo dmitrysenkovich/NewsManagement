@@ -32,7 +32,7 @@
 	<authentication-manager alias="authenticationManager">
 		<authentication-provider>
 			<jdbc-user-service data-source-ref="dataSource"
-               users-by-username-query=
+				   users-by-username-query=
                    "select LOGIN, PASSWORD, 1 AS ENABLED from USERS where LOGIN = ?"
                authorities-by-username-query=
                    "select LOGIN, ROLE_NAME

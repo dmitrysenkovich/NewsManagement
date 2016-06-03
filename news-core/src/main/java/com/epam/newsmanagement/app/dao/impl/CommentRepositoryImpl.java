@@ -29,7 +29,7 @@ public class CommentRepositoryImpl implements CommentRepository {
             "                                        WHERE NEWS_ID = ?" +
             "                                        GROUP BY NEWS_ID";
     private static final String FIND_ALL_BY_NEWS = "SELECT COMMENT_ID, NEWS_ID, COMMENT_TEXT, CREATION_DATE " +
-            "FROM COMMENTS WHERE NEWS_ID = ?";
+            "FROM COMMENTS WHERE NEWS_ID = ? ORDER BY CREATION_DATE";
 
     @Autowired
     private DataSource dataSource;
