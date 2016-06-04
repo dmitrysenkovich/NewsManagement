@@ -47,7 +47,7 @@ public class PreviousNewsCommand implements Command {
         session.setAttribute("newsRowNumber", newsRowNumber);
         searchCriteria.setPageIndex(newsRowNumber);
         searchCriteria.setPageSize(1L);
-        News news = null;
+        News news;
         try {
             news = newsService.search(searchCriteria).get(0);
         } catch (ServiceException e) {
@@ -55,7 +55,7 @@ public class PreviousNewsCommand implements Command {
             return;
         }
 
-        NewsInfo newsInfo = null;
+        NewsInfo newsInfo;
         try {
             newsInfo = infoUtils.getNewsInfo(news, searchCriteria, newsRowNumber);
         } catch (ServiceException e) {

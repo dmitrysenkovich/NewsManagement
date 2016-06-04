@@ -42,6 +42,14 @@ public class NewsAdministrationController {
     private InfoUtils infoUtils;
 
 
+    /**
+     * Dispatches certain news request.
+     * @param newsId info about news
+     * with this id will be retrieved.
+     * @param request request.
+     * @return news model and view.
+     * @throws ServiceException
+     */
     @RequestMapping(value = "/view-news/{newsId}", method = RequestMethod.GET)
     public ModelAndView news(@PathVariable Long newsId, HttpServletRequest request) throws ServiceException {
         logger.info("News GET request");
@@ -78,6 +86,13 @@ public class NewsAdministrationController {
     }
 
 
+    /**
+     * Dispatches request to the previous
+     * news according current search criteria.
+     * @param request request.
+     * @return previous news information.
+     * @throws ServiceException
+     */
     @RequestMapping(value = "/view-news/previous", method = RequestMethod.GET)
     @ResponseBody
     public NewsInfo previousNews(HttpServletRequest request) throws ServiceException {
@@ -98,6 +113,13 @@ public class NewsAdministrationController {
     }
 
 
+    /**
+     * Dispatches request to the next
+     * news according current search criteria.
+     * @param request request.
+     * @return next news information.
+     * @throws ServiceException
+     */
     @RequestMapping(value = "/view-news/next", method = RequestMethod.GET)
     @ResponseBody
     public NewsInfo nextNews(HttpServletRequest request) throws ServiceException {
@@ -118,6 +140,12 @@ public class NewsAdministrationController {
     }
 
 
+    /**
+     * Deletes news comment.
+     * @param commentId specifies comment
+     * that is to be deleted.
+     * @throws ServiceException
+     */
     @RequestMapping(value = "/view-news/delete", method = RequestMethod.POST)
     @ResponseBody
     public void delete(@RequestBody Long commentId) throws ServiceException {
@@ -129,6 +157,14 @@ public class NewsAdministrationController {
     }
 
 
+    /**
+     * Adds new comment to the news.
+     * @param commentText new comment
+     * text
+     * @param request request.
+     * @return new comment.
+     * @throws ServiceException
+     */
     @RequestMapping(value = "/view-news/comment", method = RequestMethod.POST)
     @ResponseBody
     public Comment comment(@RequestBody String commentText, HttpServletRequest request) throws ServiceException {

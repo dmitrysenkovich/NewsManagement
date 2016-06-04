@@ -22,7 +22,7 @@ public class ErrorController {
      * Dispatches access various types of errors.
      * @return error page ModelAndView.
      */
-    @RequestMapping(value = { "/403", "/404", "/500" }, method = { RequestMethod.GET, RequestMethod.POST })
+    @RequestMapping(value = {"/400", "/403", "/404", "/500" }, method = { RequestMethod.GET, RequestMethod.POST })
     public ModelAndView error(HttpServletRequest request) {
         ModelAndView modelAndView = new ModelAndView("error");
         if (request.getRequestURI().endsWith("403")) {
@@ -32,6 +32,10 @@ public class ErrorController {
         else if (request.getRequestURI().endsWith("404")) {
             logger.info("404 page request");
             modelAndView.addObject("errorMessage", "Unfortunately we couldn't find the page you wanted:c");
+        }
+        else if (request.getRequestURI().endsWith("500")) {
+            logger.info("500 page request");
+            modelAndView.addObject("errorMessage", "Something terrible happened to us..");
         }
         else {
             logger.info("500 page request");

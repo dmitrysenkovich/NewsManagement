@@ -48,7 +48,7 @@ public class PageCommand implements Command {
         String searchCriteriaInString = request.getParameter("searchCriteria");
         SearchCriteria searchCriteria = objectMapper.readValue(searchCriteriaInString, SearchCriteria.class);
         if (searchCriteria.getPageIndex() == null) {
-            Long pagesCount = null;
+            Long pagesCount;
             try {
                 pagesCount = newsService.countPagesBySearchCriteria(searchCriteria);
             } catch (ServiceException e) {
@@ -60,14 +60,14 @@ public class PageCommand implements Command {
         HttpSession session = request.getSession(false);
         session.setAttribute("searchCriteria", searchCriteria);
 
-        List<News> newsList = null;
+        List<News> newsList;
         try {
             newsList = newsService.search(searchCriteria);
         } catch (ServiceException e) {
             logger.error("Failed to execute page command", e);
             return;
         }
-        NewsListInfo newsListInfo = null;
+        NewsListInfo newsListInfo;
         try {
             newsListInfo = infoUtils.getNewsListInfo(newsList, searchCriteria);
         } catch (ServiceException e) {

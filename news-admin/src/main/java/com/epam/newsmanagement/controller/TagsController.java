@@ -26,6 +26,11 @@ public class TagsController {
     private TagService tagService;
 
 
+    /**
+     * Dispatches requests to tags page.
+     * @return tags page model and view.
+     * @throws ServiceException
+     */
     @RequestMapping(value = "/tags", method = RequestMethod.GET)
     public ModelAndView tags() throws ServiceException {
         logger.info("Tags GET request");
@@ -39,6 +44,13 @@ public class TagsController {
     }
 
 
+    /**
+     * Adds new tag.
+     * @param tag to the database.
+     * @return new tag id if there's
+     * no author with such name.
+     * @throws ServiceException
+     */
     @RequestMapping(value = "/tags/add", method = RequestMethod.POST)
     @ResponseBody
     public Long add(@RequestBody Tag tag) throws ServiceException {
@@ -53,6 +65,13 @@ public class TagsController {
     }
 
 
+    /**
+     * Updates tag name.
+     * @param tag tag to be updated.
+     * @return true if there's no
+     * tag with new tag's name.
+     * @throws ServiceException
+     */
     @RequestMapping(value = "/tags/update", method = RequestMethod.POST)
     @ResponseBody
     public boolean update(@RequestBody Tag tag) throws ServiceException {
@@ -65,6 +84,11 @@ public class TagsController {
     }
 
 
+    /**
+     * Deletes tag.
+     * @param tag tag to be deleted.
+     * @throws ServiceException
+     */
     @RequestMapping(value = "/tags/delete", method = RequestMethod.POST)
     @ResponseBody
     public void delete(@RequestBody Tag tag) throws ServiceException {

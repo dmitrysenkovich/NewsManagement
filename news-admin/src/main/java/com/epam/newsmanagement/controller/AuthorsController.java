@@ -26,6 +26,11 @@ public class AuthorsController {
     private AuthorService authorService;
 
 
+    /**
+     * Dispatches authors page request.
+     * @return authors model and view.
+     * @throws ServiceException
+     */
     @RequestMapping(value = "/authors", method = RequestMethod.GET)
     public ModelAndView tags() throws ServiceException {
         logger.info("Authors GET request");
@@ -39,6 +44,13 @@ public class AuthorsController {
     }
 
 
+    /**
+     * Adds new author to database.
+     * @param author author to be added.
+     * @return new author id if there's
+     * no author with such name.
+     * @throws ServiceException
+     */
     @RequestMapping(value = "/authors/add", method = RequestMethod.POST)
     @ResponseBody
     public Long add(@RequestBody Author author) throws ServiceException {
@@ -53,6 +65,14 @@ public class AuthorsController {
     }
 
 
+    /**
+     * Updates author name.
+     * @param author author which
+     * name will be updated.
+     * @return true if there's no
+     * author with new author's name.
+     * @throws ServiceException
+     */
     @RequestMapping(value = "/authors/update", method = RequestMethod.POST)
     @ResponseBody
     public boolean update(@RequestBody Author author) throws ServiceException {
@@ -65,6 +85,12 @@ public class AuthorsController {
     }
 
 
+    /**
+     * Makes author expired.
+     * @param author author that
+     * will become expired.
+     * @throws ServiceException
+     */
     @RequestMapping(value = "/authors/expire", method = RequestMethod.POST)
     @ResponseBody
     public void expire(@RequestBody Author author) throws ServiceException {

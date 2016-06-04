@@ -5,7 +5,6 @@ import com.epam.newsmanagement.app.model.Author;
 import com.epam.newsmanagement.app.model.News;
 import com.epam.newsmanagement.app.model.Tag;
 import com.epam.newsmanagement.app.service.AuthorService;
-import com.epam.newsmanagement.app.service.CommentService;
 import com.epam.newsmanagement.app.service.NewsService;
 import com.epam.newsmanagement.app.service.TagService;
 import com.epam.newsmanagement.app.service.UserService;
@@ -30,9 +29,7 @@ import org.springframework.web.servlet.ModelAndView;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;
 import java.io.IOException;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 
 /**
  * News list controller. Responsible
@@ -59,6 +56,11 @@ public class NewsListAdministrationController {
     private ObjectMapper objectMapper;
 
 
+    /**
+     * Dispatches requests to news list.
+     * @return news list model and view.
+     * @throws ServiceException
+     */
     @RequestMapping(value = "/news-list-administration", method = RequestMethod.GET)
     public ModelAndView newsListAdministration() throws ServiceException {
         logger.info("News list administration GET request");
@@ -91,6 +93,14 @@ public class NewsListAdministrationController {
     }
 
 
+    /**
+     * Resets news list to the
+     * initial state.
+     * @param request request.
+     * @return list of some
+     * first news in the database.
+     * @throws ServiceException
+     */
     @RequestMapping(value = "/news-list-administration/reset", method = RequestMethod.GET)
     @ResponseBody
     public NewsListInfo reset(HttpServletRequest request) throws ServiceException {
@@ -108,6 +118,17 @@ public class NewsListAdministrationController {
     }
 
 
+    /**
+     * Filters news according to
+     * provided search criteria,
+     * @param searchCriteriaInString
+     * JSON string representation of search criteria.
+     * @param request request.
+     * @return some first news info
+     * satisfying passed search criteria.
+     * @throws ServiceException
+     * @throws IOException
+     */
     @RequestMapping(value = "/news-list-administration/filter", method = RequestMethod.GET)
     @ResponseBody
     public NewsListInfo filter(@RequestParam("searchCriteria") String searchCriteriaInString,
@@ -125,6 +146,17 @@ public class NewsListAdministrationController {
     }
 
 
+    /**
+     * Returns certain page of news
+     * satisfying the search criteria.
+     * @param searchCriteriaInString
+     * JSON string representation of search criteria.
+     * @param request request.
+     * @return needed news page with
+     * news satisfying the search criteria.
+     * @throws ServiceException
+     * @throws IOException
+     */
     @RequestMapping(value = "/news-list-administration/page", method = RequestMethod.GET)
     @ResponseBody
     public NewsListInfo page(@RequestParam("searchCriteria") String searchCriteriaInString,
@@ -146,6 +178,21 @@ public class NewsListAdministrationController {
     }
 
 
+    /**
+     * Deletes list of news.
+     * @param requestBody contains
+     * JSON representation of news ids
+     * which are to be deleted and search
+     * criteria that is needed for retrieving
+     * next news according to current filter.
+     * This news will be rendered instead of
+     * deleted ones.
+     * @param request request.
+     * @return Next news list according to
+     * the search criteria.
+     * @throws IOException
+     * @throws ServiceException
+     */
     @RequestMapping(value = "/news-list-administration/delete", method = RequestMethod.POST)
     @ResponseBody
     public NewsListInfo deleteNews(@RequestBody String requestBody,

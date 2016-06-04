@@ -4,8 +4,7 @@ import com.epam.newsmanagement.app.exception.ServiceException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 
 /**
- * All methods processing
- * exception are here.
+ * Dispatches internal server error.
  */
 public class ExceptionsHandler {
     @ExceptionHandler(ServiceException.class)

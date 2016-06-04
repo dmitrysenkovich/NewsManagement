@@ -40,6 +40,12 @@ public class CommandBuilder {
     private ErrorCommand errorCommand;
 
 
+    /**
+     * Returns command according
+     * to request uri and method.
+     * @param request request.
+     * @return appropriate command.
+     */
     public Command getCommand(HttpServletRequest request) {
         String uri = request.getRequestURI();
         String method = request.getMethod();

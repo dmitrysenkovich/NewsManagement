@@ -16,6 +16,14 @@ public class JsonWriter {
     private ObjectMapper objectMapper;
 
 
+    /**
+     * Writes object in the
+     * response output stream.
+     * @param response response.
+     * @param object object to be
+     * written in the response.
+     * @throws IOException
+     */
     public void write(HttpServletResponse response, Object object) throws IOException {
         response.setContentType("text/json");
         PrintWriter out = response.getWriter();

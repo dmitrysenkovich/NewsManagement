@@ -47,6 +47,14 @@ public class NewsController {
     private ObjectMapper objectMapper;
 
 
+    /**
+     * Dispatches news edit request.
+     * @param newsId edit page with
+     * the news defined by this id
+     * will be rendered.
+     * @return news edit page model and view.
+     * @throws ServiceException
+     */
     @RequestMapping(value = "/edit-news/{newsId}", method = RequestMethod.GET)
     public ModelAndView editNews(@PathVariable Long newsId) throws ServiceException {
         logger.info("Editing news GET request");
@@ -77,6 +85,12 @@ public class NewsController {
     }
 
 
+    /**
+     * Dispatches request for
+     * adding new news page.
+     * @return adding news model and view.
+     * @throws ServiceException
+     */
     @RequestMapping(value = "/add-news", method = RequestMethod.GET)
     public ModelAndView addNews() throws ServiceException {
         logger.info("Adding news GET request");
@@ -98,6 +112,14 @@ public class NewsController {
     }
 
 
+    /**
+     * Saves new news of updates existing.
+     * @param requestBody new news
+     * in JSON string.
+     * @return news id.
+     * @throws IOException
+     * @throws ServiceException
+     */
     @RequestMapping(value = "/news/save", method = RequestMethod.POST)
     @ResponseBody
     public Long save(@RequestBody String requestBody) throws IOException, ServiceException {

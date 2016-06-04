@@ -7,7 +7,6 @@ import com.epam.newsmanagement.app.service.CommentService;
 import com.epam.newsmanagement.app.service.NewsService;
 import com.epam.newsmanagement.app.utils.SearchCriteria;
 import com.epam.newsmanagement.command.Command;
-import com.epam.newsmanagement.utils.InfoUtils;
 import com.epam.newsmanagement.utils.JsonWriter;
 import org.apache.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -17,10 +16,9 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 import java.io.IOException;
-import java.util.Enumeration;
 
 /**
- * Comment command. Add new
+ * Comment command. Adds new
  * comment to news.
  */
 public class CommentCommand implements Command {
@@ -30,9 +28,6 @@ public class CommentCommand implements Command {
     private NewsService newsService;
     @Autowired
     private CommentService commentService;
-
-    @Autowired
-    private InfoUtils infoUtils;
 
     @Autowired
     private JsonWriter jsonWriter;
@@ -47,7 +42,7 @@ public class CommentCommand implements Command {
         Long newsRowNumber = (Long) session.getAttribute("newsRowNumber");
         searchCriteria.setPageIndex(newsRowNumber);
         searchCriteria.setPageSize(1L);
-        News news = null;
+        News news;
         try {
             news = newsService.search(searchCriteria).get(0);
         } catch (ServiceException e) {

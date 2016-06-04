@@ -2,7 +2,6 @@ package com.epam.newsmanagement.controller;
 
 import com.epam.newsmanagement.command.Command;
 import com.epam.newsmanagement.utils.CommandBuilder;
-import org.apache.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.context.support.SpringBeanAutowiringSupport;
 
@@ -23,6 +22,11 @@ public class DispatcherServlet extends HttpServlet {
     private CommandBuilder commandBuilder;
 
 
+    /**
+     * Initializes servlet and spring context.
+     * @param config servlet config.
+     * @throws ServletException
+     */
     public void init(ServletConfig config) throws ServletException {
         super.init(config);
         SpringBeanAutowiringSupport.processInjectionBasedOnServletContext(this,

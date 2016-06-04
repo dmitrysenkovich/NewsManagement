@@ -5,8 +5,8 @@ import com.epam.newsmanagement.app.model.News;
 import com.epam.newsmanagement.app.service.NewsService;
 import com.epam.newsmanagement.app.utils.SearchCriteria;
 import com.epam.newsmanagement.command.Command;
-import com.epam.newsmanagement.utils.JsonWriter;
 import com.epam.newsmanagement.utils.InfoUtils;
+import com.epam.newsmanagement.utils.JsonWriter;
 import com.epam.newsmanagement.utils.NewsListInfo;
 import org.apache.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -44,14 +44,14 @@ public class ResetCommand implements Command {
         HttpSession session = request.getSession(false);
         session.setAttribute("searchCriteria", searchCriteria);
 
-        List<News> newsList = null;
+        List<News> newsList;
         try {
             newsList = newsService.search(searchCriteria);
         } catch (ServiceException e) {
             logger.error("Failed to execute reset command", e);
             return;
         }
-        NewsListInfo newsListInfo = null;
+        NewsListInfo newsListInfo;
         try {
             newsListInfo = infoUtils.getNewsListInfo(newsList, searchCriteria);
         } catch (ServiceException e) {

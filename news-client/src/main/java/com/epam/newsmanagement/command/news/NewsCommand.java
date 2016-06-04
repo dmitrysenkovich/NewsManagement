@@ -36,7 +36,7 @@ public class NewsCommand implements Command {
         int idIndex = uri.lastIndexOf("/");
         String newsIdInString = uri.substring(idIndex + 1);
         Long newsId = Long.parseLong(newsIdInString);
-        News news = null;
+        News news;
         try {
             news = newsService.find(newsId);
         } catch (ServiceException e) {
@@ -50,7 +50,7 @@ public class NewsCommand implements Command {
             searchCriteria = new SearchCriteria();
         session.setAttribute("searchCriteria", searchCriteria);
 
-        Long newsRowNumber = null;
+        Long newsRowNumber;
         try {
             newsRowNumber = newsService.rowNumberBySearchCriteria(searchCriteria, news);
         } catch (ServiceException e) {
@@ -59,7 +59,7 @@ public class NewsCommand implements Command {
         }
         session.setAttribute("newsRowNumber", newsRowNumber);
 
-        NewsInfo newsInfo = null;
+        NewsInfo newsInfo;
         try {
             newsInfo = infoUtils.getNewsInfo(news, searchCriteria, newsRowNumber);
         } catch (ServiceException e) {

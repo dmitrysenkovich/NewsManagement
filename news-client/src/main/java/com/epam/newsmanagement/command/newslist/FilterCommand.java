@@ -49,14 +49,14 @@ public class FilterCommand implements Command {
         HttpSession session = request.getSession(false);
         session.setAttribute("searchCriteria", searchCriteria);
 
-        List<News> newsList = null;
+        List<News> newsList;
         try {
             newsList = newsService.search(searchCriteria);
         } catch (ServiceException e) {
             logger.error("Failed to execute filter command", e);
             return;
         }
-        NewsListInfo newsListInfo = null;
+        NewsListInfo newsListInfo;
         try {
             newsListInfo = infoUtils.getNewsListInfo(newsList, searchCriteria);
         } catch (ServiceException e) {

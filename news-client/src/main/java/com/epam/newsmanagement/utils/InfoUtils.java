@@ -33,6 +33,16 @@ public class InfoUtils {
     private TagService tagService;
 
 
+    /**
+     * Generates news list info
+     * needed to render certain
+     * news page.
+     * @param newsList news list
+     * which info is to be retrieved.
+     * @param searchCriteria search criteria.
+     * @return news list information.
+     * @throws ServiceException
+     */
     public NewsListInfo getNewsListInfo(List<News> newsList, SearchCriteria searchCriteria) throws ServiceException {
         NewsListInfo newsListInfo = new NewsListInfo();
         newsListInfo.setNewsList(newsList);
@@ -65,6 +75,15 @@ public class InfoUtils {
     }
 
 
+    /**
+     * Generates news info
+     * needed to render certain news.
+     * @param news news which
+     * info is to be retrieved.
+     * @param searchCriteria search criteria.
+     * @return news information.
+     * @throws ServiceException
+     */
     public NewsInfo getNewsInfo(News news, SearchCriteria searchCriteria, Long newsRowNumber) throws ServiceException {
         NewsInfo newsInfo = new NewsInfo();
         newsInfo.setNews(news);

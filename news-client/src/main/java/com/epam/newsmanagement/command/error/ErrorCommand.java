@@ -14,6 +14,7 @@ import java.io.IOException;
 public class ErrorCommand implements Command {
     private static final Logger logger = Logger.getLogger(ErrorCommand.class);
 
+
     /**
      * Dispatches access various types of errors.
      * @param request request.

@@ -5,12 +5,11 @@ import com.epam.newsmanagement.app.model.Author;
 import com.epam.newsmanagement.app.model.News;
 import com.epam.newsmanagement.app.model.Tag;
 import com.epam.newsmanagement.app.service.AuthorService;
-import com.epam.newsmanagement.app.service.CommentService;
 import com.epam.newsmanagement.app.service.NewsService;
 import com.epam.newsmanagement.app.service.TagService;
 import com.epam.newsmanagement.app.utils.SearchCriteria;
-import com.epam.newsmanagement.utils.InfoUtils;
 import com.epam.newsmanagement.command.Command;
+import com.epam.newsmanagement.utils.InfoUtils;
 import com.epam.newsmanagement.utils.NewsListInfo;
 import org.apache.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -43,7 +42,7 @@ public class NewsListCommand implements Command {
     public void execute(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
         logger.info("News list GET request");
 
-        List<Author> notExpiredAuthors = null;
+        List<Author> notExpiredAuthors;
         try {
             notExpiredAuthors = authorService.getNotExpired();
             request.setAttribute("notExpiredAuthors", notExpiredAuthors);
@@ -53,7 +52,7 @@ public class NewsListCommand implements Command {
             return;
         }
 
-        List<Tag> tags = null;
+        List<Tag> tags;
         try {
             tags = tagService.getAll();
             request.setAttribute("tags", tags);
@@ -65,7 +64,7 @@ public class NewsListCommand implements Command {
 
         SearchCriteria searchCriteria = new SearchCriteria();
         searchCriteria.setPageIndex(1L);
-        List<News> newsList = null;
+        List<News> newsList;
         try {
             newsList = newsService.search(searchCriteria);
             request.setAttribute("newsList", newsList);
@@ -75,7 +74,7 @@ public class NewsListCommand implements Command {
             return;
         }
 
-        NewsListInfo newsListInfo = null;
+        NewsListInfo newsListInfo;
         try {
             newsListInfo = infoBuilder.getNewsListInfo(newsList, searchCriteria);
             request.setAttribute("authorsByNewsId", newsListInfo.getAuthorsByNewsId());
