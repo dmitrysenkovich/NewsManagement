@@ -26,13 +26,15 @@ public class ErrorCommand implements Command {
     public void execute(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
         String uri = request.getRequestURI();
         switch (uri) {
-            case "/news-management/404":
+            case "/news-client/404":
                 logger.info("404 page request");
                 request.setAttribute("errorMessage", "Unfortunately we couldn't find the page you wanted:c");
                 break;
-            case "/news-management/400":
+            case "/news-client/400":
                 logger.info("400 page request");
-            case "/news-management/500":
+                request.setAttribute("errorMessage", "Something terrible happened to your web browser..");
+                break;
+            case "/news-client/500":
                 logger.info("500 page request");
                 request.setAttribute("errorMessage", "Something terrible happened to us..");
                 break;

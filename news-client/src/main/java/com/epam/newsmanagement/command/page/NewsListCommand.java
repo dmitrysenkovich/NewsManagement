@@ -48,7 +48,7 @@ public class NewsListCommand implements Command {
             request.setAttribute("notExpiredAuthors", notExpiredAuthors);
         } catch (ServiceException e) {
             logger.error("Failed to generate news list page", e);
-            response.sendRedirect("/news-management/500");
+            response.sendRedirect("/news-client/500");
             return;
         }
 
@@ -58,7 +58,7 @@ public class NewsListCommand implements Command {
             request.setAttribute("tags", tags);
         } catch (ServiceException e) {
             logger.error("Failed to generate news list page", e);
-            response.sendRedirect("/news-management/500");
+            response.sendRedirect("/news-client/500");
             return;
         }
 
@@ -70,7 +70,7 @@ public class NewsListCommand implements Command {
             request.setAttribute("newsList", newsList);
         } catch (ServiceException e) {
             logger.error("Failed to generate news list page", e);
-            response.sendRedirect("/news-management/500");
+            response.sendRedirect("/news-client/500");
             return;
         }
 
@@ -83,7 +83,7 @@ public class NewsListCommand implements Command {
             request.setAttribute("pagesCount", newsListInfo.getPagesCount());
         } catch (ServiceException e) {
             logger.error("Failed to generate news list page", e);
-            response.sendRedirect("/news-management/500");
+            response.sendRedirect("/news-client/500");
             return;
         }
 

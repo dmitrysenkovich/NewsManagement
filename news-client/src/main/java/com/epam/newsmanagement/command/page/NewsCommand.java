@@ -41,6 +41,7 @@ public class NewsCommand implements Command {
             news = newsService.find(newsId);
         } catch (ServiceException e) {
             logger.error("Failed to execute news command", e);
+            response.sendRedirect("/news-client/500");
             return;
         }
 
@@ -55,6 +56,7 @@ public class NewsCommand implements Command {
             newsRowNumber = newsService.rowNumberBySearchCriteria(searchCriteria, news);
         } catch (ServiceException e) {
             logger.error("Failed to execute news command", e);
+            response.sendRedirect("/news-client/500");
             return;
         }
         session.setAttribute("newsRowNumber", newsRowNumber);
@@ -64,6 +66,7 @@ public class NewsCommand implements Command {
             newsInfo = infoUtils.getNewsInfo(news, searchCriteria, newsRowNumber);
         } catch (ServiceException e) {
             logger.error("Failed to execute news command", e);
+            response.sendRedirect("/news-client/500");
             return;
         }
         request.setAttribute("news", news);

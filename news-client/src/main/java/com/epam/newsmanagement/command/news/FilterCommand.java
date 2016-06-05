@@ -54,6 +54,7 @@ public class FilterCommand implements Command {
             newsList = newsService.search(searchCriteria);
         } catch (ServiceException e) {
             logger.error("Failed to execute filter command", e);
+            response.sendRedirect("/news-client/404");
             return;
         }
         NewsListInfo newsListInfo;
@@ -61,6 +62,7 @@ public class FilterCommand implements Command {
             newsListInfo = infoUtils.getNewsListInfo(newsList, searchCriteria);
         } catch (ServiceException e) {
             logger.error("Failed to execute filter command", e);
+            response.sendRedirect("/news-client/404");
             return;
         }
         jsonWriter.write(response, newsListInfo);

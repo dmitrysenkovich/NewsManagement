@@ -53,6 +53,7 @@ public class PageCommand implements Command {
                 pagesCount = newsService.countPagesBySearchCriteria(searchCriteria);
             } catch (ServiceException e) {
                 logger.error("Failed to execute page command", e);
+                response.sendRedirect("/news-client/404");
                 return;
             }
             searchCriteria.setPageIndex(pagesCount);
@@ -65,6 +66,7 @@ public class PageCommand implements Command {
             newsList = newsService.search(searchCriteria);
         } catch (ServiceException e) {
             logger.error("Failed to execute page command", e);
+            response.sendRedirect("/news-client/404");
             return;
         }
         NewsListInfo newsListInfo;
@@ -72,6 +74,7 @@ public class PageCommand implements Command {
             newsListInfo = infoUtils.getNewsListInfo(newsList, searchCriteria);
         } catch (ServiceException e) {
             logger.error("Failed to execute page command", e);
+            response.sendRedirect("/news-client/404");
             return;
         }
         jsonWriter.write(response, newsListInfo);

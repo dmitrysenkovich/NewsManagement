@@ -47,6 +47,7 @@ public class CommentCommand implements Command {
             news = newsService.search(searchCriteria).get(0);
         } catch (ServiceException e) {
             logger.error("Failed to execute comment command", e);
+            response.sendRedirect("/news-client/500");
             return;
         }
 
@@ -58,6 +59,7 @@ public class CommentCommand implements Command {
             comment = commentService.add(news, comment);
         } catch (ServiceException e) {
             logger.error("Failed to execute comment command", e);
+            response.sendRedirect("/news-client/500");
             return;
         }
         jsonWriter.write(response, comment);

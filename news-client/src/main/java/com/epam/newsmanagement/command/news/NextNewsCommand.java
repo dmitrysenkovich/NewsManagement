@@ -52,6 +52,7 @@ public class NextNewsCommand implements Command {
             news = newsService.search(searchCriteria).get(0);
         } catch (ServiceException e) {
             logger.error("Failed to execute next news command", e);
+            response.sendRedirect("/news-client/404");
             return;
         }
 
@@ -60,6 +61,7 @@ public class NextNewsCommand implements Command {
             newsInfo = infoUtils.getNewsInfo(news, searchCriteria, newsRowNumber);
         } catch (ServiceException e) {
             logger.error("Failed to execute next news command", e);
+            response.sendRedirect("/news-client/404");
             return;
         }
         jsonWriter.write(response, newsInfo);

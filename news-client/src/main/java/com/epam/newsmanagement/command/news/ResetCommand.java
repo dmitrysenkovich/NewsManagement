@@ -49,6 +49,7 @@ public class ResetCommand implements Command {
             newsList = newsService.search(searchCriteria);
         } catch (ServiceException e) {
             logger.error("Failed to execute reset command", e);
+            response.sendRedirect("/news-client/404");
             return;
         }
         NewsListInfo newsListInfo;
@@ -56,6 +57,7 @@ public class ResetCommand implements Command {
             newsListInfo = infoUtils.getNewsListInfo(newsList, searchCriteria);
         } catch (ServiceException e) {
             logger.error("Failed to execute reset command", e);
+            response.sendRedirect("/news-client/404");
             return;
         }
         jsonWriter.write(response, newsListInfo);
