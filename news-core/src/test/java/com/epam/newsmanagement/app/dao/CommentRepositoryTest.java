@@ -2,6 +2,7 @@ package com.epam.newsmanagement.app.dao;
 
 import com.epam.newsmanagement.app.exception.DaoException;
 import com.epam.newsmanagement.app.model.Comment;
+import com.epam.newsmanagement.app.model.News;
 import com.github.springtestdbunit.DbUnitTestExecutionListener;
 import com.github.springtestdbunit.annotation.DatabaseSetup;
 import org.dbunit.DefaultDatabaseTester;
@@ -68,7 +69,7 @@ public class CommentRepositoryTest {
 
 
     @Test
-    public void commentAdded() throws Exception {
+    public void commentIsAdded() throws Exception {
         Comment comment = new Comment();
         comment.setNewsId(2L);
         comment.setCommentText("test");
@@ -84,7 +85,7 @@ public class CommentRepositoryTest {
 
 
     @Test
-    public void commentNotAddedInvalidField() throws Exception {
+    public void commentIsNotAddedInvalidField() throws Exception {
         Comment comment = new Comment();
         comment.setNewsId(1L);
         catchException(() -> commentRepository.add(comment));
@@ -98,7 +99,7 @@ public class CommentRepositoryTest {
 
 
     @Test
-    public void commentNotAddedNewsAreInvalid() throws Exception {
+    public void commentIsNotAddedNewsAreInvalid() throws Exception {
         Comment comment = new Comment();
         comment.setNewsId(-1L);
         comment.setCommentText("test");
@@ -113,20 +114,20 @@ public class CommentRepositoryTest {
 
 
     @Test
-    public void commentFound() throws Exception {
+    public void commentIsFound() throws Exception {
         Comment comment = commentRepository.find(1L);
 
         assertNotNull(comment);
     }
 
     @Test(expected = DaoException.class)
-    public void commentNotFound() throws Exception {
+    public void commentIsNotFound() throws Exception {
         commentRepository.find(-1L);
     }
 
 
     @Test
-    public void commentUpdated() throws Exception {
+    public void commentIsUpdated() throws Exception {
         Comment comment = new Comment();
         comment.setCommentId(1L);
         comment.setNewsId(2L);
@@ -140,7 +141,7 @@ public class CommentRepositoryTest {
 
 
     @Test
-    public void commentNotUpdated() throws Exception {
+    public void commentIsNotUpdated() throws Exception {
         final Comment comment = new Comment();
         comment.setCommentId(1L);
         comment.setNewsId(1L);
@@ -154,7 +155,7 @@ public class CommentRepositoryTest {
 
 
     @Test
-    public void commentDeleted() throws Exception {
+    public void commentIsDeleted() throws Exception {
         Comment comment = new Comment();
         comment.setCommentId(1L);
         commentRepository.delete(comment);
@@ -167,7 +168,7 @@ public class CommentRepositoryTest {
 
 
     @Test
-    public void commentNotDeleted() throws Exception {
+    public void commentIsNotDeleted() throws Exception {
         Comment comment = new Comment();
         comment.setCommentId(-1L);
         commentRepository.delete(comment);
@@ -180,7 +181,7 @@ public class CommentRepositoryTest {
 
 
     @Test
-    public void allCommentsDeleted() throws Exception {
+    public void allCommentsAreDeleted() throws Exception {
         Comment comment1 = new Comment();
         comment1.setCommentId(1L);
         Comment comment2 = new Comment();
@@ -198,7 +199,7 @@ public class CommentRepositoryTest {
 
 
     @Test
-    public void notAllCommentsDeleted() throws Exception {
+    public void notAllCommentsAreDeleted() throws Exception {
         Comment comment1 = new Comment();
         comment1.setCommentId(1L);
         Comment comment2 = new Comment();
@@ -216,7 +217,7 @@ public class CommentRepositoryTest {
 
 
     @Test
-    public void allCommentsNotDeleted() throws Exception {
+    public void allCommentsAreNotDeleted() throws Exception {
         Comment comment1 = new Comment();
         comment1.setCommentId(-1L);
         Comment comment2 = new Comment();
@@ -230,5 +231,45 @@ public class CommentRepositoryTest {
         ITable commentsTable = actualDataSet.getTable("COMMENTS");
 
         assertEquals(5, commentsTable.getRowCount());
+    }
+
+
+    @Test
+    public void countedNewsComments() throws Exception {
+        News news = new News();
+        news.setNewsId(1L);
+        Long commentCount = commentRepository.countAllByNews(news);
+
+        assertEquals((Long) 2L, commentCount);
+    }
+
+
+    @Test
+    public void countedNonExistentNewsComments() throws Exception {
+        News news = new News();
+        news.setNewsId(4L);
+        Long commentCount = commentRepository.countAllByNews(news);
+
+        assertEquals((Long) 0L, commentCount);
+    }
+
+
+    @Test
+    public void gotAllNewsComment() throws Exception {
+        News news = new News();
+        news.setNewsId(1L);
+        List<Comment> allComments = commentRepository.getAllByNews(news);
+
+        assertEquals(2L, allComments.size());
+    }
+
+
+    @Test
+    public void didNotGetAllNewsComments() throws Exception {
+        News news = new News();
+        news.setNewsId(4L);
+        List<Comment> allComments = commentRepository.getAllByNews(news);
+
+        assertEquals(0L, allComments.size());
     }
 }

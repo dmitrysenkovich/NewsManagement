@@ -20,7 +20,7 @@ public class SearchUtils {
     private static final String AUTHORS_PART_FILE_NAME = "search-authors-part.sql";
     private static final String TAGS_PART_FILE_NAME = "search-tags-part.sql";
 
-    private static final Long DEFAULT_PAGE_INDEX = 0L;
+    private static final Long DEFAULT_PAGE_INDEX = 1L;
     private static final Long DEFAULT_PAGE_SIZE = 5L;
 
     private String SEARCH_MAIN_PART;
@@ -157,7 +157,7 @@ public class SearchUtils {
         String searchQuery = MessageFormat.format(PAGE_MAIN_PART, where,
                 queryParts[0], queryParts[1], queryParts[2],
                 ((pageIndex-1)*pageSize+1), (pageIndex)*pageSize);
-            return searchQuery;
+        return searchQuery;
     }
 
 
@@ -168,6 +168,8 @@ public class SearchUtils {
      * @return sql query.
      */
     public String getSearchQuery(SearchCriteria searchCriteria) {
+        if (searchCriteria == null)
+            return null;
         if (searchCriteria.getPageIndex() == null)
             return simpleSearchQuery(searchCriteria);
         else
@@ -206,6 +208,9 @@ public class SearchUtils {
      * @return sql query.
      */
     public String getRowNumberQuery(SearchCriteria searchCriteria, Long newsId) {
+        if (newsId == null)
+            return null;
+
         String[] queryParts = getQueryParts(searchCriteria);
 
         String where = "";

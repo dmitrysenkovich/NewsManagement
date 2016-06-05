@@ -1,7 +1,6 @@
 package com.epam.newsmanagement.app.dao;
 
 import com.epam.newsmanagement.app.exception.DaoException;
-import com.epam.newsmanagement.app.dao.NewsRepository;
 import com.epam.newsmanagement.app.model.News;
 import com.epam.newsmanagement.app.utils.SearchCriteria;
 import com.epam.newsmanagement.app.utils.SearchUtils;
@@ -28,6 +27,7 @@ import java.sql.Connection;
 import java.sql.Date;
 import java.sql.DriverManager;
 import java.sql.Timestamp;
+import java.util.ArrayList;
 import java.util.LinkedList;
 import java.util.List;
 
@@ -76,7 +76,7 @@ public class NewsRepositoryTest {
 
 
     @Test
-    public void newsAdded() throws Exception {
+    public void newsIsAdded() throws Exception {
         News news = new News();
         news.setTitle("test1");
         news.setShortText("test1");
@@ -94,7 +94,7 @@ public class NewsRepositoryTest {
 
 
     @Test
-    public void newsNotAdded() throws Exception {
+    public void newsIsNotAdded() throws Exception {
         final News news = new News();
         catchException(() -> newsRepository.add(news));
         assert caughtException() instanceof DaoException;
@@ -107,7 +107,7 @@ public class NewsRepositoryTest {
 
 
     @Test
-    public void newsFound() throws Exception {
+    public void newsIsFound() throws Exception {
         News news = newsRepository.find(1L);
 
         assertNotNull(news);
@@ -115,13 +115,13 @@ public class NewsRepositoryTest {
 
 
     @Test(expected = DaoException.class)
-    public void newsNotFound() throws Exception {
+    public void newsIsNotFound() throws Exception {
         newsRepository.find(-1L);
     }
 
 
     @Test
-    public void newsUpdated() throws Exception {
+    public void newsIsUpdated() throws Exception {
         News news = new News();
         news.setNewsId(1L);
         news.setTitle("test1");
@@ -138,7 +138,7 @@ public class NewsRepositoryTest {
 
 
     @Test
-    public void newsNotUpdated() throws Exception {
+    public void newsIsNotUpdated() throws Exception {
         News news = new News();
         news.setNewsId(1L);
         news.setTitle(null);
@@ -151,7 +151,7 @@ public class NewsRepositoryTest {
 
 
     @Test
-    public void newsDeleted() throws Exception {
+    public void newsIsDeleted() throws Exception {
         News news = new News();
         news.setNewsId(1L);
         newsRepository.delete(news);
@@ -170,7 +170,7 @@ public class NewsRepositoryTest {
 
 
     @Test
-    public void newsNotDeleted() throws Exception {
+    public void newsIsNotDeleted() throws Exception {
         News news = new News();
         news.setNewsId(-1L);
         newsRepository.delete(news);
@@ -189,7 +189,7 @@ public class NewsRepositoryTest {
 
 
     @Test
-    public void searchSuccessfulNoTags() throws Exception {
+    public void searchIsSuccessfulNoTags() throws Exception {
         SearchCriteria searchCriteria = new SearchCriteria();
         List<Long> authorIds = new LinkedList<>();
         authorIds.add(1L);
@@ -197,13 +197,13 @@ public class NewsRepositoryTest {
         String searchQuery = searchUtils.getSearchQuery(searchCriteria);
         List<News> foundNews = newsRepository.search(searchQuery);
 
-        assertEquals(1L, foundNews.size());
-        assertEquals("title2", foundNews.get(0).getTitle());
+        assertEquals(2L, foundNews.size());
+        assertEquals("title3", foundNews.get(0).getTitle());
     }
 
 
     @Test
-    public void searchSuccessfulNoAuthors() throws Exception {
+    public void searchIsSuccessfulNoAuthors() throws Exception {
         SearchCriteria searchCriteria = new SearchCriteria();
         List<Long> tagIds = new LinkedList<>();
         tagIds.add(1L);
@@ -219,7 +219,7 @@ public class NewsRepositoryTest {
 
 
     @Test
-    public void searchSuccessful() throws Exception {
+    public void searchIsSuccessful() throws Exception {
         SearchCriteria searchCriteria = new SearchCriteria();
         List<Long> authorIds = new LinkedList<>();
         authorIds.add(1L);
@@ -244,14 +244,14 @@ public class NewsRepositoryTest {
 
 
     @Test(expected = DaoException.class)
-    public void searchNothingFoundSearchQueryIsNull() throws Exception {
+    public void searchNothingIsFoundSearchQueryIsNull() throws Exception {
         String searchQuery = null;
         newsRepository.search(searchQuery);
     }
 
 
     @Test
-    public void searchNothingFound() throws Exception {
+    public void searchNothingIsFound() throws Exception {
         SearchCriteria searchCriteria = new SearchCriteria();
         List<Long> authorIds = new LinkedList<>();
         authorIds.add(3L);
@@ -279,5 +279,96 @@ public class NewsRepositoryTest {
         Long newsCount = newsRepository.countAll();
 
         assertEquals((Long) 3L, newsCount);
+    }
+
+
+    @Test
+    public void countedPagesBySearchCriteria() throws Exception {
+        SearchCriteria searchCriteria = new SearchCriteria();
+        List<Long> authorsIds = new ArrayList<>();
+        authorsIds.add(1L);
+        List<Long> tagsIds = new ArrayList<>();
+        tagsIds.add(1L);
+        searchCriteria.setAuthorIds(authorsIds);
+        searchCriteria.setTagIds(tagsIds);
+        searchCriteria.setPageSize(1L);
+        String COUNT_PAGES_BY_SEARCH_CRITERIA_QUERY = searchUtils.getCountQuery(searchCriteria);
+        Long newsCount = newsRepository.countPagesBySearchCriteria(COUNT_PAGES_BY_SEARCH_CRITERIA_QUERY);
+
+        assertEquals((Long) 2L, newsCount);
+    }
+
+
+    @Test
+    public void deletedAll() throws Exception {
+        List<Long> newsIds = new ArrayList<>();
+        newsIds.add(1L);
+        newsIds.add(2L);
+        newsIds.add(3L);
+        newsRepository.deleteAll(newsIds);
+        connection = DriverManager.getConnection(testDbUrl, testDbUsername, testDbPassword);
+        IDataSet actualDataSet = getActualDataSet(connection);
+        ITable newsTable = actualDataSet.getTable("NEWS");
+        ITable newsAuthorTable = actualDataSet.getTable("NEWS_AUTHOR");
+        ITable newsTagTable = actualDataSet.getTable("NEWS_TAG");
+        ITable commentTable = actualDataSet.getTable("COMMENTS");
+
+        assertEquals(0L, newsTable.getRowCount());
+        assertEquals(0L, newsAuthorTable.getRowCount());
+        assertEquals(0L, newsTagTable.getRowCount());
+        assertEquals(0L, commentTable.getRowCount());
+    }
+
+
+    @Test
+    public void didNotDeletedAllInvalidNews() throws Exception {
+        List<Long> newsIds = new ArrayList<>();
+        newsIds.add(1L);
+        newsIds.add(2L);
+        newsIds.add(4L);
+        newsRepository.deleteAll(newsIds);
+        connection = DriverManager.getConnection(testDbUrl, testDbUsername, testDbPassword);
+        IDataSet actualDataSet = getActualDataSet(connection);
+        ITable newsTable = actualDataSet.getTable("NEWS");
+        ITable newsAuthorTable = actualDataSet.getTable("NEWS_AUTHOR");
+        ITable newsTagTable = actualDataSet.getTable("NEWS_TAG");
+        ITable commentTable = actualDataSet.getTable("COMMENTS");
+
+        assertEquals(1L, newsTable.getRowCount());
+        assertEquals(1L, newsAuthorTable.getRowCount());
+        assertEquals(2L, newsTagTable.getRowCount());
+        assertEquals(3L, commentTable.getRowCount());
+    }
+
+
+    @Test
+    public void gotRowNumberBySearchCriteria() throws Exception {
+        SearchCriteria searchCriteria = new SearchCriteria();
+        List<Long> authorsIds = new ArrayList<>();
+        authorsIds.add(1L);
+        List<Long> tagsIds = new ArrayList<>();
+        tagsIds.add(1L);
+        searchCriteria.setAuthorIds(authorsIds);
+        searchCriteria.setTagIds(tagsIds);
+        searchCriteria.setPageSize(1L);
+        String ROW_NUMBER_BY_SEARCH_CRITERIA_QUERY = searchUtils.getRowNumberQuery(searchCriteria, 1L);
+        Long rowNumber = newsRepository.rowNumberBySearchCriteria(ROW_NUMBER_BY_SEARCH_CRITERIA_QUERY);
+
+        assertEquals((Long) 2L, rowNumber);
+    }
+
+
+    @Test(expected = DaoException.class)
+    public void didNotGetRowNumberBySearchCriteria() throws Exception {
+        SearchCriteria searchCriteria = new SearchCriteria();
+        List<Long> authorsIds = new ArrayList<>();
+        authorsIds.add(1L);
+        List<Long> tagsIds = new ArrayList<>();
+        tagsIds.add(1L);
+        searchCriteria.setAuthorIds(authorsIds);
+        searchCriteria.setTagIds(tagsIds);
+        searchCriteria.setPageSize(1L);
+        String ROW_NUMBER_BY_SEARCH_CRITERIA_QUERY = searchUtils.getRowNumberQuery(searchCriteria, 2L);
+        Long rowNumber = newsRepository.rowNumberBySearchCriteria(ROW_NUMBER_BY_SEARCH_CRITERIA_QUERY);
     }
 }

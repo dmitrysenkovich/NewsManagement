@@ -43,7 +43,7 @@ public class NewsAuthorServiceTest {
 
 
     @Test(expected = ServiceException.class)
-    public void notAdded() throws Exception {
+    public void didNotAdd() throws Exception {
         News news = new News();
         Author author = new Author();
         doThrow(new DaoException()).when(newsAuthorRepository).add(any(NewsAuthor.class));
@@ -61,7 +61,7 @@ public class NewsAuthorServiceTest {
 
 
     @Test(expected = ServiceException.class)
-    public void notDeleted() throws Exception {
+    public void didNotDelete() throws Exception {
         News news = new News();
         Author author = new Author();
         doThrow(new DaoException()).when(newsAuthorRepository).delete(any(NewsAuthor.class));

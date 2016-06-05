@@ -64,7 +64,7 @@ public class NewsAuthorRepositoryTest {
 
 
     @Test
-    public void newsAuthorRelationAdded() throws Exception {
+    public void newsAuthorRelationIsAdded() throws Exception {
         NewsAuthor newsAuthor = new NewsAuthor();
         newsAuthor.setNewsId(1L);
         newsAuthor.setAuthorId(2L);
@@ -78,7 +78,7 @@ public class NewsAuthorRepositoryTest {
 
 
     @Test
-    public void newsAuthorRelationNotAddedInvalidNews() throws Exception {
+    public void newsAuthorRelationIsNotAddedInvalidNews() throws Exception {
         NewsAuthor newsAuthor = new NewsAuthor();
         newsAuthor.setNewsId(-1L);
         newsAuthor.setAuthorId(2L);
@@ -93,7 +93,7 @@ public class NewsAuthorRepositoryTest {
 
 
     @Test
-    public void newsAuthorRelationNotAddedInvalidAuthor() throws Exception {
+    public void newsAuthorRelationIsNotAddedInvalidAuthor() throws Exception {
         NewsAuthor newsAuthor = new NewsAuthor();
         newsAuthor.setNewsId(2L);
         newsAuthor.setAuthorId(-1L);
@@ -108,7 +108,7 @@ public class NewsAuthorRepositoryTest {
 
 
     @Test
-    public void newsAuthorRelationDeleted() throws Exception {
+    public void newsAuthorRelationIsDeleted() throws Exception {
         NewsAuthor newsAuthor = new NewsAuthor();
         newsAuthor.setNewsId(1L);
         newsAuthor.setAuthorId(1L);
@@ -122,7 +122,7 @@ public class NewsAuthorRepositoryTest {
 
 
     @Test
-    public void newsAuthorRelationNotDeletedInvalidNews() throws Exception {
+    public void newsAuthorRelationIsNotDeletedInvalidNews() throws Exception {
         NewsAuthor newsAuthor = new NewsAuthor();
         newsAuthor.setNewsId(-1L);
         newsAuthor.setAuthorId(2L);
@@ -136,7 +136,7 @@ public class NewsAuthorRepositoryTest {
 
 
     @Test
-    public void newsAuthorRelationNotDeletedInvalidAuthor() throws Exception {
+    public void newsAuthorRelationIsNotDeletedInvalidAuthor() throws Exception {
         NewsAuthor newsAuthor = new NewsAuthor();
         newsAuthor.setNewsId(2L);
         newsAuthor.setAuthorId(-1L);

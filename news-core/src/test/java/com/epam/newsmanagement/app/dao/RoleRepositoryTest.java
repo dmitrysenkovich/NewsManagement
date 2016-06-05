@@ -18,6 +18,8 @@ import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.TestExecutionListeners;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 import org.springframework.test.context.support.DependencyInjectionTestExecutionListener;
+import org.unitils.database.annotations.Transactional;
+import org.unitils.database.util.TransactionMode;
 
 import java.sql.Connection;
 import java.sql.DriverManager;
@@ -36,6 +38,7 @@ import static org.junit.Assert.assertNotNull;
 @TestExecutionListeners({ DependencyInjectionTestExecutionListener.class,
         DbUnitTestExecutionListener.class })
 @PropertySource("classpath:properties/test-database.properties")
+@Transactional(TransactionMode.ROLLBACK)
 public class RoleRepositoryTest {
     @Autowired
     private RoleRepository roleRepository;
@@ -62,7 +65,7 @@ public class RoleRepositoryTest {
 
 
     @Test
-    public void roleAdded() throws Exception {
+    public void roleIsAdded() throws Exception {
         Role role = new Role();
         role.setRoleName("test");
         Long roleId = roleRepository.add(role);
@@ -76,7 +79,7 @@ public class RoleRepositoryTest {
 
 
     @Test
-    public void roleNotAdded() throws Exception {
+    public void roleIsNotAdded() throws Exception {
         Role role = new Role();
         catchException(() -> roleRepository.add(role));
         assert caughtException() instanceof DaoException;
@@ -89,7 +92,7 @@ public class RoleRepositoryTest {
 
 
     @Test
-    public void roleFound() throws Exception {
+    public void roleIsFound() throws Exception {
         Role role = roleRepository.find(1L);
 
         assertNotNull(role);
@@ -97,13 +100,13 @@ public class RoleRepositoryTest {
 
 
     @Test(expected = DaoException.class)
-    public void roleNotFound() throws Exception {
+    public void roleIsNotFound() throws Exception {
         roleRepository.find(-1L);
     }
 
 
     @Test
-    public void roleUpdated() throws Exception {
+    public void roleIsUpdated() throws Exception {
         Role role = new Role();
         role.setRoleId(1L);
         role.setRoleName("test1");
@@ -115,7 +118,7 @@ public class RoleRepositoryTest {
 
 
     @Test
-    public void roleNotUpdated() throws Exception {
+    public void roleIsNotUpdated() throws Exception {
         Role role = new Role();
         role.setRoleId(1L);
         role.setRoleName(null);
@@ -128,7 +131,7 @@ public class RoleRepositoryTest {
 
 
     @Test
-    public void roleDeleted() throws Exception {
+    public void roleIsDeleted() throws Exception {
         Role role = new Role();
         role.setRoleId(1L);
         roleRepository.delete(role);
@@ -143,7 +146,7 @@ public class RoleRepositoryTest {
 
 
     @Test
-    public void roleNotDeleted() throws Exception {
+    public void roleIsNotDeleted() throws Exception {
         Role role = new Role();
         role.setRoleId(-1L);
         roleRepository.delete(role);

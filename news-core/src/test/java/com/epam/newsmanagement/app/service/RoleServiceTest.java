@@ -45,7 +45,7 @@ public class RoleServiceTest {
 
 
     @Test(expected = ServiceException.class)
-    public void notAdded() throws Exception {
+    public void didNotAdd() throws Exception {
         doThrow(new DaoException()).when(roleRepository).add(any(Role.class));
         roleService.add(new Role());
     }
@@ -63,7 +63,7 @@ public class RoleServiceTest {
 
 
     @Test(expected = ServiceException.class)
-    public void notFound() throws Exception {
+    public void didNotFind() throws Exception {
         doThrow(new DaoException()).when(roleRepository).find(any(Long.class));
         roleService.find(1L);
     }
@@ -77,7 +77,7 @@ public class RoleServiceTest {
 
 
     @Test(expected = ServiceException.class)
-    public void notUpdated() throws Exception {
+    public void didNotUpdate() throws Exception {
         doThrow(new DaoException()).when(roleRepository).update(any(Role.class));
         roleService.update(new Role());
     }
@@ -91,7 +91,7 @@ public class RoleServiceTest {
 
 
     @Test(expected = ServiceException.class)
-    public void notDeleted() throws Exception {
+    public void didNotDelete() throws Exception {
         doThrow(new DaoException()).when(roleRepository).delete(any(Role.class));
         roleService.delete(new Role());
     }

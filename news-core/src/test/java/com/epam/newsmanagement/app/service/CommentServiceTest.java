@@ -12,10 +12,12 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
 
+import java.util.ArrayList;
 import java.util.LinkedList;
 import java.util.List;
 
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNotNull;
 import static org.mockito.Matchers.any;
 import static org.mockito.Mockito.doNothing;
 import static org.mockito.Mockito.doThrow;
@@ -52,7 +54,7 @@ public class CommentServiceTest {
 
 
     @Test(expected = ServiceException.class)
-    public void notAdded() throws Exception {
+    public void didNotAdd() throws Exception {
         News news = new News();
         news.setNewsId(1L);
         doThrow(new DaoException()).when(commentRepository).add(any(Comment.class));
@@ -72,7 +74,7 @@ public class CommentServiceTest {
 
 
     @Test(expected = ServiceException.class)
-    public void notFound() throws Exception {
+    public void didNotFind() throws Exception {
         doThrow(new DaoException()).when(commentRepository).find(any(Long.class));
         commentService.find(1L);
     }
@@ -86,7 +88,7 @@ public class CommentServiceTest {
 
 
     @Test(expected = ServiceException.class)
-    public void notUpdated() throws Exception {
+    public void didNotUpdate() throws Exception {
         doThrow(new DaoException()).when(commentRepository).update(any(Comment.class));
         commentService.update(new Comment());
     }
@@ -100,7 +102,7 @@ public class CommentServiceTest {
 
 
     @Test(expected = ServiceException.class)
-    public void notDeleted() throws Exception {
+    public void didNotDelete() throws Exception {
         doThrow(new DaoException()).when(commentRepository).delete(any(Comment.class));
         commentService.delete(new Comment());
     }
@@ -117,11 +119,43 @@ public class CommentServiceTest {
 
 
     @Test(expected = ServiceException.class)
-    public void notDeletedAll() throws Exception {
+    public void didNotDeleteAll() throws Exception {
         List<Comment> comments = new LinkedList<>();
         comments.add(new Comment());
         comments.add(new Comment());
         doThrow(new DaoException()).when(commentRepository).deleteAll(any(List.class));
         commentService.deleteAll(comments);
+    }
+
+
+    @Test
+    public void countedAllCommentsByNews() throws Exception {
+        when(commentRepository.countAllByNews(any(News.class))).thenReturn(1L);
+        Long count = commentService.countAllByNews(new News());
+
+        assertEquals((Long) 1L, count);
+    }
+
+
+    @Test(expected = ServiceException.class)
+    public void didNotCountAllCommentsByNews() throws Exception {
+        doThrow(new DaoException()).when(commentRepository).countAllByNews(any(News.class));
+        commentService.countAllByNews(new News());
+    }
+
+
+    @Test
+    public void gotAllCommentsByNews() throws Exception {
+        when(commentRepository.getAllByNews(any(News.class))).thenReturn(new ArrayList<>());
+        List<Comment> allCommentsByNews = commentService.getAllByNews(new News());
+
+        assertNotNull(allCommentsByNews);
+    }
+
+
+    @Test(expected = ServiceException.class)
+    public void didNotGetAllCommentsByNews() throws Exception {
+        doThrow(new DaoException()).when(commentRepository).getAllByNews(any(News.class));
+        commentService.getAllByNews(new News());
     }
 }

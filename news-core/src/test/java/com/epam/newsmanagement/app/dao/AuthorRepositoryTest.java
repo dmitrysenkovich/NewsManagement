@@ -2,6 +2,7 @@ package com.epam.newsmanagement.app.dao;
 
 import com.epam.newsmanagement.app.exception.DaoException;
 import com.epam.newsmanagement.app.model.Author;
+import com.epam.newsmanagement.app.model.News;
 import com.github.springtestdbunit.DbUnitTestExecutionListener;
 import com.github.springtestdbunit.annotation.DatabaseSetup;
 import org.dbunit.Assertion;
@@ -25,11 +26,14 @@ import org.unitils.database.util.TransactionMode;
 import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.Timestamp;
+import java.util.List;
 
 import static com.googlecode.catchexception.CatchException.catchException;
 import static com.googlecode.catchexception.CatchException.caughtException;
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertTrue;
 
 /**
  * Author repository test.
@@ -67,7 +71,7 @@ public class AuthorRepositoryTest {
 
 
     @Test
-    public void authorAdded() throws Exception {
+    public void authorIsAdded() throws Exception {
         Author author = new Author();
         author.setAuthorName("test");
         Long authorId = authorRepository.add(author);
@@ -81,7 +85,7 @@ public class AuthorRepositoryTest {
 
 
     @Test
-    public void authorNotAdded() throws Exception {
+    public void authorIsNotAdded() throws Exception {
         Author author = new Author();
         catchException(() -> authorRepository.add(author));
         assert caughtException() instanceof DaoException;
@@ -94,7 +98,7 @@ public class AuthorRepositoryTest {
 
 
     @Test
-    public void authorFound() throws Exception {
+    public void authorIsFound() throws Exception {
         Author author = authorRepository.find(1L);
 
         assertNotNull(author);
@@ -102,13 +106,13 @@ public class AuthorRepositoryTest {
 
 
     @Test(expected = DaoException.class)
-    public void authorNotFound() throws Exception {
+    public void authorIsNotFound() throws Exception {
         authorRepository.find(-1L);
     }
 
 
     @Test
-    public void authorUpdated() throws Exception {
+    public void authorIsUpdated() throws Exception {
         Author author = new Author();
         author.setAuthorId(1L);
         author.setAuthorName("test1");
@@ -120,7 +124,7 @@ public class AuthorRepositoryTest {
 
 
     @Test
-    public void authorNotUpdated() throws Exception {
+    public void authorIsNotUpdated() throws Exception {
         Author author = new Author();
         author.setAuthorId(1L);
         author.setAuthorName(null);
@@ -133,7 +137,7 @@ public class AuthorRepositoryTest {
 
 
     @Test(expected = DaoException.class)
-    public void validAuthorNotDeleted() throws Exception {
+    public void validAuthorIsNotDeleted() throws Exception {
         Author author = new Author();
         author.setAuthorId(1L);
         authorRepository.delete(author);
@@ -148,7 +152,7 @@ public class AuthorRepositoryTest {
 
 
     @Test(expected = DaoException.class)
-    public void invalidAuthorNotDeleted() throws Exception {
+    public void invalidAuthorIsNotDeleted() throws Exception {
         Author author = new Author();
         author.setAuthorId(-1L);
         authorRepository.delete(author);
@@ -190,5 +194,57 @@ public class AuthorRepositoryTest {
         ITable authorsTable = actualDataSet.getTable("AUTHORS");
 
         Assertion.assertEquals(oldAuthorsTable, authorsTable);
+    }
+
+
+    @Test
+    public void gotAllAuthorsByNews() throws Exception {
+        News news = new News();
+        news.setNewsId(1L);
+        List<Author> authors = authorRepository.getAllByNews(news);
+        assertEquals(1L, authors.size());
+    }
+
+
+    @Test
+    public void didNotGetAuthorsByNonExistentNews() throws Exception {
+        News news = new News();
+        news.setNewsId(4L);
+        List<Author> authors = authorRepository.getAllByNews(news);
+        assertEquals(0L, authors.size());
+    }
+
+
+    @Test
+    public void noNonExpiredAuthors() throws Exception {
+        List<Author> authors = authorRepository.getNotExpired();
+        assertEquals(0L, authors.size());
+    }
+
+
+    @Test
+    public void gotAllAuthors() throws Exception {
+        List<Author> allAuthors = authorRepository.getAll();
+        assertEquals(2L, allAuthors.size());
+    }
+
+
+    @Test
+    public void authorExists() throws Exception {
+        Author author = new Author();
+        author.setAuthorName("test");
+        boolean exists = authorRepository.exists(author);
+
+        assertTrue(exists);
+    }
+
+
+    @Test
+    public void authorDoesNotExist() throws Exception {
+        Author author = new Author();
+        author.setAuthorName("test1");
+        boolean exists = authorRepository.exists(author);
+
+        assertFalse(exists);
     }
 }

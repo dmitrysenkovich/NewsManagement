@@ -1,6 +1,7 @@
 package com.epam.newsmanagement.app.dao;
 
 import com.epam.newsmanagement.app.exception.DaoException;
+import com.epam.newsmanagement.app.model.News;
 import com.epam.newsmanagement.app.model.Tag;
 import com.github.springtestdbunit.DbUnitTestExecutionListener;
 import com.github.springtestdbunit.annotation.DatabaseSetup;
@@ -23,11 +24,14 @@ import org.unitils.database.util.TransactionMode;
 
 import java.sql.Connection;
 import java.sql.DriverManager;
+import java.util.List;
 
 import static com.googlecode.catchexception.CatchException.catchException;
 import static com.googlecode.catchexception.CatchException.caughtException;
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertTrue;
 
 /**
  * Tag repository test.
@@ -65,7 +69,7 @@ public class TagRepositoryTest {
 
 
     @Test
-    public void tagAdded() throws Exception {
+    public void tagIsAdded() throws Exception {
         Tag tag = new Tag();
         tag.setTagName("test");
         Long tagId = tagRepository.add(tag);
@@ -79,7 +83,7 @@ public class TagRepositoryTest {
 
 
     @Test
-    public void tagNotAdded() throws Exception {
+    public void tagIsNotAdded() throws Exception {
         Tag tag = new Tag();
         catchException(() -> tagRepository.add(tag));
         assert caughtException() instanceof DaoException;
@@ -92,7 +96,7 @@ public class TagRepositoryTest {
 
 
     @Test
-    public void tagFound() throws Exception {
+    public void tagIsFound() throws Exception {
         Tag tag = tagRepository.find(1L);
 
         assertNotNull(tag);
@@ -100,13 +104,13 @@ public class TagRepositoryTest {
 
 
     @Test(expected = DaoException.class)
-    public void tagNotFound() throws Exception {
+    public void tagIsNotFound() throws Exception {
         tagRepository.find(-1L);
     }
 
 
     @Test
-    public void tagUpdated() throws Exception {
+    public void tagIsUpdated() throws Exception {
         Tag tag = new Tag();
         tag.setTagId(1L);
         tag.setTagName("test1");
@@ -118,7 +122,7 @@ public class TagRepositoryTest {
 
 
     @Test
-    public void tagNotUpdated() throws Exception {
+    public void tagIsNotUpdated() throws Exception {
         Tag tag = new Tag();
         tag.setTagId(1L);
         tag.setTagName(null);
@@ -131,7 +135,7 @@ public class TagRepositoryTest {
 
 
     @Test
-    public void tagDeleted() throws Exception {
+    public void tagIsDeleted() throws Exception {
         Tag tag = new Tag();
         tag.setTagId(1L);
         tagRepository.delete(tag);
@@ -146,7 +150,7 @@ public class TagRepositoryTest {
 
 
     @Test
-    public void tagNotDeleted() throws Exception {
+    public void tagIsNotDeleted() throws Exception {
         Tag tag = new Tag();
         tag.setTagId(-1L);
         tagRepository.delete(tag);
@@ -157,5 +161,53 @@ public class TagRepositoryTest {
 
         assertEquals(3, tagsTable.getRowCount());
         assertEquals(5, newsTagTable.getRowCount());
+    }
+
+
+    @Test
+    public void gotAlLByNews() throws Exception {
+        News news = new News();
+        news.setNewsId(3L);
+        List<Tag> allByNews = tagRepository.getAllByNews(news);
+
+        assertEquals(2L, allByNews.size());
+    }
+
+
+    @Test
+    public void didNotGetAllByNews() throws Exception {
+        News news = new News();
+        news.setNewsId(4L);
+        List<Tag> allByNews = tagRepository.getAllByNews(news);
+
+        assertEquals(0L, allByNews.size());
+    }
+
+
+    @Test
+    public void gotAll() throws Exception {
+        List<Tag> allTags = tagRepository.getAll();
+
+        assertEquals(3L, allTags.size());
+    }
+
+
+    @Test
+    public void exists() throws Exception {
+        Tag tag = new Tag();
+        tag.setTagName("test");
+        boolean exists = tagRepository.exists(tag);
+
+        assertTrue(exists);
+    }
+
+
+    @Test
+    public void notExists() throws Exception {
+        Tag tag = new Tag();
+        tag.setTagName("test1");
+        boolean exists = tagRepository.exists(tag);
+
+        assertFalse(exists);
     }
 }

@@ -63,6 +63,11 @@ public class NewsServiceImpl implements NewsService {
             }
             logger.info("Successfully added authors to news");
         }
+        else {
+            logger.error("News must have at least one author");
+            logger.error("Failed to add news");
+            throw new ServiceException();
+        }
 
         if (tags != null && !tags.isEmpty()) {
             logger.info("Adding tags to news..");

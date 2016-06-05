@@ -68,7 +68,7 @@ public class NewsTagRepositoryTest {
 
 
     @Test
-    public void newsTagRelationAdded() throws Exception {
+    public void newsTagRelationIsAdded() throws Exception {
         NewsTag newsTag = new NewsTag();
         newsTag.setNewsId(2L);
         newsTag.setTagId(2L);
@@ -82,7 +82,7 @@ public class NewsTagRepositoryTest {
 
 
     @Test
-    public void newsTagRelationNotAddedInvalidNews() throws Exception {
+    public void newsTagRelationIsNotAddedInvalidNews() throws Exception {
         NewsTag newsTag = new NewsTag();
         newsTag.setNewsId(-1L);
         newsTag.setTagId(2L);
@@ -97,7 +97,7 @@ public class NewsTagRepositoryTest {
 
 
     @Test
-    public void newsTagRelationNotAddedInvalidTag() throws Exception {
+    public void newsTagRelationIsNotAddedInvalidTag() throws Exception {
         NewsTag newsTag = new NewsTag();
         newsTag.setNewsId(2L);
         newsTag.setTagId(-1L);
@@ -112,7 +112,7 @@ public class NewsTagRepositoryTest {
 
 
     @Test
-    public void newsTagRelationDeleted() throws Exception {
+    public void newsTagRelationIsDeleted() throws Exception {
         NewsTag newsTag = new NewsTag();
         newsTag.setNewsId(1L);
         newsTag.setTagId(1L);
@@ -126,7 +126,7 @@ public class NewsTagRepositoryTest {
 
 
     @Test
-    public void newsTagRelationNotDeletedInvalidNews() throws Exception {
+    public void newsTagRelationIsNotDeletedInvalidNews() throws Exception {
         NewsTag newsTag = new NewsTag();
         newsTag.setNewsId(-1L);
         newsTag.setTagId(2L);
@@ -140,7 +140,7 @@ public class NewsTagRepositoryTest {
 
 
     @Test
-    public void newsTagRelationNotDeletedInvalidTag() throws Exception {
+    public void newsTagRelationIsNotDeletedInvalidTag() throws Exception {
         NewsTag newsTag = new NewsTag();
         newsTag.setNewsId(2L);
         newsTag.setTagId(-1L);
@@ -154,7 +154,7 @@ public class NewsTagRepositoryTest {
 
 
     @Test
-    public void newsTagRelationsAdded() throws Exception {
+    public void newsTagRelationsAreAdded() throws Exception {
         News news = new News();
         news.setNewsId(2L);
         List<Tag> tags = new LinkedList<>();
@@ -174,7 +174,7 @@ public class NewsTagRepositoryTest {
 
 
     @Test
-    public void newsTagRelationsNotAllAdded() throws Exception {
+    public void newsTagRelationsAreNotAllAdded() throws Exception {
         News news = new News();
         news.setNewsId(2L);
         List<Tag> tags = new LinkedList<>();
@@ -195,7 +195,7 @@ public class NewsTagRepositoryTest {
 
 
     @Test
-    public void newsTagRelationsNotAddedInvalidTags() throws Exception {
+    public void newsTagRelationsAreNotAddedInvalidTags() throws Exception {
         News news = new News();
         news.setNewsId(2L);
         List<Tag> tags = new LinkedList<>();
@@ -216,7 +216,7 @@ public class NewsTagRepositoryTest {
 
 
     @Test
-    public void newsTagRelationsNotAddedInvalidNews() throws Exception {
+    public void newsTagRelationsAreAddedInvalidNews() throws Exception {
         News news = new News();
         news.setNewsId(-1L);
         List<Tag> tags = new LinkedList<>();

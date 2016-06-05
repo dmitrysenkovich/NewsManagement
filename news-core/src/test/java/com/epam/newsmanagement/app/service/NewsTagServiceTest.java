@@ -43,7 +43,7 @@ public class NewsTagServiceTest {
 
 
     @Test(expected = ServiceException.class)
-    public void notAdded() throws Exception {
+    public void didNotAdd() throws Exception {
         News news = new News();
         Tag tag = new Tag();
         doThrow(new DaoException()).when(newsTagRepository).add(any(NewsTag.class));
@@ -61,7 +61,7 @@ public class NewsTagServiceTest {
 
 
     @Test(expected = ServiceException.class)
-    public void notDeleted() throws Exception {
+    public void didNotDelete() throws Exception {
         News news = new News();
         Tag tag = new Tag();
         doThrow(new DaoException()).when(newsTagRepository).delete(any(NewsTag.class));

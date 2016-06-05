@@ -35,6 +35,7 @@ public class ScriptFileUtilsTest {
         assertNotEquals("", scriptPart);
     }
 
+
     @Test
     public void searchScriptFileDirectoryIsValid() {
         String searchScriptFileDirectory = scriptFileUtils.getSearchScriptDirectoryPath();
@@ -42,12 +43,14 @@ public class ScriptFileUtilsTest {
         assertTrue(searchScriptFileDirectory.endsWith("/classes/script/sql/"));
     }
 
+
     @Test
     public void testSearchScriptFileDirectoryIsValid() {
         String testSearchScriptFileDirectory = scriptFileUtils.getTestSearchScriptDirectoryPath();
 
         assertTrue(testSearchScriptFileDirectory.endsWith("/test-classes/script/sql/"));
     }
+
 
     @Test
     public void invalidSearchScriptDirectory() {
@@ -57,6 +60,7 @@ public class ScriptFileUtilsTest {
 
         assertEquals("", scriptPart);
     }
+
 
     @Test
     public void invalidSearchScriptFileName() {

@@ -65,7 +65,7 @@ public class UserRepositoryTest {
 
 
     @Test
-    public void userAdded() throws Exception {
+    public void userIsAdded() throws Exception {
         User user = new User();
         user.setRoleId(1L);
         user.setUserName("test");
@@ -82,7 +82,7 @@ public class UserRepositoryTest {
 
 
     @Test
-    public void userNotAddedInvalidField() throws Exception {
+    public void userIsNotAddedInvalidField() throws Exception {
         User user = new User();
         user.setRoleId(1L);
         catchException(() -> userRepository.add(user));
@@ -96,7 +96,7 @@ public class UserRepositoryTest {
 
 
     @Test
-    public void userNotAddedRoleIsInvalid() throws Exception {
+    public void userIsNotAddedRoleIsInvalid() throws Exception {
         User user = new User();
         user.setRoleId(-1L);
         user.setUserName("test");
@@ -113,7 +113,7 @@ public class UserRepositoryTest {
 
 
     @Test
-    public void userFound() throws Exception {
+    public void userIsFound() throws Exception {
         User user = userRepository.find(1L);
 
         assertNotNull(user);
@@ -121,13 +121,13 @@ public class UserRepositoryTest {
 
 
     @Test(expected = DaoException.class)
-    public void userNotFound() throws Exception {
+    public void userIsNotFound() throws Exception {
         userRepository.find(-1L);
     }
 
 
     @Test
-    public void userUpdated() throws Exception {
+    public void userIsUpdated() throws Exception {
         User user = new User();
         user.setUserId(1L);
         user.setRoleId(2L);
@@ -145,7 +145,7 @@ public class UserRepositoryTest {
 
 
     @Test
-    public void userNotUpdatedInvalidField() throws Exception {
+    public void userIsNotUpdatedInvalidField() throws Exception {
         User user = new User();
         user.setUserId(1L);
         user.setRoleId(1L);
@@ -158,7 +158,7 @@ public class UserRepositoryTest {
 
 
     @Test
-    public void userNotUpdatedRoleIsInvalid() throws Exception {
+    public void userIsNotUpdatedRoleIsInvalid() throws Exception {
         User user = new User();
         user.setUserId(1L);
         user.setRoleId(-1L);
@@ -174,7 +174,7 @@ public class UserRepositoryTest {
 
 
     @Test
-    public void userDeleted() throws Exception {
+    public void userIsDeleted() throws Exception {
         User user = new User();
         user.setUserId(1L);
         userRepository.delete(user);
@@ -187,7 +187,7 @@ public class UserRepositoryTest {
 
 
     @Test
-    public void userNotDeleted() throws Exception {
+    public void userIsNotDeleted() throws Exception {
         User user = new User();
         user.setUserId(-1L);
         userRepository.delete(user);
@@ -196,5 +196,21 @@ public class UserRepositoryTest {
         ITable usersTable = actualDataSet.getTable("USERS");
 
         assertEquals(1, usersTable.getRowCount());
+    }
+
+
+    @Test
+    public void gotUserNameByLogin() throws Exception {
+        String login = "test";
+        String userName = userRepository.userNameByLogin(login);
+
+        assertEquals("test", userName);
+    }
+
+
+    @Test(expected = DaoException.class)
+    public void didNotGetUserNameByLogin() throws Exception {
+        String login = "test1";
+        userRepository.userNameByLogin(login);
     }
 }

@@ -13,6 +13,7 @@ import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
 
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNotNull;
 import static org.mockito.Matchers.any;
 import static org.mockito.Mockito.doNothing;
 import static org.mockito.Mockito.doThrow;
@@ -49,7 +50,7 @@ public class UserServiceTest {
 
 
     @Test(expected = ServiceException.class)
-    public void notAdded() throws Exception {
+    public void didNotAdd() throws Exception {
         Role role = new Role();
         role.setRoleId(1L);
         doThrow(new DaoException()).when(userRepository).add(any(User.class));
@@ -69,7 +70,7 @@ public class UserServiceTest {
 
 
     @Test(expected = ServiceException.class)
-    public void notFound() throws Exception {
+    public void didNotFind() throws Exception {
         doThrow(new DaoException()).when(userRepository).find(any(Long.class));
         userService.find(1L);
     }
@@ -83,7 +84,7 @@ public class UserServiceTest {
 
 
     @Test(expected = ServiceException.class)
-    public void notUpdated() throws Exception {
+    public void didNotUpdate() throws Exception {
         doThrow(new DaoException()).when(userRepository).update(any(User.class));
         userService.update(new User());
     }
@@ -97,8 +98,24 @@ public class UserServiceTest {
 
 
     @Test(expected = ServiceException.class)
-    public void notDeleted() throws Exception {
+    public void didNotDelete() throws Exception {
         doThrow(new DaoException()).when(userRepository).delete(any(User.class));
         userService.delete(new User());
+    }
+
+
+    @Test
+    public void foundUserNameByLogin() throws Exception {
+        when(userRepository.userNameByLogin(any(String.class))).thenReturn(new String());
+        String userName = userService.userNameByLogin(new String());
+
+        assertNotNull(userName);
+    }
+
+
+    @Test(expected = ServiceException.class)
+    public void didNotFindUserNameByLogin() throws Exception {
+        doThrow(new DaoException()).when(userRepository).userNameByLogin(any(String.class));
+        userService.userNameByLogin(new String());
     }
 }
