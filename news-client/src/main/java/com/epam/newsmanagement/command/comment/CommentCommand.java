@@ -1,4 +1,4 @@
-package com.epam.newsmanagement.command.news;
+package com.epam.newsmanagement.command.comment;
 
 import com.epam.newsmanagement.app.exception.ServiceException;
 import com.epam.newsmanagement.app.model.Comment;

@@ -68,8 +68,8 @@ $(document).on('click', '.add-tag-link', function (event) {
     $('#invalid-tag-name').toggle("slide", 500, function() { $(this).remove(); });
 
     $.ajax({
-        url: '/news-management/tags/add',
-        type: 'POST',
+        url: '/news-admin/tags/add',
+        type: 'PUT',
         data: JSON.stringify({
             tagName: newTagName
         }),
@@ -127,8 +127,8 @@ $(document).on('click', '.update-tag-link', function (event) {
 
 
     $.ajax({
-        url: '/news-management/tags/update',
-        type: 'POST',
+        url: '/news-admin/tags/update',
+        type: 'PUT',
         data: JSON.stringify({
             tagId: tagId,
             tagName: newTagName
@@ -172,11 +172,8 @@ $(document).on('click', '.delete-tag-link', function (event) {
     var tagId = parseInt($(event.target).parent().parent().parent().parent().attr('id'));
 
     $.ajax({
-        url: '/news-management/tags/delete',
+        url: '/news-admin/tags/delete/' + tagId,
         type: 'POST',
-        data: JSON.stringify({
-            tagId: tagId
-        }),
         contentType: "application/json",
         beforeSend: function(xhr){
             xhr.setRequestHeader(header, token);

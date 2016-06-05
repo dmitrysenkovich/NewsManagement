@@ -1,4 +1,4 @@
-package com.epam.newsmanagement.command.newslist;
+package com.epam.newsmanagement.command.news;
 
 import com.epam.newsmanagement.app.exception.ServiceException;
 import com.epam.newsmanagement.app.model.News;
@@ -9,7 +9,6 @@ import com.epam.newsmanagement.utils.InfoUtils;
 import com.epam.newsmanagement.utils.JsonWriter;
 import com.epam.newsmanagement.utils.NewsListInfo;
 import org.apache.log4j.Logger;
-import org.codehaus.jackson.map.ObjectMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 
 import javax.servlet.ServletException;
@@ -20,13 +19,11 @@ import java.io.IOException;
 import java.util.List;
 
 /**
- * Page command. Responsible
- * for retrieving certain news
- * page satisfying provided
- * search criteria.
+ * Reset command. Resets
+ * news list to default state.
  */
-public class PageCommand implements Command {
-    private static final Logger logger = Logger.getLogger(FilterCommand.class);
+public class ResetCommand implements Command {
+    private static final Logger logger = Logger.getLogger(ResetCommand.class);
 
     @Autowired
     private NewsService newsService;
@@ -37,26 +34,13 @@ public class PageCommand implements Command {
     @Autowired
     private JsonWriter jsonWriter;
 
-    @Autowired
-    private ObjectMapper objectMapper;
-
 
     @Override
     public void execute(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-        logger.info("Page GET request");
+        logger.info("Reset GET request");
 
-        String searchCriteriaInString = request.getParameter("searchCriteria");
-        SearchCriteria searchCriteria = objectMapper.readValue(searchCriteriaInString, SearchCriteria.class);
-        if (searchCriteria.getPageIndex() == null) {
-            Long pagesCount;
-            try {
-                pagesCount = newsService.countPagesBySearchCriteria(searchCriteria);
-            } catch (ServiceException e) {
-                logger.error("Failed to execute page command", e);
-                return;
-            }
-            searchCriteria.setPageIndex(pagesCount);
-        }
+        SearchCriteria searchCriteria = new SearchCriteria();
+        searchCriteria.setPageIndex(1L);
         HttpSession session = request.getSession(false);
         session.setAttribute("searchCriteria", searchCriteria);
 
@@ -64,14 +48,14 @@ public class PageCommand implements Command {
         try {
             newsList = newsService.search(searchCriteria);
         } catch (ServiceException e) {
-            logger.error("Failed to execute page command", e);
+            logger.error("Failed to execute reset command", e);
             return;
         }
         NewsListInfo newsListInfo;
         try {
             newsListInfo = infoUtils.getNewsListInfo(newsList, searchCriteria);
         } catch (ServiceException e) {
-            logger.error("Failed to execute page command", e);
+            logger.error("Failed to execute reset command", e);
             return;
         }
         jsonWriter.write(response, newsListInfo);

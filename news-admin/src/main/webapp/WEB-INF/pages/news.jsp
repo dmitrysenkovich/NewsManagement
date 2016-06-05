@@ -15,7 +15,7 @@
 
         <script type="text/javascript" src="<c:url value="/resources/js/jquery-2.0.0.min.js" />"></script>
         <script type="text/javascript" src="http://ajax.googleapis.com/ajax/libs/jqueryui/1/jquery-ui.min.js"></script>
-        <script type="text/javascript" src="<c:url value="/resources/js/news-administration.js" />"></script>
+        <script type="text/javascript" src="<c:url value="/resources/js/news.js" />"></script>
     </head>
     <body>
         <div id="container">

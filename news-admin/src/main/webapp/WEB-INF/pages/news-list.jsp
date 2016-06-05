@@ -54,7 +54,7 @@
                             <div class="short-news">
                                 <div class="short-news-title-row">
                                     <div class="short-news-title">
-                                        <a href="/news-management/view-news/${news.newsId}">
+                                        <a href="/news-admin/news/${news.newsId}">
                                             ${news.title}
                                         </a>
                                     </div>
@@ -100,7 +100,7 @@
                                         </c:if>
                                     </div>
                                     <div class="short-news-others">
-                                        <span style="color: #ff0000">Comments(${commentsCountByNewsId[news.newsId]})</span> <a href="/news-management/edit-news/${news.newsId}">Edit</a> <input id="${news.newsId}" type="checkbox" />
+                                        <span style="color: #ff0000">Comments(${commentsCountByNewsId[news.newsId]})</span> <a href="/news-admin/edit/${news.newsId}">Edit</a> <input id="${news.newsId}" type="checkbox" />
                                     </div>
                                 </div>
                             </div>
@@ -131,6 +131,6 @@
             </div>
             <tiles:insertAttribute name="footer" />
         </div>
-        <script type="text/javascript" src="<c:url value="/resources/js/news-list-administration.js" />"></script>
+        <script type="text/javascript" src="<c:url value="/resources/js/news-list.js" />"></script>
     </body>
 </html>

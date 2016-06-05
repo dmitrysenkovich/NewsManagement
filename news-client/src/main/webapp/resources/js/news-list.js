@@ -24,7 +24,7 @@ String.prototype.replaceAll = function(search, replacement) {
 var newNewsTemplate = "<div class='short-news'>\
                             <div class='short-news-title-row'>\
                                 <div class='short-news-title'>\
-                                    <a href='/news-management/view-news/{0}'>\
+                                    <a href='/news-client/news/{0}'>\
                                     {1}</a>\
                                 </div>\
                                 <div class='short-news-authors'>\
@@ -40,7 +40,7 @@ var newNewsTemplate = "<div class='short-news'>\
                                 <div class='short-news-tags'>\
                                 {5}</div>\
                                 <div class='short-news-others'>\
-                                    <span style='color: #ff0000'>Comments({6})</span> <a href='/news-management/news/{7}'>View</a>\
+                                    <span style='color: #ff0000'>Comments({6})</span> <a href='/news-client/news/{7}'>View</a>\
                                 </div>\
                             </div>\
                       </div>";
@@ -191,7 +191,7 @@ $('#reset-button').on('click', function () {
     processing = true;
 
     $.ajax({
-        url: '/news-management/news-list/reset',
+        url: '/news-client/news/reset',
         type: 'GET',
         success: function(newsListInfo) {
             console.log(newsListInfo);
@@ -214,7 +214,7 @@ $('#filter-button').on('click', function () {
     fillSearchCriteria();
 
     $.ajax({
-        url: '/news-management/news-list/filter?searchCriteria=' + encodeURIComponent(JSON.stringify(searchCriteria)),
+        url: '/news-client/news/filter?searchCriteria=' + encodeURIComponent(JSON.stringify(searchCriteria)),
         type: 'GET',
         success: function(newsListInfo) {
             refreshPaginationRow(newsListInfo, 1);
@@ -238,7 +238,7 @@ $(document).on('click', '.page-link', function (event) {
         searchCriteria.pageIndex = pageIndex;
 
     $.ajax({
-        url: '/news-management/news-list/page?searchCriteria=' + encodeURIComponent(JSON.stringify(searchCriteria)),
+        url: '/news-client/news/page?searchCriteria=' + encodeURIComponent(JSON.stringify(searchCriteria)),
         type: 'GET',
         success: function(newsListInfo) {
             $('.pagination > li > a').removeClass('active');
@@ -289,7 +289,7 @@ $(document).on('click', '#first-page', function () {
         searchCriteria.pageIndex = 1;
 
     $.ajax({
-        url: '/news-management/news-list/page?searchCriteria=' + encodeURIComponent(JSON.stringify(searchCriteria)),
+        url: '/news-client/news/page?searchCriteria=' + encodeURIComponent(JSON.stringify(searchCriteria)),
         type: 'GET',
         success: function(newsListInfo) {
             refreshPaginationRow(newsListInfo, 1);
@@ -310,7 +310,7 @@ $(document).on('click', '#last-page', function () {
     searchCriteria.pageIndex = null;
 
     $.ajax({
-        url: '/news-management/news-list/page?searchCriteria=' + encodeURIComponent(JSON.stringify(searchCriteria)),
+        url: '/news-client/news/page?searchCriteria=' + encodeURIComponent(JSON.stringify(searchCriteria)),
         type: 'GET',
         success: function(newsListInfo) {
             refreshPaginationRow(newsListInfo, newsListInfo.pagesCount);
@@ -338,7 +338,7 @@ $(document).on('click', '#previous-page', function () {
     searchCriteria.pageIndex = pageIndex;
 
     $.ajax({
-        url: '/news-management/news-list/page?searchCriteria=' + encodeURIComponent(JSON.stringify(searchCriteria)),
+        url: '/news-client/news/page?searchCriteria=' + encodeURIComponent(JSON.stringify(searchCriteria)),
         type: 'GET',
         success: function(newsListInfo) {
             refreshPaginationRow(newsListInfo, pageIndex);
@@ -367,7 +367,7 @@ $(document).on('click', '#next-page', function () {
     searchCriteria.pageIndex = pageIndex;
 
     $.ajax({
-        url: '/news-management/news-list/page?searchCriteria=' + encodeURIComponent(JSON.stringify(searchCriteria)),
+        url: '/news-client/news/page?searchCriteria=' + encodeURIComponent(JSON.stringify(searchCriteria)),
         type: 'GET',
         success: function(newsListInfo) {
             refreshPaginationRow(newsListInfo, pageIndex);

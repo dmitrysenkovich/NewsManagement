@@ -27,10 +27,10 @@ public class CustomAuthenticationFailureHandler extends SimpleUrlAuthenticationF
                                     AuthenticationException exception) throws IOException, ServletException {
         if (exception instanceof DisabledException) {
             logger.error("Access disabled");
-            response.sendRedirect("/news-management/403");
+            response.sendRedirect("/news-admin/403");
             return;
         }
         logger.info("Error while authentication");
-        response.sendRedirect("/news-management/login?error");
+        response.sendRedirect("/news-admin/login?error");
     }
 }

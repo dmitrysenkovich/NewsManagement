@@ -112,7 +112,7 @@ $(document).on('click', '.delete-comment-button', function (event) {
     var commentId = event.target.id;
 
     $.ajax({
-        url: '/news-management/view-news/delete',
+        url: '/news-admin/comment/delete/' + commentId,
         type: 'POST',
         data: commentId,
         contentType: "application/json",
@@ -137,7 +137,7 @@ $(document).on('click', '#previous', function () {
     $('#new-post-textarea').removeClass('invalid-comment-text');
 
     $.ajax({
-        url: '/news-management/view-news/previous',
+        url: '/news-admin/news/previous',
         type: 'GET',
         success: function(newsInfo) {
             refreshNews(newsInfo);
@@ -155,7 +155,7 @@ $(document).on('click', '#next', function () {
     $('#new-post-textarea').removeClass('invalid-comment-text');
 
     $.ajax({
-        url: '/news-management/view-news/next',
+        url: '/news-admin/news/next',
         type: 'GET',
         success: function(newsInfo) {
             refreshNews(newsInfo);
@@ -178,8 +178,8 @@ $(document).on('click', '#post-comment-button', function () {
     }
 
     $.ajax({
-        url: '/news-management/view-news/comment',
-        type: 'POST',
+        url: '/news-admin/comment/add',
+        type: 'PUT',
         data: commentText,
         contentType: "application/json",
         beforeSend: function(xhr){

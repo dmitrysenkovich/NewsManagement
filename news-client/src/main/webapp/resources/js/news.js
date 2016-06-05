@@ -108,7 +108,7 @@ $(document).on('click', '#previous', function () {
     $('#new-post-textarea').removeClass('invalid-comment-text');
 
     $.ajax({
-        url: '/news-management/news/previous',
+        url: '/news-client/news/previous',
         type: 'GET',
         success: function(newsInfo) {
             refreshNews(newsInfo);
@@ -126,7 +126,7 @@ $(document).on('click', '#next', function () {
     $('#new-post-textarea').removeClass('invalid-comment-text');
 
     $.ajax({
-        url: '/news-management/news/next',
+        url: '/news-client/news/next',
         type: 'GET',
         success: function(newsInfo) {
             refreshNews(newsInfo);
@@ -148,10 +148,8 @@ $(document).on('click', '#post-comment-button', function () {
         return;
     }
 
-    console.log(commentText);
-
     $.ajax({
-        url: '/news-management/news/comment',
+        url: '/news-client/comment/add',
         type: 'POST',
         data: {
             commentText: commentText

@@ -6,13 +6,11 @@ import com.epam.newsmanagement.app.service.AuthorService;
 import org.apache.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.ResponseBody;
-import org.springframework.web.servlet.ModelAndView;
-
-import java.util.List;
 
 /**
  * Authors controller. Responsible
@@ -27,34 +25,16 @@ public class AuthorsController {
 
 
     /**
-     * Dispatches authors page request.
-     * @return authors model and view.
-     * @throws ServiceException
-     */
-    @RequestMapping(value = "/authors", method = RequestMethod.GET)
-    public ModelAndView tags() throws ServiceException {
-        logger.info("Authors GET request");
-
-        ModelAndView modelAndView = new ModelAndView("authors");
-
-        List<Author> authors = authorService.getAll();
-        modelAndView.addObject("authors", authors);
-
-        return modelAndView;
-    }
-
-
-    /**
      * Adds new author to database.
      * @param author author to be added.
      * @return new author id if there's
      * no author with such name.
      * @throws ServiceException
      */
-    @RequestMapping(value = "/authors/add", method = RequestMethod.POST)
+    @RequestMapping(value = "/authors/add", method = RequestMethod.PUT)
     @ResponseBody
     public Long add(@RequestBody Author author) throws ServiceException {
-        logger.info("Add author POST request");
+        logger.info("Add author PUT request");
 
         boolean exists = authorService.exists(author);
         if (!exists) {
@@ -73,10 +53,10 @@ public class AuthorsController {
      * author with new author's name.
      * @throws ServiceException
      */
-    @RequestMapping(value = "/authors/update", method = RequestMethod.POST)
+    @RequestMapping(value = "/authors/update", method = RequestMethod.PUT)
     @ResponseBody
     public boolean update(@RequestBody Author author) throws ServiceException {
-        logger.info("Update author POST request");
+        logger.info("Update author PUT request");
 
         boolean exists = authorService.exists(author);
         if (!exists)
@@ -87,15 +67,17 @@ public class AuthorsController {
 
     /**
      * Makes author expired.
-     * @param author author that
-     * will become expired.
+     * @param authorId authorId
+     * of author that will become expired.
      * @throws ServiceException
      */
-    @RequestMapping(value = "/authors/expire", method = RequestMethod.POST)
+    @RequestMapping(value = "/authors/expire/{authorId}", method = RequestMethod.POST)
     @ResponseBody
-    public void expire(@RequestBody Author author) throws ServiceException {
+    public void expire(@PathVariable Long authorId) throws ServiceException {
         logger.info("Delete author POST request");
 
+        Author author = new Author();
+        author.setAuthorId(authorId);
         authorService.makeAuthorExpired(author);
     }
 }

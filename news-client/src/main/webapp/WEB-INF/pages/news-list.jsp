@@ -50,7 +50,7 @@
                             <div class="short-news">
                                 <div class="short-news-title-row">
                                     <div class="short-news-title">
-                                        <a href="/news-management/news/${news.newsId}">
+                                        <a href="/news-client/news/${news.newsId}">
                                             ${news.title}
                                         </a>
                                     </div>
@@ -96,7 +96,7 @@
                                         </c:if>
                                     </div>
                                     <div class="short-news-others">
-                                        <span style="color: #ff0000">Comments(${commentsCountByNewsId[news.newsId]})</span> <a href="/news-management/news/${news.newsId}">View</a>
+                                        <span style="color: #ff0000">Comments(${commentsCountByNewsId[news.newsId]})</span> <a href="/news-client/news/${news.newsId}">View</a>
                                     </div>
                                 </div>
                             </div>

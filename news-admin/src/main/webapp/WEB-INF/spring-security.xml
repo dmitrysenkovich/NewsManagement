@@ -13,14 +13,13 @@
 	<http auto-config="true" use-expressions="true">
         <intercept-url pattern="/authors/**" access="isAuthenticated() and hasRole('ADMIN')"/>
         <intercept-url pattern="/tags/**" access="isAuthenticated() and hasRole('ADMIN')"/>
-        <intercept-url pattern="/view-news/**" access="isAuthenticated() and hasRole('ADMIN')"/>
-		<intercept-url pattern="/edit-news/**" access="isAuthenticated() and hasRole('ADMIN')"/>
-		<intercept-url pattern="/add-news/**" access="isAuthenticated() and hasRole('ADMIN')"/>
-		<intercept-url pattern="/news-list-administration/**" access="isAuthenticated() and hasRole('ADMIN')"/>
+        <intercept-url pattern="/news/**" access="isAuthenticated() and hasRole('ADMIN')"/>
+		<intercept-url pattern="/add/**" access="isAuthenticated() and hasRole('ADMIN')"/>
+		<intercept-url pattern="/edit/**" access="isAuthenticated() and hasRole('ADMIN')"/>
         <access-denied-handler error-page="/403" />
 		<form-login
 				login-page="/login"
-				default-target-url="/news-list-administration"
+				default-target-url="/"
 				authentication-failure-url="/login?error"
 				username-parameter="login"
 				password-parameter="password"

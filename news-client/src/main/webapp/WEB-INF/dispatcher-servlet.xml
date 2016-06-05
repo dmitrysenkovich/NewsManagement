@@ -7,14 +7,14 @@
     <import resource="classpath*:spring-configuration.xml" />
 
     <bean id="errorCommand" class="com.epam.newsmanagement.command.error.ErrorCommand" />
-    <bean id="commentCommand" class="com.epam.newsmanagement.command.news.CommentCommand" />
-    <bean id="newsCommand" class="com.epam.newsmanagement.command.news.NewsCommand" />
+    <bean id="commentCommand" class="com.epam.newsmanagement.command.comment.CommentCommand" />
+    <bean id="newsCommand" class="com.epam.newsmanagement.command.page.NewsCommand" />
     <bean id="nextNewsCommand" class="com.epam.newsmanagement.command.news.NextNewsCommand" />
     <bean id="previousNewsCommand" class="com.epam.newsmanagement.command.news.PreviousNewsCommand" />
-    <bean id="filterCommand" class="com.epam.newsmanagement.command.newslist.FilterCommand" />
-    <bean id="newsListCommand" class="com.epam.newsmanagement.command.newslist.NewsListCommand" />
-    <bean id="pageCommand" class="com.epam.newsmanagement.command.newslist.PageCommand" />
-    <bean id="resetCommand" class="com.epam.newsmanagement.command.newslist.ResetCommand" />
+    <bean id="filterCommand" class="com.epam.newsmanagement.command.news.FilterCommand" />
+    <bean id="newsListCommand" class="com.epam.newsmanagement.command.page.NewsListCommand" />
+    <bean id="pageCommand" class="com.epam.newsmanagement.command.news.PageCommand" />
+    <bean id="resetCommand" class="com.epam.newsmanagement.command.news.ResetCommand" />
 
     <bean id="commandBuilder" class="com.epam.newsmanagement.utils.CommandBuilder" />
     <bean id="infoUtils" class="com.epam.newsmanagement.utils.InfoUtils" />

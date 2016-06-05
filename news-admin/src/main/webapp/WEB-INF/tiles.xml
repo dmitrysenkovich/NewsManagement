@@ -21,7 +21,7 @@
     <definition name="error" template="/WEB-INF/pages/error.jsp" extends="simple.definition" />
     <definition name="authors" template="/WEB-INF/pages/authors.jsp" extends="extended.definition" />
     <definition name="tags" template="/WEB-INF/pages/tags.jsp" extends="extended.definition" />
-    <definition name="news-administration" template="/WEB-INF/pages/news-administration.jsp" extends="extended.definition" />
+    <definition name="news" template="/WEB-INF/pages/news.jsp" extends="extended.definition" />
     <definition name="news-edit" template="/WEB-INF/pages/news-edit.jsp" extends="extended.definition" />
-    <definition name="news-list-administration" template="/WEB-INF/pages/news-list-administration.jsp" extends="extended.definition" />
+    <definition name="news-list" template="/WEB-INF/pages/news-list.jsp" extends="extended.definition" />
 </tiles-definitions>

@@ -1,4 +1,4 @@
-package com.epam.newsmanagement.command.newslist;
+package com.epam.newsmanagement.command.page;
 
 import com.epam.newsmanagement.app.exception.ServiceException;
 import com.epam.newsmanagement.app.model.Author;

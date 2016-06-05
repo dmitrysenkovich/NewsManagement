@@ -16,7 +16,7 @@ import java.io.IOException;
 /**
  * Dispatches all requests.
  */
-@WebServlet(urlPatterns = "/news-management/*", loadOnStartup = 1)
+@WebServlet(urlPatterns = "/news-client/*", loadOnStartup = 1)
 public class DispatcherServlet extends HttpServlet {
     @Autowired
     private CommandBuilder commandBuilder;
@@ -36,6 +36,13 @@ public class DispatcherServlet extends HttpServlet {
 
     @Override
     public void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+        Command command = commandBuilder.getCommand(request);
+        command.execute(request, response);
+    }
+
+
+    @Override
+    public void doPut(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
         Command command = commandBuilder.getCommand(request);
         command.execute(request, response);
     }

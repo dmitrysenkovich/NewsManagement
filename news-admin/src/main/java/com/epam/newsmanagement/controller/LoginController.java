@@ -33,7 +33,7 @@ public class LoginController {
      * @param logout message while login out.
      * @return login ModelAndView.
      */
-    @RequestMapping(value = { "/", "/login" }, method = RequestMethod.GET)
+    @RequestMapping(value = "/login", method = RequestMethod.GET)
     public ModelAndView login(@RequestParam(value = "error", required = false) String error,
                               @RequestParam(value = "logout", required = false) String logout,
                               HttpServletRequest request) throws ServiceException {
@@ -44,9 +44,9 @@ public class LoginController {
             String login = authorizationUtils.getCurrentUserLogin();
             if (login != null) {
                 if (request.isUserInRole("ADMIN"))
-                    return new ModelAndView("redirect:news-list-administration");
+                    return new ModelAndView("redirect:/");
                 else
-                    return new ModelAndView("redirect:/404");
+                    return new ModelAndView("redirect:/403");
             }
         }
 

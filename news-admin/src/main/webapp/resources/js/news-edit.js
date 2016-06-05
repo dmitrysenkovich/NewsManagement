@@ -10,7 +10,7 @@ $("#tags").multiselect({
 
 
 var uri = window.location.pathname;
-if (uri == '/news-management/add-news')
+if (uri == '/news-admin/add')
     $('#add-news-link').css('font-weight', 'bold');
 
 
@@ -104,8 +104,8 @@ $('#save-news-button').click(function () {
     }
 
     $.ajax({
-        url: '/news-management/news/save',
-        type: 'POST',
+        url: '/news-admin/news/save',
+        type: 'PUT',
         data:  JSON.stringify(data),
         contentType: "application/json",
         beforeSend: function(xhr){

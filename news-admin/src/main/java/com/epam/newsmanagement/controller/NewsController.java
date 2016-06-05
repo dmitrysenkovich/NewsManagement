@@ -4,25 +4,25 @@ import com.epam.newsmanagement.app.exception.ServiceException;
 import com.epam.newsmanagement.app.model.Author;
 import com.epam.newsmanagement.app.model.News;
 import com.epam.newsmanagement.app.model.Tag;
-import com.epam.newsmanagement.app.service.AuthorService;
 import com.epam.newsmanagement.app.service.NewsService;
-import com.epam.newsmanagement.app.service.TagService;
-import com.epam.newsmanagement.app.service.UserService;
+import com.epam.newsmanagement.app.utils.SearchCriteria;
+import com.epam.newsmanagement.utils.InfoUtils;
+import com.epam.newsmanagement.utils.NewsInfo;
+import com.epam.newsmanagement.utils.NewsListInfo;
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.apache.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.security.core.Authentication;
-import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Controller;
-import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
-import org.springframework.web.servlet.ModelAndView;
 
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpSession;
 import java.io.IOException;
 import java.util.List;
 
@@ -35,80 +35,196 @@ public class NewsController {
     private static final Logger logger = Logger.getLogger(NewsController.class);
 
     @Autowired
-    private AuthorService authorService;
-    @Autowired
     private NewsService newsService;
+
     @Autowired
-    private TagService tagService;
-    @Autowired
-    private UserService userService;
+    private InfoUtils infoUtils;
 
     @Autowired
     private ObjectMapper objectMapper;
 
 
     /**
-     * Dispatches news edit request.
-     * @param newsId edit page with
-     * the news defined by this id
-     * will be rendered.
-     * @return news edit page model and view.
+     * Resets news list to the
+     * initial state.
+     * @param request request.
+     * @return list of some
+     * first news in the database.
      * @throws ServiceException
      */
-    @RequestMapping(value = "/edit-news/{newsId}", method = RequestMethod.GET)
-    public ModelAndView editNews(@PathVariable Long newsId) throws ServiceException {
-        logger.info("Editing news GET request");
+    @RequestMapping(value = "/news/reset", method = RequestMethod.GET)
+    @ResponseBody
+    public NewsListInfo reset(HttpServletRequest request) throws ServiceException {
+        logger.info("Reset GET request");
 
-        ModelAndView modelAndView = new ModelAndView("news-edit");
+        SearchCriteria searchCriteria = new SearchCriteria();
+        searchCriteria.setPageIndex(1L);
+        HttpSession session = request.getSession(false);
+        session.setAttribute("searchCriteria", searchCriteria);
 
-        List<Author> notExpiredAuthors = authorService.getNotExpired();
-        modelAndView.addObject("notExpiredAuthors", notExpiredAuthors);
+        List<News> newsList = newsService.search(searchCriteria);
+        NewsListInfo newsListInfo = infoUtils.getNewsListInfo(newsList, searchCriteria);
 
-        List<Tag> tags = tagService.getAll();
-        modelAndView.addObject("tags", tags);
-
-        News news = newsService.find(newsId);
-        modelAndView.addObject("news", news);
-
-        List<Author> newsAuthors = authorService.getAllByNews(news);
-        modelAndView.addObject("newsAuthors", newsAuthors);
-
-        List<Tag> newsTags = tagService.getAllByNews(news);
-        modelAndView.addObject("newsTags", newsTags);
-
-        Authentication auth = SecurityContextHolder.getContext().getAuthentication();
-        String login = auth.getName();
-        String userName = userService.userNameByLogin(login);
-        modelAndView.addObject("userName", userName);
-
-        return modelAndView;
+        return newsListInfo;
     }
 
 
     /**
-     * Dispatches request for
-     * adding new news page.
-     * @return adding news model and view.
+     * Filters news according to
+     * provided search criteria,
+     * @param searchCriteriaInString
+     * JSON string representation of search criteria.
+     * @param request request.
+     * @return some first news info
+     * satisfying passed search criteria.
+     * @throws ServiceException
+     * @throws IOException
+     */
+    @RequestMapping(value = "/news/filter", method = RequestMethod.GET)
+    @ResponseBody
+    public NewsListInfo filter(@RequestParam("searchCriteria") String searchCriteriaInString,
+                               HttpServletRequest request) throws ServiceException, IOException {
+        logger.info("Filter GET request");
+
+        SearchCriteria searchCriteria = objectMapper.readValue(searchCriteriaInString, SearchCriteria.class);
+        HttpSession session = request.getSession(false);
+        session.setAttribute("searchCriteria", searchCriteria);
+
+        List<News> newsList = newsService.search(searchCriteria);
+        NewsListInfo newsListInfo = infoUtils.getNewsListInfo(newsList, searchCriteria);
+
+        return newsListInfo;
+    }
+
+
+    /**
+     * Returns certain page of news
+     * satisfying the search criteria.
+     * @param searchCriteriaInString
+     * JSON string representation of search criteria.
+     * @param request request.
+     * @return needed news page with
+     * news satisfying the search criteria.
+     * @throws ServiceException
+     * @throws IOException
+     */
+    @RequestMapping(value = "/news/page", method = RequestMethod.GET)
+    @ResponseBody
+    public NewsListInfo page(@RequestParam("searchCriteria") String searchCriteriaInString,
+                             HttpServletRequest request) throws ServiceException, IOException {
+        logger.info("Page GET request");
+
+        SearchCriteria searchCriteria = objectMapper.readValue(searchCriteriaInString, SearchCriteria.class);
+        if (searchCriteria.getPageIndex() == null) {
+            Long pagesCount = newsService.countPagesBySearchCriteria(searchCriteria);
+            searchCriteria.setPageIndex(pagesCount);
+        }
+        HttpSession session = request.getSession(false);
+        session.setAttribute("searchCriteria", searchCriteria);
+
+        List<News> newsList = newsService.search(searchCriteria);
+        NewsListInfo newsListInfo = infoUtils.getNewsListInfo(newsList, searchCriteria);
+
+        return newsListInfo;
+    }
+
+
+    /**
+     * Dispatches request to the previous
+     * news according current search criteria.
+     * @param request request.
+     * @return previous news information.
      * @throws ServiceException
      */
-    @RequestMapping(value = "/add-news", method = RequestMethod.GET)
-    public ModelAndView addNews() throws ServiceException {
-        logger.info("Adding news GET request");
+    @RequestMapping(value = "/news/previous", method = RequestMethod.GET)
+    @ResponseBody
+    public NewsInfo previous(HttpServletRequest request) throws ServiceException {
+        logger.info("Previous news GET request");
 
-        ModelAndView modelAndView = new ModelAndView("news-edit");
+        HttpSession session = request.getSession(false);
+        SearchCriteria searchCriteria = (SearchCriteria) session.getAttribute("searchCriteria");
+        Long newsRowNumber = (Long) session.getAttribute("newsRowNumber");
+        newsRowNumber--;
+        session.setAttribute("newsRowNumber", newsRowNumber);
+        searchCriteria.setPageIndex(newsRowNumber);
+        searchCriteria.setPageSize(1L);
+        News news = newsService.search(searchCriteria).get(0);
 
-        List<Author> notExpiredAuthors = authorService.getNotExpired();
-        modelAndView.addObject("notExpiredAuthors", notExpiredAuthors);
+        NewsInfo newsInfo = infoUtils.getNewsInfo(news, searchCriteria, newsRowNumber);
 
-        List<Tag> tags = tagService.getAll();
-        modelAndView.addObject("tags", tags);
+        return newsInfo;
+    }
 
-        Authentication auth = SecurityContextHolder.getContext().getAuthentication();
-        String login = auth.getName();
-        String userName = userService.userNameByLogin(login);
-        modelAndView.addObject("userName", userName);
 
-        return modelAndView;
+    /**
+     * Dispatches request to the next
+     * news according current search criteria.
+     * @param request request.
+     * @return next news information.
+     * @throws ServiceException
+     */
+    @RequestMapping(value = "/news/next", method = RequestMethod.GET)
+    @ResponseBody
+    public NewsInfo next(HttpServletRequest request) throws ServiceException {
+        logger.info("Next news GET request");
+
+        HttpSession session = request.getSession(false);
+        SearchCriteria searchCriteria = (SearchCriteria) session.getAttribute("searchCriteria");
+        Long newsRowNumber = (Long) session.getAttribute("newsRowNumber");
+        newsRowNumber++;
+        session.setAttribute("newsRowNumber", newsRowNumber);
+        searchCriteria.setPageIndex(newsRowNumber);
+        searchCriteria.setPageSize(1L);
+        News news = newsService.search(searchCriteria).get(0);
+
+        NewsInfo newsInfo = infoUtils.getNewsInfo(news, searchCriteria, newsRowNumber);
+
+        return newsInfo;
+    }
+
+
+    /**
+     * Deletes list of news.
+     * @param requestBody contains
+     * JSON representation of news ids
+     * which are to be deleted and search
+     * criteria that is needed for retrieving
+     * next news according to current filter.
+     * This news will be rendered instead of
+     * deleted ones.
+     * @param request request.
+     * @return Next news list according to
+     * the search criteria.
+     * @throws IOException
+     * @throws ServiceException
+     */
+    @RequestMapping(value = "/news/delete", method = RequestMethod.POST)
+    @ResponseBody
+    public NewsListInfo delete(@RequestBody String requestBody,
+                                   HttpServletRequest request) throws IOException, ServiceException {
+        logger.info("Delete news POST request");
+
+        JsonNode jsonNode = objectMapper.readTree(requestBody);
+        List<Long> newsIds = objectMapper.convertValue(jsonNode.get("newsIds"), new TypeReference<List<Long>>(){});
+        SearchCriteria searchCriteria = objectMapper.convertValue(jsonNode.get("searchCriteria"), SearchCriteria.class);
+
+        newsService.deleteAll(newsIds);
+
+        Long pagesCount = newsService.countPagesBySearchCriteria(searchCriteria);
+        if (pagesCount == 0) {
+            return null;
+        }
+        else if (searchCriteria.getPageIndex() - 1 == pagesCount) {
+            searchCriteria.setPageIndex(searchCriteria.getPageIndex() - 1);
+        }
+
+        HttpSession session = request.getSession(false);
+        session.setAttribute("searchCriteria", searchCriteria);
+
+        List<News> newsList = newsService.search(searchCriteria);
+        NewsListInfo newsListInfo = infoUtils.getNewsListInfo(newsList, searchCriteria);
+
+        return newsListInfo;
     }
 
 
@@ -120,7 +236,7 @@ public class NewsController {
      * @throws IOException
      * @throws ServiceException
      */
-    @RequestMapping(value = "/news/save", method = RequestMethod.POST)
+    @RequestMapping(value = "/news/save", method = RequestMethod.PUT)
     @ResponseBody
     public Long save(@RequestBody String requestBody) throws IOException, ServiceException {
         JsonNode jsonNode = objectMapper.readTree(requestBody);
@@ -129,13 +245,13 @@ public class NewsController {
         List<Tag> tags = objectMapper.convertValue(jsonNode.get("tags"), new TypeReference<List<Tag>>(){});
 
         if (news.getNewsId() != null) {
-            logger.info("Save edited news POST request");
+            logger.info("Save edited news PUT request");
 
             newsService.update(news);
             newsService.updateNewsAuthorsAndTags(news, authors, tags);
         }
         else {
-            logger.info("Save new news POST request");
+            logger.info("Save new news PUT request");
 
             news = newsService.add(news, authors, tags);
         }

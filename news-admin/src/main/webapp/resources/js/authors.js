@@ -68,8 +68,8 @@ $(document).on('click', '.add-author-link', function (event) {
     $('#invalid-author-name').toggle("slide", 500, function() { $(this).remove(); });
 
     $.ajax({
-        url: '/news-management/authors/add',
-        type: 'POST',
+        url: '/news-admin/authors/add',
+        type: 'PUT',
         data: JSON.stringify({
             authorName: newAuthorName
         }),
@@ -127,8 +127,8 @@ $(document).on('click', '.update-author-link', function (event) {
 
 
     $.ajax({
-        url: '/news-management/authors/update',
-        type: 'POST',
+        url: '/news-admin/authors/update',
+        type: 'PUT',
         data: JSON.stringify({
             authorId: authorId,
             authorName: newAuthorName
@@ -172,11 +172,8 @@ $(document).on('click', '.expire-author-link', function (event) {
     var authorId = parseInt($(event.target).parent().parent().parent().parent().attr('id'));
 
     $.ajax({
-        url: '/news-management/authors/expire',
+        url: '/news-admin/authors/expire/' + authorId,
         type: 'POST',
-        data: JSON.stringify({
-            authorId: authorId
-        }),
         contentType: "application/json",
         beforeSend: function(xhr){
             xhr.setRequestHeader(header, token);

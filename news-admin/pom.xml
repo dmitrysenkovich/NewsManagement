@@ -103,7 +103,7 @@
                 <artifactId>tomcat7-maven-plugin</artifactId>
                 <version>${tomcat-plugin.version}</version>
                 <configuration>
-                    <path>/news-management</path>
+                    <path>/news-admin</path>
                 </configuration>
             </plugin>
         </plugins>
