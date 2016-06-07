@@ -18,18 +18,18 @@
                 <div id="user-content">
                     <form id="login-form" name="loginForm" action="<c:url value='/j_spring_security_check' />" method='POST'>
                         <c:if test="${not empty error}">
-                            <div id="error-message-login">Invalid login or password</div>
+                            <div id="error-message-login"><spring:message code="login.error" /></div>
                         </c:if>
                         <c:if test="${not empty logout}">
-                            <div id="message-login">Successfully logged out</div>
+                            <div id="message-login"><spring:message code="login.logout" /></div>
                         </c:if>
                         <div class="login-row">
-                            <div class="label">Login:</div><input id="login" name="login" class="login-form-input" type="text"><br>
+                            <div class="label"><spring:message code="login.login" />:</div><input id="login" name="login" class="login-form-input" type="text"><br>
                         </div>
                         <div class="login-row">
-                            <div class="label">Password:</div><input id="password" name="password" class="login-form-input" type="password"><br>
+                            <div class="label"><spring:message code="login.password" />:</div><input id="password" name="password" class="login-form-input" type="password"><br>
                         </div>
-                        <button id="login-button" class="row-padded" type="submit">Login</button>
+                        <button id="login-button" class="row-padded" type="submit"><spring:message code="login.login" /></button>
                         <input type="hidden" name="${_csrf.parameterName}"
                                value="${_csrf.token}" />
                     </form>

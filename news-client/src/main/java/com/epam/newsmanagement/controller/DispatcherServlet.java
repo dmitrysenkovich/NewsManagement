@@ -37,20 +37,29 @@ public class DispatcherServlet extends HttpServlet {
     @Override
     public void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
         Command command = commandBuilder.getCommand(request);
-        command.execute(request, response);
+        if (command != null)
+            command.execute(request, response);
+        else
+            response.sendRedirect("/news-client/404");
     }
 
 
     @Override
     public void doPut(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
         Command command = commandBuilder.getCommand(request);
-        command.execute(request, response);
+        if (command != null)
+            command.execute(request, response);
+        else
+            response.sendRedirect("/news-client/404");
     }
 
 
     @Override
     public void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
         Command command = commandBuilder.getCommand(request);
-        command.execute(request, response);
+        if (command != null)
+            command.execute(request, response);
+        else
+            response.sendRedirect("/news-client/404");
     }
 }

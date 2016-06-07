@@ -1,12 +1,15 @@
 $("#authors").multiselect({
-    header: "Please select authors",
-    noneSelectedText: "Please select authors"
+    header: news_list.authors_prompt,
+    noneSelectedText: news_list.authors_prompt,
+    selectedText: '# ' + news_list.selected
 });
 
 $("#tags").multiselect({
-    header: "Please select tags",
-    noneSelectedText: "Please select tags"
+    header: news_list.tags_prompt,
+    noneSelectedText: news_list.tags_prompt,
+    selectedText: '# ' + news_list.selected
 });
+
 
 String.prototype.format = function() {
     var formatted = this;
@@ -40,7 +43,7 @@ var newNewsTemplate = "<div class='short-news'>\
                                 <div class='short-news-tags'>\
                                 {5}</div>\
                                 <div class='short-news-others'>\
-                                    <span style='color: #ff0000'>Comments({6})</span> <a href='/news-client/news/{7}'>View</a>\
+                                    <span style='color: #ff0000'>" + news_list.comments + "({6})</span> <a href='/news-client/news/{7}'>" + news_list.view + "</a>\
                                 </div>\
                             </div>\
                       </div>";
@@ -67,15 +70,14 @@ function fillNewsList(newsListInfo, excludedNewsIds) {
             if ($.inArray(news.newsId, excludedNewsIds) != -1)
                 continue;
 
-        var authorsString = '(by {0})'.format(authorsByNewsId[news.newsId]
+        var authorsString = ('(' + news_list.by + ' {0})').format(authorsByNewsId[news.newsId]
             .map(function(author) { return author.authorName; }).join(', '));
         var tagsString = tagsByNewsId[news.newsId]
             .map(function(tag) { return tag.tagName; }).join(', ');
         var commentsCount = commentsCountByNewsId[news.newsId];
-        var localeCode = 'En';
         var lastEditDate = news.modificationDate ? news.modificationDate : news.creationDate;
         var lastEditDate = new Date(lastEditDate);
-        lastEditDate = lastEditDate.toLocaleString(localeCode, {
+        lastEditDate = lastEditDate.toLocaleString(localeCode.substring(0, 2), {
             year: 'numeric',
             month: 'long',
             day: 'numeric',
@@ -102,7 +104,7 @@ function refreshNewsList(newsListInfo) {
     }
 
     if (!newsList || newsList.length == 0) {
-        $("<div id='no-news-found-message'>No news found:c</div>").appendTo($('#news-list')).slideDown('fast');
+        $("<div id='no-news-found-message'>" + news_list.no_news + "</div>").appendTo($('#news-list')).slideDown('fast');
         processing = false;
         return;
     }

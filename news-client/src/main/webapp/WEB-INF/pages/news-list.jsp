@@ -1,12 +1,24 @@
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
 <%@ taglib prefix="tiles" uri="http://tiles.apache.org/tags-tiles" %>
 <%@ taglib prefix="fmt" uri="http://java.sun.com/jsp/jstl/fmt" %>
-<%@ page session="false" contentType="text/html; charset=UTF-8" %>
+<%@ taglib prefix="spring" uri="http://www.springframework.org/tags" %>
+<%@ page session="true" contentType="text/html; charset=UTF-8" %>
 <html>
     <head>
         <meta charset="utf-8">
 
-        <title>News Management | News</title>
+        <c:choose>
+            <c:when test="${empty sessionScope or sessionScope.language == 'en' or empty sessionScope.language}">
+                <fmt:setLocale value="en_US" scope="session" />
+            </c:when>
+            <c:otherwise>
+                <fmt:setLocale value="ru_RU" scope="session" />
+            </c:otherwise>
+        </c:choose>
+        <c:set var="localeCode" value="${pageContext.response.locale}" />
+        <script type="text/javascript">var localeCode = '${localeCode}';</script>
+
+        <title><spring:message code="news_list.header" /></title>
 
         <link rel="stylesheet" href="<c:url value="/resources/css/style.css" />" />
         <link rel="stylesheet" href="<c:url value="/resources/css/jquery.multiselect.css" />" />
@@ -14,10 +26,12 @@
         <link rel="stylesheet" href="<c:url value="/resources/assets/prettify.css" />" />
         <link rel="stylesheet" href="http://ajax.googleapis.com/ajax/libs/jqueryui/1/themes/ui-lightness/jquery-ui.css" />
 
-        <script type="text/javascript" src="http://ajax.googleapis.com/ajax/libs/jquery/1/jquery.js"></script>
+        <script type="text/javascript" src="<c:url value="/resources/js/jquery-2.0.0.min.js" />"></script>
         <script type="text/javascript" src="http://ajax.googleapis.com/ajax/libs/jqueryui/1/jquery-ui.min.js"></script>
         <script type="text/javascript" src="<c:url value="/resources/js/jquery.multiselect.min.js" />"></script>
         <script type="text/javascript" src="<c:url value="/resources/assets/prettify.js" />"></script>
+        <script type="text/javascript" src="<c:url value="/resources/js/jquery.i18n.properties.min.js" />"></script>
+        <script type="text/javascript" src="<c:url value="/resources/js/localization.js" />"></script>
     </head>
     <body>
         <div id="container">
@@ -26,25 +40,25 @@
                 <div id="user-content" class="scrollable">
                     <div id="filter-row">
                         <select id="authors" multiple="multiple" name="authors">
-                            <option value="default" disabled>Please select authors</option>
+                            <option value="default" disabled><spring:message code="news_list.authors_prompt" /></option>
                             <c:forEach var="author" items="${notExpiredAuthors}">
                                 <option value="${author.authorId}">${author.authorName}</option>
                             </c:forEach>
                         </select>
 
                         <select id="tags" multiple="multiple" name="tags">
-                            <option value="default" disabled>Please select tags</option>
+                            <option value="default" disabled><spring:message code="news_list.tags_prompt" /></option>
                             <c:forEach var="tag" items="${tags}">
                                 <option value="${tag.tagId}">${tag.tagName}</option>
                             </c:forEach>
                         </select>
 
-                        <button id="filter-button">Filter</button>
-                        <button id="reset-button">Reset</button>
+                        <button id="filter-button"><spring:message code="news_list.filter" /></button>
+                        <button id="reset-button"><spring:message code="news_list.reset" /></button>
                     </div>
                     <div id="news-list">
                         <c:if test="${empty newsList}">
-                            <div id='no-news-found-message'>No news found:c</div>
+                            <div id='no-news-found-message'><spring:message code="news_list.no_news" /></div>
                         </c:if>
                         <c:forEach var="news" items="${newsList}">
                             <div class="short-news">
@@ -66,7 +80,7 @@
                                                 </c:otherwise>
                                             </c:choose>
                                         </c:forEach>
-                                        (by ${authorsNames})
+                                        (<spring:message code="news_list.by" /> ${authorsNames})
                                     </div>
                                     <div class="short-news-last-edit">
                                         <u><fmt:formatDate
@@ -76,7 +90,7 @@
                                     </div>
                                 </div>
                                 <div class="short-news-short-text-row">
-                                    ${news.shortText.replace('\\n', '<br>')}
+                                        ${news.shortText.replace('\\n', '<br>')}
                                 </div>
                                 <div class="short-news-footer-row">
                                     <div class="short-news-tags">
@@ -92,11 +106,11 @@
                                                     </c:otherwise>
                                                 </c:choose>
                                             </c:forEach>
-                                            (by ${tagsNames})
+                                            ${tagsNames}
                                         </c:if>
                                     </div>
                                     <div class="short-news-others">
-                                        <span style="color: #ff0000">Comments(${commentsCountByNewsId[news.newsId]})</span> <a href="/news-client/news/${news.newsId}">View</a>
+                                        <span style="color: #ff0000"><spring:message code="news_list.comments" />(${commentsCountByNewsId[news.newsId]})</span> <a href="/news-client/news/${news.newsId}"><spring:message code="news_list.view" /></a>
                                     </div>
                                 </div>
                             </div>

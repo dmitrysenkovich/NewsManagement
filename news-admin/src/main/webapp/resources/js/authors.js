@@ -18,15 +18,15 @@ var token = $("meta[name='_csrf']").attr("content");
 
 
 var newAuthorRowTemplate = "<div id='{0}' class='item'>" +
-    "                       <div class='item-label'>Author:</div>" +
+    "                       <div class='item-label'>" + authors.author + ":</div>" +
     "                       <div class='item-name'><input class='item-name-textarea' type='text' value='{1}' disabled></div>" +
     "                       <div class='item-action'>" +
     "                           <div class='item-update-links' hidden>" +
-    "                               <a href='javascript:void(0)' class='update-author-link'><u>update</u></a>" +
-    "                               <a href='javascript:void(0)' class='expire-author-link'><u>expire</u></a>" +
-    "                               <a href='javascript:void(0)' class='cancel-author-link'><u>cancel</u></a>" +
+    "                               <a href='javascript:void(0)' class='update-author-link'><u>" + authors.update + "</u></a>" +
+    "                               <a href='javascript:void(0)' class='expire-author-link'><u>" + authors.expire + "</u></a>" +
+    "                               <a href='javascript:void(0)' class='cancel-author-link'><u>" + authors.cancel + "</u></a>" +
     "                           </div>" +
-    "                           <a href='javascript:void(0)' class='edit-author-link'><u>edit</u></a>" +
+    "                           <a href='javascript:void(0)' class='edit-author-link'><u>" + authors.edit + "</u></a>" +
     "                       </div>" +
     "                   </div>";
 
@@ -55,7 +55,7 @@ $(document).on('click', '.add-author-link', function (event) {
     if (!newAuthorName) {
         $("#content").animate({ scrollTop: 0 }, "slow", function() {
             if (!$('#invalid-author-name').length) {
-                $("<div id='invalid-author-name'>Invalid author name</div>").prependTo($('#items-list')).slideDown('slow', function () {
+                $("<div id='invalid-author-name'>" + authors.invalid + "</div>").prependTo($('#items-list')).slideDown('slow', function () {
                     processing = false;
                 });
             }
@@ -84,7 +84,7 @@ $(document).on('click', '.add-author-link', function (event) {
                 var newAuthorRow = newAuthorRowTemplate.format(newAuthorId, newAuthorName);
                 $(newAuthorRow).appendTo($('#items-list')).slideDown('fast');
                 $("#content").animate({ scrollTop: 0 }, "slow", function() {
-                    $("<div id='item-added'>Successfully added author</div>").prependTo($('#items-list')).slideDown("fast");
+                    $("<div id='item-added'>" + authors.added + "</div>").prependTo($('#items-list')).slideDown("fast");
                     $('#item-added').delay(3000).fadeOut(function () {
                         $(this).remove();
                         processing = false;
@@ -92,7 +92,7 @@ $(document).on('click', '.add-author-link', function (event) {
                 });
             }
             else if (!$('#item-exists').length) {
-                $("<div id='item-exists'>Author with specified name is already exists!</div>").prependTo($('#items-list')).slideDown('fast');
+                $("<div id='item-exists'>" + authors.exists + "</div>").prependTo($('#items-list')).slideDown('fast');
                 processing = false;
             }
             else
@@ -112,7 +112,7 @@ $(document).on('click', '.update-author-link', function (event) {
     if (!newAuthorName) {
         $("#content").animate({ scrollTop: 0 }, "slow", function() {
             if (!$('#invalid-author-name').length) {
-                $("<div id='invalid-author-name'>Invalid author name</div>").prependTo($('#items-list')).slideDown('slow', function () {
+                $("<div id='invalid-author-name'>" + authors.invalid + "</div>").prependTo($('#items-list')).slideDown('slow', function () {
                     processing = false;
                 });
             }
@@ -142,7 +142,7 @@ $(document).on('click', '.update-author-link', function (event) {
                 if ($('#item-exists').length)
                     $('#item-exists').toggle("slide", 500, function() { $(this).remove(); });
                 $("#content").animate({ scrollTop: 0 }, "slow", function() {
-                    $("<div id='item-updated'>Successfully updated author</div>").prependTo($('#items-list')).slideDown("fast");
+                    $("<div id='item-updated'>" + authors.added + "</div>").prependTo($('#items-list')).slideDown("fast");
                     $('#item-updated').delay(3000).fadeOut(function () {
                         $(this).remove();
                         processing = false;
@@ -150,7 +150,7 @@ $(document).on('click', '.update-author-link', function (event) {
                 });
             }
             else if (!$('#item-exists').length) {
-                $("<div id='item-exists'>Author with specified name is already exists!</div>").prependTo($('#items-list')).slideDown('fast');
+                $("<div id='item-exists'>" + authors.exists + "</div>").prependTo($('#items-list')).slideDown('fast');
                 processing = false;
             }
             else
@@ -181,7 +181,8 @@ $(document).on('click', '.expire-author-link', function (event) {
         success: function() {
             $(event.target).parent().toggle("slide", 500, function() {
                 $(this).remove();
-                $("<div id='author-expired'>Author was successfully expired.</div>").prependTo($('#items-list')).slideDown('fast');
+                $(this).remove();
+                $("<div id='author-expired'>" + authors.expired +"</div>").prependTo($('#items-list')).slideDown('fast');
                 $('#author-expired').delay(3000).fadeOut(function() { $(this).remove(); });
             });
             processing = false;

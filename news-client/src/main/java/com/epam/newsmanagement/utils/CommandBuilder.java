@@ -73,6 +73,9 @@ public class CommandBuilder {
         }
         else if (uri.equals("/news-client/comment/add") && method.equals("POST"))
             return commentCommand;
-        return errorCommand;
+        else if (uri.equals("/news-client/400") || uri.equals("/news-client/403") ||
+                uri.equals("/news-client/404") || uri.equals("/news-client/500"))
+            return errorCommand;
+        return null;
     }
 }

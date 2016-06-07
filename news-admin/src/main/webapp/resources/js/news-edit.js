@@ -1,11 +1,13 @@
 $("#authors").multiselect({
-    header: "Please select authors",
-    noneSelectedText: "Please select authors"
+    header: news_edit.authors_prompt,
+    noneSelectedText: news_edit.authors_prompt,
+    selectedText: '# ' + news_edit.selected
 });
 
 $("#tags").multiselect({
-    header: "Please select tags",
-    noneSelectedText: "Please select tags"
+    header: news_edit.tags_prompt,
+    noneSelectedText: news_edit.tags_prompt,
+    selectedText: '# ' + news_edit.selected
 });
 
 
@@ -51,7 +53,7 @@ $('#save-news-button').click(function () {
         if ($('#no-author-or-tag-selected').length)
             $('#no-author-or-tag-selected').toggle("slide", 500, function() { $(this).remove(); });
         if (!$('#invalid-news').length)
-            $("<div id='invalid-news'>News is invalid. Check if all fields are no empty.</div>").prependTo($('.new-news')).slideDown('fast');
+            $("<div id='invalid-news'>" + news_edit.invalid + "</div>").prependTo($('.new-news')).slideDown('fast');
         processing = false;
         return;
     }
@@ -67,7 +69,7 @@ $('#save-news-button').click(function () {
         if ($('#invalid-news').length)
             $('#invalid-news').toggle("slide", 500, function() { $(this).remove(); });
         if (!$('#no-author-selected').length)
-            $("<div id='no-author-selected'>Every news must have at least one author.</div>").prependTo($('.new-news')).slideDown('fast');
+            $("<div id='no-author-selected'>" + news_edit.no_author + "</div>").prependTo($('.new-news')).slideDown('fast');
         processing = false;
         return;
     }
@@ -112,7 +114,7 @@ $('#save-news-button').click(function () {
             xhr.setRequestHeader(header, token);
         },
         success: function(newNewsId) {
-            $("<div id='news-saved'>News was successfully saved.</div>").prependTo($('.new-news')).slideDown('fast');
+            $("<div id='news-saved'>" + news_edit.saved + "</div>").prependTo($('.new-news')).slideDown('fast');
             $('#news-saved').delay(3000).fadeOut(function() { $(this).remove(); });
             if (!newsId)
                 $('.new-news').attr('id', newNewsId);

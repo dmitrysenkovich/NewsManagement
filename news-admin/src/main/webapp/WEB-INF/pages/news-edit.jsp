@@ -2,14 +2,17 @@
 <%@ taglib prefix="tiles" uri="http://tiles.apache.org/tags-tiles"%>
 <%@ taglib prefix="fmt" uri="http://java.sun.com/jsp/jstl/fmt" %>
 <%@ taglib prefix="sec" uri="http://www.springframework.org/security/tags" %>
+<%@ taglib prefix="spring" uri="http://www.springframework.org/tags" %>
 <%@ page session="false" contentType="text/html; charset=UTF-8" %>
 <html>
     <head>
         <meta charset="utf-8">
 
-        <title>News Management | News</title>
+        <title><spring:message code="news_edit.header" /></title>
 
         <sec:csrfMetaTags/>
+        <c:set var="localeCode" value="${pageContext.response.locale}" />
+        <script>var localeCode = '${localeCode}';</script>
 
         <link href="<c:url value="/resources/css/style.css" />" rel="stylesheet">
         <link href="<c:url value="/resources/css/jquery.multiselect.css" />" rel="stylesheet">
@@ -21,6 +24,8 @@
         <script type="text/javascript" src="http://ajax.googleapis.com/ajax/libs/jqueryui/1/jquery-ui.min.js"></script>
         <script type="text/javascript" src="<c:url value="/resources/js/jquery.multiselect.min.js" />"></script>
         <script type="text/javascript" src="<c:url value="/resources/assets/prettify.js" />"></script>
+        <script type="text/javascript" src="<c:url value="/resources/js/jquery.i18n.properties.min.js" />"></script>
+        <script type="text/javascript" src="<c:url value="/resources/js/localization.js" />"></script>
     </head>
     <body>
         <div id="container">
@@ -31,7 +36,7 @@
                     <div id="${not empty news ? news.newsId : ''}" class="new-news">
                         <div id="new-news-title-row">
                             <div id="new-news-title-label">
-                                Title:
+                                <spring:message code="news_edit.title" />:
                             </div>
                             <div id="new-news-title">
                                 <input id="new-news-textarea" type="text" value="${not empty news ? news.title : ''}">
@@ -39,7 +44,7 @@
                         </div>
                         <div id="date-row">
                             <div id="date-title">
-                                Date:
+                                <spring:message code="news_edit.date" />:
                             </div>
                             <div id="date">
                                 <jsp:useBean id="now" class="java.util.Date" scope="request" />
@@ -57,7 +62,7 @@
                         </div>
                         <div id="short-text-row">
                             <div id="short-text-title">
-                                Brief:
+                                <spring:message code="news_edit.brief" />:
                             </div>
                             <div id="short-text">
                                 <textarea id="short-text-textarea" rows="4" >${not empty news ? news.shortText.replace('\\n', '&#13;&#10;') : ''}</textarea>
@@ -65,7 +70,7 @@
                         </div>
                         <div id="text-row">
                             <div id="text-title">
-                                Content:
+                                <spring:message code="news_edit.content" />:
                             </div>
                             <div id="text">
                                 <textarea id="text-textarea" rows="6" >${not empty news ? news.fullText.replace('\\n', '&#13;&#10;') : ''}</textarea>
@@ -74,7 +79,7 @@
                     </div>
                     <div id="filter-row">
                         <select id="authors" multiple="multiple" name="authors">
-                            <option value="default" disabled>Please select authors</option>
+                            <option value="default" disabled><spring:message code="news_edit.authors_prompt" /></option>
                             <c:choose>
                                 <c:when test="${empty news}">
                                     <c:forEach var="author" items="${notExpiredAuthors}">
@@ -90,7 +95,7 @@
                         </select>
 
                         <select id="tags" multiple="multiple" name="tags">
-                            <option value="default" disabled>Please select tags</option>
+                            <option value="default" disabled><spring:message code="news_edit.tags_prompt" /></option>
                             <c:choose>
                                 <c:when test="${empty news}">
                                     <c:forEach var="tag" items="${tags}">
@@ -106,7 +111,7 @@
                         </select>
                     </div>
                     <div id="save-news-button-wrapper">
-                        <button id="save-news-button">Save</button>
+                        <button id="save-news-button"><spring:message code="news_edit.save" /></button>
                     </div>
                 </div>
             </div>

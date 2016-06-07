@@ -216,13 +216,14 @@ body {
     margin-left: 5px;
     margin-right: 5px;
     display: inline-block;
-    width: 30%;
+    width: 20%;
 }
 
 .short-news-last-edit {
-    margin-left: 5px;
+    margin-right: 5px;
     display: inline;
-    width: 10%;
+    width: 20%;
+    text-align: right;
 }
 
 .short-news-tags {
@@ -321,12 +322,12 @@ ul.pagination li a:hover:not(.active) {background-color: #ddd;}
 
 .news-authors {
     display: flex;
-    width: 90%;
+    width: 80%;
 }
 
 .news-last-edit {
     display: flex;
-    width: 10%;
+    width: 20%;
 }
 
 .news-text {

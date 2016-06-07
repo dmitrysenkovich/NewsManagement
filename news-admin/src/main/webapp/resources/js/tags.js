@@ -22,11 +22,11 @@ var newTagRowTemplate = "<div id='{0}' class='item'>" +
     "                       <div class='item-name'><input class='item-name-textarea' type='text' value='{1}' disabled></div>" +
     "                       <div class='item-action'>" +
     "                           <div class='item-update-links' hidden>" +
-    "                               <a href='javascript:void(0)' class='update-tag-link'><u>update</u></a>" +
-    "                               <a href='javascript:void(0)' class='delete-tag-link'><u>delete</u></a>" +
-    "                               <a href='javascript:void(0)' class='cancel-tag-link'><u>cancel</u></a>" +
+    "                               <a href='javascript:void(0)' class='update-tag-link'><u>" + tags.update + "</u></a>" +
+    "                               <a href='javascript:void(0)' class='delete-tag-link'><u>" + tags.delete + "</u></a>" +
+    "                               <a href='javascript:void(0)' class='cancel-tag-link'><u>" + tags.cancel + "</u></a>" +
     "                           </div>" +
-    "                           <a href='javascript:void(0)' class='edit-tag-link'><u>edit</u></a>" +
+    "                           <a href='javascript:void(0)' class='edit-tag-link'><u>" + tags.edit + "</u></a>" +
     "                       </div>" +
     "                   </div>";
 
@@ -55,7 +55,7 @@ $(document).on('click', '.add-tag-link', function (event) {
     if (!newTagName) {
         $("#content").animate({ scrollTop: 0 }, "slow", function() {
             if (!$('#invalid-tag-name').length) {
-                $("<div id='invalid-tag-name'>Invalid tag name</div>").prependTo($('#items-list')).slideDown('slow', function () {
+                $("<div id='invalid-tag-name'>" + tags.invalid + "</div>").prependTo($('#items-list')).slideDown('slow', function () {
                     processing = false;
                 });
             }
@@ -84,7 +84,7 @@ $(document).on('click', '.add-tag-link', function (event) {
                 var newTagRow = newTagRowTemplate.format(newTagId, newTagName);
                 $(newTagRow).appendTo($('#items-list')).slideDown('fast');
                 $("#content").animate({ scrollTop: 0 }, "slow", function() {
-                    $("<div id='item-added'>Successfully added tag</div>").prependTo($('#items-list')).slideDown("fast");
+                    $("<div id='item-added'>" + tags.added + "</div>").prependTo($('#items-list')).slideDown("fast");
                     $('#item-added').delay(3000).fadeOut(function () {
                         $(this).remove();
                         processing = false;
@@ -92,7 +92,7 @@ $(document).on('click', '.add-tag-link', function (event) {
                 });
             }
             else if (!$('#item-exists').length) {
-                $("<div id='item-exists'>Tag with specified name is already exists!</div>").prependTo($('#items-list')).slideDown('fast');
+                $("<div id='item-exists'>" + tags.exists + "</div>").prependTo($('#items-list')).slideDown('fast');
                 processing = false;
             }
             else
@@ -112,7 +112,7 @@ $(document).on('click', '.update-tag-link', function (event) {
     if (!newTagName) {
         $("#content").animate({ scrollTop: 0 }, "slow", function() {
             if (!$('#invalid-tag-name').length) {
-                $("<div id='invalid-tag-name'>Invalid tag name</div>").prependTo($('#items-list')).slideDown('slow', function () {
+                $("<div id='invalid-tag-name'>" + tags.invalid + "</div>").prependTo($('#items-list')).slideDown('slow', function () {
                     processing = false;
                 });
             }
@@ -142,7 +142,7 @@ $(document).on('click', '.update-tag-link', function (event) {
                 if ($('#item-exists').length)
                     $('#item-exists').toggle("slide", 500, function() { $(this).remove(); });
                 $("#content").animate({ scrollTop: 0 }, "slow", function() {
-                    $("<div id='item-updated'>Successfully updated tag</div>").prependTo($('#items-list')).slideDown("fast");
+                    $("<div id='item-updated'>" + tags.updated + "</div>").prependTo($('#items-list')).slideDown("fast");
                     $('#item-updated').delay(3000).fadeOut(function () {
                         $(this).remove();
                         processing = false;
@@ -150,7 +150,7 @@ $(document).on('click', '.update-tag-link', function (event) {
                 });
             }
             else if (!$('#item-exists').length) {
-                $("<div id='item-exists'>Tag with specified name is already exists!</div>").prependTo($('#items-list')).slideDown('fast');
+                $("<div id='item-exists'>" + tags.exists + "</div>").prependTo($('#items-list')).slideDown('fast');
                 processing = false;
             }
             else
@@ -181,7 +181,7 @@ $(document).on('click', '.delete-tag-link', function (event) {
         success: function() {
             $('#'+tagId).toggle("slide", 500, function() {
                 $(this).remove();
-                $("<div id='tag-deleted'>Tag was successfully deleted.</div>").prependTo($('#items-list')).slideDown('fast');
+                $("<div id='tag-deleted'>" + tags.deleted + "</div>").prependTo($('#items-list')).slideDown('fast');
                 $('#tag-deleted').delay(3000).fadeOut(function() { $(this).remove(); });
             });
             processing = false;

@@ -65,12 +65,11 @@ function refreshNews(newsInfo) {
 
     var news = newsInfo.news;
     var authors = newsInfo.authors;
-    var authorsString = '(by {0})'.format(authors
+    var authorsString = '(' + $.i18n.prop('news.by') + ' {0})'.format(authors
         .map(function(author) { return author.authorName; }).join(', '));
     var lastEditDate = news.modificationDate ? news.modificationDate : news.creationDate;
     var lastEditDate = new Date(lastEditDate);
-    var localeCode = 'En';
-    lastEditDate = lastEditDate.toLocaleString(localeCode, {
+    lastEditDate = lastEditDate.toLocaleString(localeCode.substring(0, 2), {
         year: 'numeric',
         month: 'long',
         day: 'numeric',
@@ -81,7 +80,7 @@ function refreshNews(newsInfo) {
     for (var i = 0; i < comments.length; i++) {
         var comment = comments[i];
         var date = new Date(comment.creationDate);
-        date = date.toLocaleString(localeCode, {
+        date = date.toLocaleString(localeCode.substring(0, 2), {
             year: 'numeric',
             month: 'long',
             day: 'numeric',
@@ -187,9 +186,8 @@ $(document).on('click', '#post-comment-button', function () {
         },
         success: function(comment) {
             $('#new-post-textarea').removeClass('invalid-comment-text');
-            var localeCode = 'En';
             var date = new Date(comment.creationDate);
-            date = date.toLocaleString(localeCode, {
+            date = date.toLocaleString(localeCode.substring(0, 2), {
                 year: 'numeric',
                 month: 'long',
                 day: 'numeric',
