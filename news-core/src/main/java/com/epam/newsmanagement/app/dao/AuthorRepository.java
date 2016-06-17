@@ -1,61 +1,29 @@
 package com.epam.newsmanagement.app.dao;
 
-import com.epam.newsmanagement.app.exception.DaoException;
 import com.epam.newsmanagement.app.model.Author;
-import com.epam.newsmanagement.app.model.News;
+import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.data.jpa.repository.Query;
+import org.springframework.data.repository.query.Param;
 
 import java.util.List;
 
 /**
  * Author repository interface.
  */
-public interface AuthorRepository extends CrudRepository<Author, Long> {
-    /**
-     * Makes an author expired.
-     * @param author author that is
-     * to be expired.
-     * @throws DaoException
-     */
-    default void makeAuthorExpired(Author author) throws DaoException {
-        throw new DaoException();
-    }
-
-    /**
-     * Returns news authors.
-     * @param news specifies news
-     * which authors are to be retrieved.
-     * @return news authors.
-     * @throws DaoException
-     */
-    default List<Author> getAllByNews(News news) throws DaoException {
-        throw new DaoException();
-    }
-
+public interface AuthorRepository extends JpaRepository<Author, Long>, AuthorRepositoryCustom {
     /**
      * Returns all not expired authors.
      * @return all not expired authors.
-     * @throws DaoException
      */
-    default List<Author> getNotExpired() throws DaoException {
-        throw new DaoException();
-    }
-
-    /**
-     * Returns all authors.
-     * @return all authors.
-     * @throws DaoException
-     */
-    default List<Author> getAll() throws DaoException {
-        throw new DaoException();
-    }
+    @Query("from Author where expired is null")
+    List<Author> getNotExpired();
 
     /**
      * Checks if author exists.
-     * @param author author to be checked.
+     * @param authorName authorName
+     * of the author to be checked.
      * @return check result.
-     * @throws DaoException
      */
-    default boolean exists(Author author) throws DaoException {
-        throw new DaoException();
-    }
+    @Query("select case when count(*) > 0 then True else False end from Author A where A.authorName = :authorName")
+    boolean exists(@Param("authorName") String authorName);
 }

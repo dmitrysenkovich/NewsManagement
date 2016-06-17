@@ -1,0 +1,26 @@
+<persistence xmlns="http://java.sun.com/xml/ns/persistence"
+             xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+             xsi:schemaLocation="http://java.sun.com/xml/ns/persistence
+             http://java.sun.com/xml/ns/persistence/persistence_2_0.xsd"
+             version="2.0">
+
+    <persistence-unit name="entityManager">
+        <provider>org.hibernate.ejb.HibernatePersistence</provider>
+
+        <class>com.epam.newsmanagement.app.model.Author</class>
+        <class>com.epam.newsmanagement.app.model.Comment</class>
+        <class>com.epam.newsmanagement.app.model.News</class>
+        <class>com.epam.newsmanagement.app.model.Role</class>
+        <class>com.epam.newsmanagement.app.model.Tag</class>
+        <class>com.epam.newsmanagement.app.model.User</class>
+        <properties>
+            <property name="hibernate.connection.url" value="jdbc:oracle:thin:@localhost" />
+            <property name="hibernate.connection.driver_class" value="oracle.jdbc.driver.OracleDriver" />
+            <property name="hibernate.connection.username" value="dmitry" />
+            <property name="hibernate.connection.password" value="pass" />
+
+            <property name="hibernate.hbm2ddl.auto" value="update"/>
+            <property name="hibernate.jdbc.use_get_generated_keys" value="true"/>
+        </properties>
+    </persistence-unit>
+</persistence>

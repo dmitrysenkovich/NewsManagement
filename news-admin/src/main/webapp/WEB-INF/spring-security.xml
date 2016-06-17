@@ -8,8 +8,6 @@
 
     <beans:bean id="customAuthenticationFailureHandler" class="com.epam.newsmanagement.handler.CustomAuthenticationFailureHandler"/>
 
-	<beans:import resource="classpath*:spring-configuration.xml" />
-
 	<http auto-config="true" use-expressions="true">
         <intercept-url pattern="/authors/**" access="isAuthenticated() and hasRole('ADMIN')"/>
         <intercept-url pattern="/tags/**" access="isAuthenticated() and hasRole('ADMIN')"/>

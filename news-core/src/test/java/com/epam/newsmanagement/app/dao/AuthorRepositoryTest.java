@@ -74,20 +74,20 @@ public class AuthorRepositoryTest {
     public void authorIsAdded() throws Exception {
         Author author = new Author();
         author.setAuthorName("test");
-        Long authorId = authorRepository.add(author);
+        author = authorRepository.save(author);
         connection = DriverManager.getConnection(testDbUrl, testDbUsername, testDbPassword);
         IDataSet actualDataSet = getActualDataSet(connection);
         ITable authorsTable = actualDataSet.getTable("AUTHORS");
 
         assertEquals(3, authorsTable.getRowCount());
-        assertNotNull(authorId);
+        assertNotNull(author.getAuthorId());
     }
 
 
     @Test
     public void authorIsNotAdded() throws Exception {
         Author author = new Author();
-        catchException(() -> authorRepository.add(author));
+        catchException(() -> authorRepository.save(author));
         assert caughtException() instanceof DaoException;
         connection = DriverManager.getConnection(testDbUrl, testDbUsername, testDbPassword);
         IDataSet actualDataSet = getActualDataSet(connection);
@@ -99,7 +99,7 @@ public class AuthorRepositoryTest {
 
     @Test
     public void authorIsFound() throws Exception {
-        Author author = authorRepository.find(1L);
+        Author author = authorRepository.findOne(1L);
 
         assertNotNull(author);
     }
@@ -107,7 +107,7 @@ public class AuthorRepositoryTest {
 
     @Test(expected = DaoException.class)
     public void authorIsNotFound() throws Exception {
-        authorRepository.find(-1L);
+        authorRepository.findOne(-1L);
     }
 
 
@@ -116,8 +116,8 @@ public class AuthorRepositoryTest {
         Author author = new Author();
         author.setAuthorId(1L);
         author.setAuthorName("test1");
-        authorRepository.update(author);
-        Author foundAuthor = authorRepository.find(author.getAuthorId());
+        authorRepository.save(author);
+        Author foundAuthor = authorRepository.findOne(author.getAuthorId());
 
         assertEquals("test1", foundAuthor.getAuthorName());
     }
@@ -128,9 +128,9 @@ public class AuthorRepositoryTest {
         Author author = new Author();
         author.setAuthorId(1L);
         author.setAuthorName(null);
-        catchException(() -> authorRepository.update(author));
+        catchException(() -> authorRepository.save(author));
         assert caughtException() instanceof DaoException;
-        Author foundAuthor = authorRepository.find(author.getAuthorId());
+        Author foundAuthor = authorRepository.findOne(author.getAuthorId());
 
         assertEquals("test", foundAuthor.getAuthorName());
     }
@@ -172,8 +172,8 @@ public class AuthorRepositoryTest {
         Author author = new Author();
         author.setAuthorId(1L);
         author.setExpired(currentDate);
-        authorRepository.makeAuthorExpired(author);
-        Author foundAuthor = authorRepository.find(author.getAuthorId());
+        authorRepository.save(author);
+        Author foundAuthor = authorRepository.findOne(author.getAuthorId());
 
         assertEquals(currentDate.getDate(), foundAuthor.getExpired().getDate());
     }
@@ -189,7 +189,7 @@ public class AuthorRepositoryTest {
         connection = DriverManager.getConnection(testDbUrl, testDbUsername, testDbPassword);
         IDataSet oldDataSet = getActualDataSet(connection);
         ITable oldAuthorsTable = oldDataSet.getTable("AUTHORS");
-        authorRepository.makeAuthorExpired(author);
+        authorRepository.save(author);
         IDataSet actualDataSet = getActualDataSet(connection);
         ITable authorsTable = actualDataSet.getTable("AUTHORS");
 
@@ -224,7 +224,7 @@ public class AuthorRepositoryTest {
 
     @Test
     public void gotAllAuthors() throws Exception {
-        List<Author> allAuthors = authorRepository.getAll();
+        List<Author> allAuthors = authorRepository.findAll();
         assertEquals(2L, allAuthors.size());
     }
 
@@ -233,7 +233,7 @@ public class AuthorRepositoryTest {
     public void authorExists() throws Exception {
         Author author = new Author();
         author.setAuthorName("test");
-        boolean exists = authorRepository.exists(author);
+        boolean exists = authorRepository.exists(author.getAuthorName());
 
         assertTrue(exists);
     }
@@ -243,7 +243,7 @@ public class AuthorRepositoryTest {
     public void authorDoesNotExist() throws Exception {
         Author author = new Author();
         author.setAuthorName("test1");
-        boolean exists = authorRepository.exists(author);
+        boolean exists = authorRepository.exists(author.getAuthorName());
 
         assertFalse(exists);
     }

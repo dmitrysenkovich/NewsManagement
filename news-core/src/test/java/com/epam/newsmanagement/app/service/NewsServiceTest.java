@@ -1,13 +1,12 @@
 package com.epam.newsmanagement.app.service;
 
-import com.epam.newsmanagement.app.dao.NewsAuthorRepository;
+import com.epam.newsmanagement.app.dao.AuthorRepository;
 import com.epam.newsmanagement.app.dao.NewsRepository;
-import com.epam.newsmanagement.app.dao.NewsTagRepository;
+import com.epam.newsmanagement.app.dao.TagRepository;
 import com.epam.newsmanagement.app.exception.DaoException;
 import com.epam.newsmanagement.app.exception.ServiceException;
 import com.epam.newsmanagement.app.model.Author;
 import com.epam.newsmanagement.app.model.News;
-import com.epam.newsmanagement.app.model.NewsAuthor;
 import com.epam.newsmanagement.app.model.Tag;
 import com.epam.newsmanagement.app.service.impl.NewsServiceImpl;
 import com.epam.newsmanagement.app.utils.SearchCriteria;
@@ -46,9 +45,9 @@ public class NewsServiceTest {
     @Mock
     private NewsRepository newsRepository;
     @Mock
-    private NewsAuthorRepository newsAuthorRepository;
+    private AuthorRepository authorRepository;
     @Mock
-    private NewsTagRepository newsTagRepository;
+    private TagRepository tagRepository;
 
     @Mock
     private SearchUtils searchUtils;
@@ -62,14 +61,14 @@ public class NewsServiceTest {
     @Test
     public void notAddedNewsAuthorsAreNullTagsAreNull() throws Exception {
         News news = new News();
-        when(newsRepository.add(news)).thenReturn(1L);
+        when(newsRepository.save(news)).thenReturn(news);
         catchException(() -> newsService.add(news, null, null));
         assert caughtException() instanceof ServiceException;
 
         assertEquals((Long) 1L, news.getNewsId());
-        verify(newsRepository, times(1)).add(news);
-        verify(newsAuthorRepository, times(0)).addAll(any(News.class), any(List.class));
-        verify(newsTagRepository, times(0)).addAll(any(News.class), any(List.class));
+        verify(newsRepository, times(1)).save(news);
+        verify(authorRepository, times(0)).addAll(any(News.class), any(List.class));
+        verify(tagRepository, times(0)).addAll(any(News.class), any(List.class));
     }
 
 
@@ -79,14 +78,13 @@ public class NewsServiceTest {
         news.setNewsId(1L);
         List<Author> authors = new LinkedList<>();
         authors.add(new Author());
-        when(newsRepository.add(news)).thenReturn(1L);
-        doNothing().when(newsAuthorRepository).add(any(NewsAuthor.class));
+        when(newsRepository.save(news)).thenReturn(news);
         news = newsService.add(news, authors, null);
 
         assertEquals((Long) 1L, news.getNewsId());
-        verify(newsRepository, times(1)).add(news);
-        verify(newsAuthorRepository, times(1)).addAll(any(News.class), any(List.class));
-        verify(newsTagRepository, times(0)).addAll(any(News.class), any(List.class));
+        verify(newsRepository, times(1)).save(news);
+        verify(authorRepository, times(1)).addAll(any(News.class), any(List.class));
+        verify(tagRepository, times(0)).addAll(any(News.class), any(List.class));
     }
 
 
@@ -96,14 +94,14 @@ public class NewsServiceTest {
         news.setNewsId(1L);
         List<Tag> tags = new LinkedList<>();
         tags.add(new Tag());
-        when(newsRepository.add(news)).thenReturn(1L);
+        when(newsRepository.save(news)).thenReturn(news);
         catchException(() -> newsService.add(news, null, tags));
         assert caughtException() instanceof ServiceException;
 
         assertEquals((Long) 1L, news.getNewsId());
-        verify(newsRepository, times(1)).add(news);
-        verify(newsAuthorRepository, times(0)).addAll(any(News.class), any(List.class));
-        verify(newsTagRepository, times(0)).addAll(any(News.class), any(List.class));
+        verify(newsRepository, times(1)).save(news);
+        verify(authorRepository, times(0)).addAll(any(News.class), any(List.class));
+        verify(tagRepository, times(0)).addAll(any(News.class), any(List.class));
     }
 
 
@@ -115,27 +113,26 @@ public class NewsServiceTest {
         authors.add(new Author());
         List<Tag> tags = new LinkedList<>();
         tags.add(new Tag());
-        when(newsRepository.add(news)).thenReturn(1L);
-        doNothing().when(newsAuthorRepository).add(any(NewsAuthor.class));
-        doNothing().when(newsTagRepository).addAll(any(News.class), any(List.class));
+        when(newsRepository.save(news)).thenReturn(news);
+        doNothing().when(tagRepository).addAll(any(News.class), any(List.class));
         news = newsService.add(news, authors, tags);
 
         assertEquals((Long) 1L, news.getNewsId());
-        verify(newsRepository, times(1)).add(news);
-        verify(newsAuthorRepository, times(1)).addAll(any(News.class), any(List.class));
-        verify(newsTagRepository, times(1)).addAll(any(News.class), any(List.class));
+        verify(newsRepository, times(1)).save(news);
+        verify(authorRepository, times(1)).addAll(any(News.class), any(List.class));
+        verify(tagRepository, times(1)).addAll(any(News.class), any(List.class));
     }
 
 
     @Test
     public void didNotAddNewsAuthorsAreNullTagsAreNullNewsFailure() throws Exception {
-        doThrow(new DaoException()).when(newsRepository).add(any(News.class));
+        doThrow(new DaoException()).when(newsRepository).save(any(News.class));
         catchException(() -> newsService.add(new News(), null, null));
         assert caughtException() instanceof ServiceException;
 
-        verify(newsRepository, times(1)).add(any(News.class));
-        verify(newsAuthorRepository, times(0)).addAll(any(News.class), any(List.class));
-        verify(newsTagRepository, times(0)).addAll(any(News.class), any(List.class));
+        verify(newsRepository, times(1)).save(any(News.class));
+        verify(authorRepository, times(0)).addAll(any(News.class), any(List.class));
+        verify(tagRepository, times(0)).addAll(any(News.class), any(List.class));
     }
 
 
@@ -143,13 +140,13 @@ public class NewsServiceTest {
     public void didNotAddNewsAuthorsAreNotNullTagsAreNullNewsFailure() throws Exception {
         List<Author> authors = new LinkedList<>();
         authors.add(new Author());
-        doThrow(new DaoException()).when(newsRepository).add(any(News.class));
+        doThrow(new DaoException()).when(newsRepository).save(any(News.class));
         catchException(() -> newsService.add(new News(), authors, null));
         assert caughtException() instanceof ServiceException;
 
-        verify(newsRepository, times(1)).add(any(News.class));
-        verify(newsAuthorRepository, times(0)).addAll(any(News.class), any(List.class));
-        verify(newsTagRepository, times(0)).addAll(any(News.class), any(List.class));
+        verify(newsRepository, times(1)).save(any(News.class));
+        verify(authorRepository, times(0)).addAll(any(News.class), any(List.class));
+        verify(tagRepository, times(0)).addAll(any(News.class), any(List.class));
     }
 
 
@@ -157,13 +154,13 @@ public class NewsServiceTest {
     public void didNotAddNewsAuthorsAreNullTagsAreNotNullNewsFailure() throws Exception {
         List<Tag> tags = new LinkedList<>();
         tags.add(new Tag());
-        doThrow(new DaoException()).when(newsRepository).add(any(News.class));
+        doThrow(new DaoException()).when(newsRepository).save(any(News.class));
         catchException(() -> newsService.add(new News(), null, tags));
         assert caughtException() instanceof ServiceException;
 
-        verify(newsRepository, times(1)).add(any(News.class));
-        verify(newsAuthorRepository, times(0)).addAll(any(News.class), any(List.class));
-        verify(newsTagRepository, times(0)).addAll(any(News.class), any(List.class));
+        verify(newsRepository, times(1)).save(any(News.class));
+        verify(authorRepository, times(0)).addAll(any(News.class), any(List.class));
+        verify(tagRepository, times(0)).addAll(any(News.class), any(List.class));
     }
 
 
@@ -173,26 +170,25 @@ public class NewsServiceTest {
         authors.add(new Author());
         List<Tag> tags = new LinkedList<>();
         tags.add(new Tag());
-        doThrow(new DaoException()).when(newsRepository).add(any(News.class));
+        doThrow(new DaoException()).when(newsRepository).save(any(News.class));
         catchException(() -> newsService.add(new News(), authors, tags));
         assert caughtException() instanceof ServiceException;
 
-        verify(newsRepository, times(1)).add(any(News.class));
-        verify(newsAuthorRepository, times(0)).addAll(any(News.class), any(List.class));
-        verify(newsTagRepository, times(0)).addAll(any(News.class), any(List.class));
+        verify(newsRepository, times(1)).save(any(News.class));
+        verify(authorRepository, times(0)).addAll(any(News.class), any(List.class));
+        verify(tagRepository, times(0)).addAll(any(News.class), any(List.class));
     }
 
 
     @Test
     public void didNotAddNewsTagsAreNullAuthorsAreNull() throws Exception {
-        when(newsRepository.add(any(News.class))).thenReturn(1L);
-        doThrow(new DaoException()).when(newsAuthorRepository).add(any(NewsAuthor.class));
+        when(newsRepository.save(any(News.class))).thenReturn(new News());
         catchException(() -> newsService.add(new News(), null, null));
         assert caughtException() instanceof ServiceException;
 
-        verify(newsRepository, times(1)).add(any(News.class));
-        verify(newsAuthorRepository, times(0)).addAll(any(News.class), any(List.class));
-        verify(newsTagRepository, times(0)).addAll(any(News.class), any(List.class));
+        verify(newsRepository, times(1)).save(any(News.class));
+        verify(authorRepository, times(0)).addAll(any(News.class), any(List.class));
+        verify(tagRepository, times(0)).addAll(any(News.class), any(List.class));
     }
 
 
@@ -201,14 +197,13 @@ public class NewsServiceTest {
         List<Author> authors = new LinkedList<>();
         List<Tag> tags = new LinkedList<>();
         tags.add(new Tag());
-        when(newsRepository.add(any(News.class))).thenReturn(1L);
-        doThrow(new DaoException()).when(newsAuthorRepository).add(any(NewsAuthor.class));
+        when(newsRepository.save(any(News.class))).thenReturn(new News());
         catchException(() -> newsService.add(new News(), authors, tags));
         assert caughtException() instanceof ServiceException;
 
-        verify(newsRepository, times(1)).add(any(News.class));
-        verify(newsAuthorRepository, times(0)).addAll(any(News.class), any(List.class));
-        verify(newsTagRepository, times(0)).addAll(any(News.class), any(List.class));
+        verify(newsRepository, times(1)).save(any(News.class));
+        verify(authorRepository, times(0)).addAll(any(News.class), any(List.class));
+        verify(tagRepository, times(0)).addAll(any(News.class), any(List.class));
     }
 
 
@@ -216,15 +211,14 @@ public class NewsServiceTest {
     public void didNotAddNewsAuthorsAreNullTagsFailure() throws Exception {
         List<Tag> tags = new LinkedList<>();
         tags.add(new Tag());
-        when(newsRepository.add(any(News.class))).thenReturn(1L);
-        doNothing().when(newsAuthorRepository).add(any(NewsAuthor.class));
-        doThrow(new DaoException()).when(newsTagRepository).addAll(any(News.class), any(List.class));
+        when(newsRepository.save(any(News.class))).thenReturn(new News());
+        doThrow(new DaoException()).when(tagRepository).addAll(any(News.class), any(List.class));
         catchException(() -> newsService.add(new News(), null, tags));
         assert caughtException() instanceof ServiceException;
 
-        verify(newsRepository, times(1)).add(any(News.class));
-        verify(newsAuthorRepository, times(0)).addAll(any(News.class), any(List.class));
-        verify(newsTagRepository, times(0)).addAll(any(News.class), any(List.class));
+        verify(newsRepository, times(1)).save(any(News.class));
+        verify(authorRepository, times(0)).addAll(any(News.class), any(List.class));
+        verify(tagRepository, times(0)).addAll(any(News.class), any(List.class));
     }
 
 
@@ -234,15 +228,14 @@ public class NewsServiceTest {
         authors.add(new Author());
         List<Tag> tags = new LinkedList<>();
         tags.add(new Tag());
-        when(newsRepository.add(any(News.class))).thenReturn(1L);
-        doNothing().when(newsAuthorRepository).add(any(NewsAuthor.class));
-        doThrow(new DaoException()).when(newsTagRepository).addAll(any(News.class), any(List.class));
+        when(newsRepository.save(any(News.class))).thenReturn(new News());
+        doThrow(new DaoException()).when(tagRepository).addAll(any(News.class), any(List.class));
         catchException(() -> newsService.add(new News(), authors, tags));
         assert caughtException() instanceof ServiceException;
 
-        verify(newsRepository, times(1)).add(any(News.class));
-        verify(newsAuthorRepository, times(1)).addAll(any(News.class), any(List.class));
-        verify(newsTagRepository, times(1)).addAll(any(News.class), any(List.class));
+        verify(newsRepository, times(1)).save(any(News.class));
+        verify(authorRepository, times(1)).addAll(any(News.class), any(List.class));
+        verify(tagRepository, times(1)).addAll(any(News.class), any(List.class));
     }
 
 
@@ -250,7 +243,7 @@ public class NewsServiceTest {
     public void found() throws Exception {
         News news = new News();
         news.setNewsId(1L);
-        when(newsRepository.find(1L)).thenReturn(news);
+        when(newsRepository.findOne(1L)).thenReturn(news);
         news = newsService.find(1L);
 
         assertEquals((Long) 1L, news.getNewsId());
@@ -259,21 +252,21 @@ public class NewsServiceTest {
 
     @Test(expected = ServiceException.class)
     public void didNotFind() throws Exception {
-        doThrow(new DaoException()).when(newsRepository).find(any(Long.class));
+        doThrow(new DaoException()).when(newsRepository).findOne(any(Long.class));
         newsService.find(1L);
     }
 
 
     @Test
     public void updated() throws Exception {
-        doNothing().when(newsRepository).update(any(News.class));
+        doNothing().when(newsRepository).save(any(News.class));
         newsService.update(new News());
     }
 
 
     @Test(expected = ServiceException.class)
     public void didNotUpdate() throws Exception {
-        doThrow(new DaoException()).when(newsRepository).update(any(News.class));
+        doThrow(new DaoException()).when(newsRepository).save(any(News.class));
         newsService.update(new News());
     }
 

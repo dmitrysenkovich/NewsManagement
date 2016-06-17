@@ -37,7 +37,7 @@ public class RoleServiceTest {
     public void added() throws Exception {
         Role role = new Role();
         role.setRoleId(1L);
-        when(roleRepository.add(role)).thenReturn(1L);
+        when(roleRepository.save(role)).thenReturn(role);
         role = roleService.add(role);
 
         assertEquals((Long) 1L, role.getRoleId());
@@ -46,7 +46,7 @@ public class RoleServiceTest {
 
     @Test(expected = ServiceException.class)
     public void didNotAdd() throws Exception {
-        doThrow(new DaoException()).when(roleRepository).add(any(Role.class));
+        doThrow(new DaoException()).when(roleRepository).save(any(Role.class));
         roleService.add(new Role());
     }
 
@@ -55,7 +55,7 @@ public class RoleServiceTest {
     public void found() throws Exception {
         Role role = new Role();
         role.setRoleId(1L);
-        when(roleRepository.find(1L)).thenReturn(role);
+        when(roleRepository.findOne(1L)).thenReturn(role);
         role = roleService.find(1L);
 
         assertEquals((Long) 1L, role.getRoleId());
@@ -64,21 +64,21 @@ public class RoleServiceTest {
 
     @Test(expected = ServiceException.class)
     public void didNotFind() throws Exception {
-        doThrow(new DaoException()).when(roleRepository).find(any(Long.class));
+        doThrow(new DaoException()).when(roleRepository).findOne(any(Long.class));
         roleService.find(1L);
     }
 
 
     @Test
     public void updated() throws Exception {
-        doNothing().when(roleRepository).update(any(Role.class));
+        doNothing().when(roleRepository).save(any(Role.class));
         roleService.update(new Role());
     }
 
 
     @Test(expected = ServiceException.class)
     public void didNotUpdate() throws Exception {
-        doThrow(new DaoException()).when(roleRepository).update(any(Role.class));
+        doThrow(new DaoException()).when(roleRepository).save(any(Role.class));
         roleService.update(new Role());
     }
 

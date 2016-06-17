@@ -8,6 +8,7 @@ import com.epam.newsmanagement.app.model.News;
 import com.epam.newsmanagement.app.model.Tag;
 import com.epam.newsmanagement.app.service.TagService;
 import org.apache.log4j.Logger;
+import org.hibernate.HibernateException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -28,9 +29,8 @@ public class TagServiceImpl implements TagService {
     public Tag add(Tag tag) throws ServiceException {
         logger.info("Adding new tag..");
         try {
-            Long id = tagRepository.add(tag);
-            tag.setTagId(id);
-        } catch (DaoException e) {
+            tag = tagRepository.save(tag);
+        } catch (HibernateException e) {
             logger.error("Failed to add new tag");
             throw new ServiceException(e);
         }
@@ -44,8 +44,8 @@ public class TagServiceImpl implements TagService {
         logger.info("Retrieving tag..");
         Tag tag;
         try {
-            tag = tagRepository.find(tagId);
-        } catch (DaoException e) {
+            tag = tagRepository.findOne(tagId);
+        } catch (HibernateException e) {
             logger.error("Failed to find tag");
             throw new ServiceException(e);
         }
@@ -59,8 +59,8 @@ public class TagServiceImpl implements TagService {
     public void update(Tag tag) throws ServiceException {
         logger.info("Updating tag..");
         try {
-            tagRepository.update(tag);
-        } catch (DaoException e) {
+            tagRepository.save(tag);
+        } catch (HibernateException e) {
             logger.error("Failed to update tag");
             throw new ServiceException(e);
         }
@@ -74,7 +74,7 @@ public class TagServiceImpl implements TagService {
         logger.info("Deleting tag..");
         try {
             tagRepository.delete(tag);
-        } catch (DaoException e) {
+        } catch (HibernateException e) {
             logger.error("Failed to delete tag");
             throw new ServiceException(e);
         }
@@ -88,7 +88,7 @@ public class TagServiceImpl implements TagService {
         List<Tag> tagsByNews;
         try {
             tagsByNews = tagRepository.getAllByNews(news);
-        } catch (DaoException e) {
+        } catch (HibernateException e) {
             logger.error("Failed to retrieve news tags");
             throw new ServiceException(e);
         }
@@ -103,8 +103,8 @@ public class TagServiceImpl implements TagService {
         logger.info("Retrieving all tags..");
         List<Tag> allTags;
         try {
-            allTags = tagRepository.getAll();
-        } catch (DaoException e) {
+            allTags = tagRepository.findAll();
+        } catch (HibernateException e) {
             logger.error("Failed to retrieve all tags");
             throw new ServiceException(e);
         }
@@ -119,8 +119,8 @@ public class TagServiceImpl implements TagService {
         logger.info("Checking tag existence..");
         boolean exists;
         try {
-            exists = tagRepository.exists(tag);
-        } catch (DaoException e) {
+            exists = tagRepository.exists(tag.getTagName());
+        } catch (HibernateException e) {
             logger.error("Failed to check tag existence");
             throw new ServiceException(e);
         }

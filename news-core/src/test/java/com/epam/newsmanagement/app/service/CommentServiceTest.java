@@ -45,11 +45,11 @@ public class CommentServiceTest {
         news.setNewsId(1L);
         Comment comment = new Comment();
         comment.setCommentId(1L);
-        when(commentRepository.add(comment)).thenReturn(1L);
+        when(commentRepository.save(comment)).thenReturn(comment);
         comment = commentService.add(news, comment);
 
         assertEquals((Long) 1L, comment.getCommentId());
-        assertEquals((Long) 1L, comment.getNewsId());
+        assertEquals((Long) 1L, comment.getNews().getNewsId());
     }
 
 
@@ -57,7 +57,7 @@ public class CommentServiceTest {
     public void didNotAdd() throws Exception {
         News news = new News();
         news.setNewsId(1L);
-        doThrow(new DaoException()).when(commentRepository).add(any(Comment.class));
+        doThrow(new DaoException()).when(commentRepository).save(any(Comment.class));
         commentService.add(news, new Comment());
     }
 
@@ -66,7 +66,7 @@ public class CommentServiceTest {
     public void found() throws Exception {
         Comment comment = new Comment();
         comment.setCommentId(1L);
-        when(commentRepository.find(1L)).thenReturn(comment);
+        when(commentRepository.findOne(1L)).thenReturn(comment);
         comment = commentService.find(1L);
 
         assertEquals((Long) 1L, comment.getCommentId());
@@ -75,21 +75,21 @@ public class CommentServiceTest {
 
     @Test(expected = ServiceException.class)
     public void didNotFind() throws Exception {
-        doThrow(new DaoException()).when(commentRepository).find(any(Long.class));
+        doThrow(new DaoException()).when(commentRepository).findOne(any(Long.class));
         commentService.find(1L);
     }
 
 
     @Test
     public void updated() throws Exception {
-        doNothing().when(commentRepository).update(any(Comment.class));
+        doNothing().when(commentRepository).save(any(Comment.class));
         commentService.update(new Comment());
     }
 
 
     @Test(expected = ServiceException.class)
     public void didNotUpdate() throws Exception {
-        doThrow(new DaoException()).when(commentRepository).update(any(Comment.class));
+        doThrow(new DaoException()).when(commentRepository).save(any(Comment.class));
         commentService.update(new Comment());
     }
 

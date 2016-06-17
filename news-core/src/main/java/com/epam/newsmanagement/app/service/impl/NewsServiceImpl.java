@@ -1,18 +1,18 @@
 package com.epam.newsmanagement.app.service.impl;
 
-import com.epam.newsmanagement.app.dao.NewsAuthorRepository;
+import com.epam.newsmanagement.app.dao.AuthorRepository;
 import com.epam.newsmanagement.app.dao.NewsRepository;
-import com.epam.newsmanagement.app.dao.NewsTagRepository;
+import com.epam.newsmanagement.app.dao.TagRepository;
 import com.epam.newsmanagement.app.exception.DaoException;
 import com.epam.newsmanagement.app.exception.ServiceException;
 import com.epam.newsmanagement.app.model.Author;
 import com.epam.newsmanagement.app.model.News;
-import com.epam.newsmanagement.app.model.NewsAuthor;
 import com.epam.newsmanagement.app.model.Tag;
 import com.epam.newsmanagement.app.service.NewsService;
 import com.epam.newsmanagement.app.utils.SearchCriteria;
 import com.epam.newsmanagement.app.utils.SearchUtils;
 import org.apache.log4j.Logger;
+import org.hibernate.HibernateException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -29,9 +29,9 @@ public class NewsServiceImpl implements NewsService {
     @Autowired
     private NewsRepository newsRepository;
     @Autowired
-    private NewsAuthorRepository newsAuthorRepository;
+    private AuthorRepository authorRepository;
     @Autowired
-    private NewsTagRepository newsTagRepository;
+    private TagRepository tagRepository;
 
     @Autowired
     private SearchUtils searchUtils;
@@ -39,14 +39,13 @@ public class NewsServiceImpl implements NewsService {
 
     @Override
     @Transactional(rollbackFor = ServiceException.class)
-    public News add(News news, List<Author> authors, List<Tag> tags) throws ServiceException {
+        public News add(News news, List<Author> authors, List<Tag> tags) throws ServiceException {
         logger.info("Adding news..");
         news.setCreationDate(new Timestamp(new java.util.Date().getTime()));
         news.setModificationDate(new Date(new java.util.Date().getTime()));
         try {
-            Long id = newsRepository.add(news);
-            news.setNewsId(id);
-        } catch (DaoException e) {
+            news = newsRepository.save(news);
+        } catch (HibernateException e) {
             logger.error("Failed to add news");
             throw new ServiceException(e);
         }
@@ -55,8 +54,8 @@ public class NewsServiceImpl implements NewsService {
             logger.info("Adding authors to news..");
 
             try {
-                newsAuthorRepository.addAll(news, authors);
-            } catch (DaoException e) {
+                authorRepository.addAll(news, authors);
+            } catch (HibernateException e) {
                 logger.error("Failed to add authors to news");
                 logger.error("Failed to add news");
                 throw new ServiceException(e);
@@ -73,8 +72,8 @@ public class NewsServiceImpl implements NewsService {
             logger.info("Adding tags to news..");
 
             try {
-                newsTagRepository.addAll(news, tags);
-            } catch (DaoException e) {
+                tagRepository.addAll(news, tags);
+            } catch (HibernateException e) {
                 logger.error("Failed to add tags to news");
                 logger.error("Failed to add news");
                 throw new ServiceException(e);
@@ -94,8 +93,8 @@ public class NewsServiceImpl implements NewsService {
 
         try {
             logger.info("Deleting all news authors..");
-            newsAuthorRepository.deleteAll(news);
-        } catch (DaoException e) {
+            authorRepository.deleteAllRelationsByNews(news);
+        } catch (HibernateException e) {
             logger.error("Failed to delete all news authors");
             logger.error("Failed to update news authors and tags");
             throw new ServiceException(e);
@@ -103,8 +102,8 @@ public class NewsServiceImpl implements NewsService {
 
         try {
             logger.info("Deleting all news tags..");
-            newsTagRepository.deleteAll(news);
-        } catch (DaoException e) {
+            tagRepository.deleteAllRelationsByNews(news);
+        } catch (HibernateException e) {
             logger.error("Failed to delete all news tags");
             logger.error("Failed to update news authors and tags");
             throw new ServiceException(e);
@@ -112,8 +111,8 @@ public class NewsServiceImpl implements NewsService {
 
         try {
             logger.info("Adding all news to authors relations..");
-            newsAuthorRepository.addAll(news, authors);
-        } catch (DaoException e) {
+            authorRepository.addAll(news, authors);
+        } catch (HibernateException e) {
             logger.error("Failed to add all news authors");
             logger.error("Failed to update news authors and tags");
             throw new ServiceException(e);
@@ -121,8 +120,8 @@ public class NewsServiceImpl implements NewsService {
 
         try {
             logger.info("Adding all news to tags relations..");
-            newsTagRepository.addAll(news, tags);
-        } catch (DaoException e) {
+            tagRepository.addAll(news, tags);
+        } catch (HibernateException e) {
             logger.error("Failed to add all news tags");
             logger.error("Failed to update news authors and tags");
             throw new ServiceException(e);
@@ -137,8 +136,8 @@ public class NewsServiceImpl implements NewsService {
         logger.info("Retrieving news..");
         News news;
         try {
-            news = newsRepository.find(newsId);
-        } catch (DaoException e) {
+            news = newsRepository.findOne(newsId);
+        } catch (HibernateException e) {
             logger.error("Failed to find news");
             throw new ServiceException(e);
         }
@@ -153,8 +152,10 @@ public class NewsServiceImpl implements NewsService {
         news.setModificationDate(new Date(new java.util.Date().getTime()));
         logger.info("Updating news..");
         try {
-            newsRepository.update(news);
-        } catch (DaoException e) {
+            News oldNews = newsRepository.findOne(news.getNewsId());
+            news.setCreationDate(oldNews.getCreationDate());
+            newsRepository.save(news);
+        } catch (HibernateException e) {
             logger.error("Failed to update news");
             throw new ServiceException(e);
         }
@@ -168,7 +169,7 @@ public class NewsServiceImpl implements NewsService {
         logger.info("Deleting news..");
         try {
             newsRepository.delete(news);
-        } catch (DaoException e) {
+        } catch (HibernateException e) {
             logger.error("Failed to delete news");
             throw new ServiceException(e);
         }
@@ -183,7 +184,7 @@ public class NewsServiceImpl implements NewsService {
         List<News> fitNews;
         try {
             fitNews = newsRepository.search(SEARCH_CRITERIA_QUERY);
-        } catch (DaoException e) {
+        } catch (HibernateException e) {
             logger.error("Failed to find news by search criteria");
             throw new ServiceException(e);
         }
@@ -198,7 +199,7 @@ public class NewsServiceImpl implements NewsService {
         List<News> sortedNews;
         try {
             sortedNews = newsRepository.findAllSorted();
-        } catch (DaoException e) {
+        } catch (HibernateException e) {
             logger.error("Failed to retrieve all news sorted by comments count");
             throw new ServiceException(e);
         }
@@ -213,7 +214,7 @@ public class NewsServiceImpl implements NewsService {
         Long newsCount;
         try {
             newsCount = newsRepository.countAll();
-        } catch (DaoException e) {
+        } catch (HibernateException e) {
             logger.error("Failed to count all news");
             throw new ServiceException(e);
         }
@@ -229,7 +230,7 @@ public class NewsServiceImpl implements NewsService {
         Long fitNewsPagesCount;
         try {
             fitNewsPagesCount = newsRepository.countPagesBySearchCriteria(COUNT_PAGES_BY_SEARCH_CRITERIA_QUERY);
-        } catch (DaoException e) {
+        } catch (HibernateException e) {
             logger.error("Failed to count news pages by search criteria");
             throw new ServiceException(e);
         }
@@ -244,7 +245,7 @@ public class NewsServiceImpl implements NewsService {
         logger.info("Deleting list of news..");
         try {
             newsRepository.deleteAll(newsIds);
-        } catch (DaoException e) {
+        } catch (HibernateException e) {
             logger.error("Failed to delete list of news");
             throw new ServiceException(e);
         }
@@ -259,7 +260,7 @@ public class NewsServiceImpl implements NewsService {
         Long newsRowNumber;
         try {
             newsRowNumber = newsRepository.rowNumberBySearchCriteria(ROW_NUMBER_BY_SEARCH_CRITERIA_QUERY);
-        } catch (DaoException e) {
+        } catch (HibernateException e) {
             logger.error("Failed to retrieve news row number by search criteria");
             throw new ServiceException(e);
         }

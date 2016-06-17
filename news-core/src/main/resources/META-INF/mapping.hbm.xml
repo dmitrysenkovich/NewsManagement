@@ -1,0 +1,65 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!DOCTYPE hibernate-mapping PUBLIC
+        "-//Hibernate/Hibernate Mapping DTD//EN"
+        "http://www.hibernate.org/dtd/hibernate-mapping-3.0.dtd">
+
+<hibernate-mapping>
+    <class name="com.epam.newsmanagement.app.model.Author" table="AUTHORS">
+        <id name="authorId" type="long" column="AUTHOR_ID">
+            <generator class="sequence-identity" >
+                <param name="sequence">AUTHORS_IDS_SEQUENCE</param>
+            </generator>
+        </id>
+        <property name="authorName" column="AUTHOR_NAME" type="string"/>
+        <property name="expired" column="EXPIRED" type="timestamp"/>
+    </class>
+    <class name="com.epam.newsmanagement.app.model.Comment" table="COMMENTS">
+        <id name="commentId" type="long" column="COMMENT_ID">
+            <generator class="sequence-identity" >
+                <param name="sequence">COMMENTS_IDS_SEQUENCE</param>
+            </generator>
+        </id>
+        <many-to-one name="news" column="NEWS_ID" class="com.epam.newsmanagement.app.model.News" lazy="false"/>
+        <property name="commentText" column="COMMENT_TEXT" type="string"/>
+        <property name="creationDate" column="CREATION_DATE" type="timestamp"/>
+    </class>
+    <class name="com.epam.newsmanagement.app.model.News" table="NEWS">
+        <id name="newsId" type="long" column="NEWS_ID">
+            <generator class="sequence-identity" >
+                <param name="sequence">NEWS_IDS_SEQUENCE</param>
+            </generator>
+        </id>
+        <property name="title" column="TITLE" type="string"/>
+        <property name="shortText" column="SHORT_TEXT" type="string"/>
+        <property name="fullText" column="FULL_TEXT" type="string"/>
+        <property name="creationDate" column="CREATION_DATE" type="timestamp"/>
+        <property name="modificationDate" column="MODIFICATION_DATE" type="date"/>
+    </class>
+    <class name="com.epam.newsmanagement.app.model.Role" table="ROLES">
+        <id name="roleId" type="long" column="ROLE_ID">
+            <generator class="sequence-identity" >
+                <param name="sequence">ROLES_IDS_SEQUENCE</param>
+            </generator>
+        </id>
+        <property name="roleName" column="ROLE_NAME" type="string"/>
+    </class>
+    <class name="com.epam.newsmanagement.app.model.Tag" table="TAGS">
+        <id name="tagId" type="long" column="TAG_ID">
+            <generator class="sequence-identity" >
+                <param name="sequence">TAGS_IDS_SEQUENCE</param>
+            </generator>
+        </id>
+        <property name="tagName" column="TAG_NAME" type="string"/>
+    </class>
+    <class name="com.epam.newsmanagement.app.model.User" table="USERS">
+        <id name="userId" type="long" column="USER_ID">
+            <generator class="sequence-identity" >
+                <param name="sequence">USERS_IDS_SEQUENCE</param>
+            </generator>
+        </id>
+        <many-to-one name="role" column="ROLE_ID" class="com.epam.newsmanagement.app.model.Role"/>
+        <property name="userName" column="USER_NAME" type="string"/>
+        <property name="login" column="LOGIN" type="string"/>
+        <property name="password" column="PASSWORD" type="string"/>
+    </class>
+</hibernate-mapping>

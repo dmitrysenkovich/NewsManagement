@@ -1,11 +1,11 @@
 package com.epam.newsmanagement.app.service.impl;
 
 import com.epam.newsmanagement.app.dao.RoleRepository;
-import com.epam.newsmanagement.app.exception.DaoException;
 import com.epam.newsmanagement.app.exception.ServiceException;
 import com.epam.newsmanagement.app.model.Role;
 import com.epam.newsmanagement.app.service.RoleService;
 import org.apache.log4j.Logger;
+import org.hibernate.HibernateException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -24,9 +24,8 @@ public class RoleServiceImpl implements RoleService {
     public Role add(Role role) throws ServiceException {
         logger.info("Adding new role..");
         try {
-            Long id = roleRepository.add(role);
-            role.setRoleId(id);
-        } catch (DaoException e) {
+            role = roleRepository.save(role);
+        } catch (HibernateException e) {
             logger.error("Failed to add new role");
             throw new ServiceException(e);
         }
@@ -40,8 +39,8 @@ public class RoleServiceImpl implements RoleService {
         logger.info("Retrieving role..");
         Role role;
         try {
-            role = roleRepository.find(roleId);
-        } catch (DaoException e) {
+            role = roleRepository.findOne(roleId);
+        } catch (HibernateException e) {
             logger.error("Failed to find role");
             throw new ServiceException(e);
         }
@@ -55,8 +54,8 @@ public class RoleServiceImpl implements RoleService {
     public void update(Role role) throws ServiceException {
         logger.info("Updating role..");
         try {
-            roleRepository.update(role);
-        } catch (DaoException e) {
+            roleRepository.save(role);
+        } catch (HibernateException e) {
             logger.error("Failed to update role");
             throw new ServiceException(e);
         }
@@ -70,7 +69,7 @@ public class RoleServiceImpl implements RoleService {
         logger.info("Deleting role..");
         try {
             roleRepository.delete(role);
-        } catch (DaoException e) {
+        } catch (HibernateException e) {
             logger.error("Failed to delete role");
             throw new ServiceException(e);
         }

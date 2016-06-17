@@ -42,7 +42,7 @@ public class TagServiceTest {
     public void added() throws Exception {
         Tag tag = new Tag();
         tag.setTagId(1L);
-        when(tagRepository.add(tag)).thenReturn(1L);
+        when(tagRepository.save(tag)).thenReturn(tag);
         tag = tagService.add(tag);
 
         assertEquals((Long) 1L, tag.getTagId());
@@ -51,7 +51,7 @@ public class TagServiceTest {
 
     @Test(expected = ServiceException.class)
     public void didNotAdd() throws Exception {
-        doThrow(new DaoException()).when(tagRepository).add(any(Tag.class));
+        doThrow(new DaoException()).when(tagRepository).save(any(Tag.class));
         tagService.add(new Tag());
     }
 
@@ -60,7 +60,7 @@ public class TagServiceTest {
     public void found() throws Exception {
         Tag tag = new Tag();
         tag.setTagId(1L);
-        when(tagRepository.find(1L)).thenReturn(tag);
+        when(tagRepository.findOne(1L)).thenReturn(tag);
         tag = tagService.find(1L);
 
         assertEquals((Long) 1L, tag.getTagId());
@@ -69,21 +69,21 @@ public class TagServiceTest {
 
     @Test(expected = ServiceException.class)
     public void didNotFind() throws Exception {
-        doThrow(new DaoException()).when(tagRepository).find(any(Long.class));
+        doThrow(new DaoException()).when(tagRepository).findOne(any(Long.class));
         tagService.find(1L);
     }
 
 
     @Test
     public void updated() throws Exception {
-        doNothing().when(tagRepository).update(any(Tag.class));
+        doNothing().when(tagRepository).save(any(Tag.class));
         tagService.update(new Tag());
     }
 
 
     @Test(expected = ServiceException.class)
     public void didNotUpdate() throws Exception {
-        doThrow(new DaoException()).when(tagRepository).update(any(Tag.class));
+        doThrow(new DaoException()).when(tagRepository).save(any(Tag.class));
         tagService.update(new Tag());
     }
 
@@ -120,7 +120,7 @@ public class TagServiceTest {
 
     @Test
     public void gotAllTags() throws Exception {
-        when(tagRepository.getAll()).thenReturn(new ArrayList<>());
+        when(tagRepository.findAll()).thenReturn(new ArrayList<>());
         List<Tag> allTags = tagService.getAll();
 
         assertNotNull(allTags);
@@ -129,14 +129,14 @@ public class TagServiceTest {
 
     @Test(expected = ServiceException.class)
     public void didNotGetAllTags() throws Exception {
-        doThrow(new DaoException()).when(tagRepository).getAll();
+        doThrow(new DaoException()).when(tagRepository).findAll();
         tagService.getAll();
     }
 
 
     @Test
     public void checkedTagExistence() throws Exception {
-        when(tagRepository.exists(any(Tag.class))).thenReturn(true);
+        when(tagRepository.exists(any(String.class))).thenReturn(true);
         boolean exists = tagService.exists(new Tag());
 
         assertNotNull(exists);
@@ -145,7 +145,7 @@ public class TagServiceTest {
 
     @Test(expected = ServiceException.class)
     public void didNotCheckTagExistence() throws Exception {
-        doThrow(new DaoException()).when(tagRepository).exists(any(Tag.class));
+        doThrow(new DaoException()).when(tagRepository).exists(any(String.class));
         tagService.exists(new Tag());
     }
 }

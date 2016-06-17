@@ -83,20 +83,20 @@ public class NewsRepositoryTest {
         news.setFullText("test1");
         news.setModificationDate(new Date(new java.util.Date().getTime()));
         news.setCreationDate(new Timestamp(new java.util.Date().getTime()));
-        Long newsId = newsRepository.add(news);
+        news = newsRepository.save(news);
         connection = DriverManager.getConnection(testDbUrl, testDbUsername, testDbPassword);
         IDataSet actualDataSet = getActualDataSet(connection);
         ITable newsTable = actualDataSet.getTable("NEWS");
 
         assertEquals(4, newsTable.getRowCount());
-        assertNotNull(newsId);
+        assertNotNull(news.getNewsId());
     }
 
 
     @Test
     public void newsIsNotAdded() throws Exception {
         final News news = new News();
-        catchException(() -> newsRepository.add(news));
+        catchException(() -> newsRepository.save(news));
         assert caughtException() instanceof DaoException;
         connection = DriverManager.getConnection(testDbUrl, testDbUsername, testDbPassword);
         IDataSet actualDataSet = getActualDataSet(connection);
@@ -108,7 +108,7 @@ public class NewsRepositoryTest {
 
     @Test
     public void newsIsFound() throws Exception {
-        News news = newsRepository.find(1L);
+        News news = newsRepository.findOne(1L);
 
         assertNotNull(news);
     }
@@ -116,7 +116,7 @@ public class NewsRepositoryTest {
 
     @Test(expected = DaoException.class)
     public void newsIsNotFound() throws Exception {
-        newsRepository.find(-1L);
+        newsRepository.findOne(-1L);
     }
 
 
@@ -128,8 +128,8 @@ public class NewsRepositoryTest {
         news.setShortText("test1");
         news.setFullText("test1");
         news.setModificationDate(new Date(new java.util.Date().getTime()));
-        newsRepository.update(news);
-        News foundNews = newsRepository.find(news.getNewsId());
+        newsRepository.save(news);
+        News foundNews = newsRepository.findOne(news.getNewsId());
 
         assertEquals("test1", foundNews.getTitle());
         assertEquals("test1", foundNews.getShortText());
@@ -142,9 +142,9 @@ public class NewsRepositoryTest {
         News news = new News();
         news.setNewsId(1L);
         news.setTitle(null);
-        catchException(()->newsRepository.update(news));
+        catchException(()->newsRepository.save(news));
         assert caughtException() instanceof DaoException;
-        News foundNews = newsRepository.find(news.getNewsId());
+        News foundNews = newsRepository.findOne(news.getNewsId());
 
         assertEquals("title1", foundNews.getTitle());
     }
@@ -369,6 +369,6 @@ public class NewsRepositoryTest {
         searchCriteria.setTagIds(tagsIds);
         searchCriteria.setPageSize(1L);
         String ROW_NUMBER_BY_SEARCH_CRITERIA_QUERY = searchUtils.getRowNumberQuery(searchCriteria, 2L);
-        Long rowNumber = newsRepository.rowNumberBySearchCriteria(ROW_NUMBER_BY_SEARCH_CRITERIA_QUERY);
+        newsRepository.rowNumberBySearchCriteria(ROW_NUMBER_BY_SEARCH_CRITERIA_QUERY);
     }
 }

@@ -71,24 +71,28 @@ public class CommentRepositoryTest {
     @Test
     public void commentIsAdded() throws Exception {
         Comment comment = new Comment();
-        comment.setNewsId(2L);
+        News news = new News();
+        news.setNewsId(2L);
+        comment.setNews(news);
         comment.setCommentText("test");
         comment.setCreationDate(new Timestamp(new java.util.Date().getTime()));
-        Long commentId = commentRepository.add(comment);
+        comment = commentRepository.save(comment);
         connection = DriverManager.getConnection(testDbUrl, testDbUsername, testDbPassword);
         IDataSet actualDataSet = getActualDataSet(connection);
         ITable commentsTable = actualDataSet.getTable("COMMENTS");
 
         assertEquals(6, commentsTable.getRowCount());
-        assertNotNull(commentId);
+        assertNotNull(comment.getCommentId());
     }
 
 
     @Test
     public void commentIsNotAddedInvalidField() throws Exception {
         Comment comment = new Comment();
-        comment.setNewsId(1L);
-        catchException(() -> commentRepository.add(comment));
+        News news = new News();
+        news.setNewsId(1L);
+        comment.setNews(news);
+        catchException(() -> commentRepository.save(comment));
         assert caughtException() instanceof DaoException;
         connection = DriverManager.getConnection(testDbUrl, testDbUsername, testDbPassword);
         IDataSet actualDataSet = getActualDataSet(connection);
@@ -101,9 +105,11 @@ public class CommentRepositoryTest {
     @Test
     public void commentIsNotAddedNewsAreInvalid() throws Exception {
         Comment comment = new Comment();
-        comment.setNewsId(-1L);
+        News news = new News();
+        news.setNewsId(-1L);
+        comment.setNews(news);
         comment.setCommentText("test");
-        catchException(() -> commentRepository.add(comment));
+        catchException(() -> commentRepository.save(comment));
         assert caughtException() instanceof DaoException;
         connection = DriverManager.getConnection(testDbUrl, testDbUsername, testDbPassword);
         IDataSet actualDataSet = getActualDataSet(connection);
@@ -115,14 +121,14 @@ public class CommentRepositoryTest {
 
     @Test
     public void commentIsFound() throws Exception {
-        Comment comment = commentRepository.find(1L);
+        Comment comment = commentRepository.findOne(1L);
 
         assertNotNull(comment);
     }
 
     @Test(expected = DaoException.class)
     public void commentIsNotFound() throws Exception {
-        commentRepository.find(-1L);
+        commentRepository.findOne(-1L);
     }
 
 
@@ -130,12 +136,14 @@ public class CommentRepositoryTest {
     public void commentIsUpdated() throws Exception {
         Comment comment = new Comment();
         comment.setCommentId(1L);
-        comment.setNewsId(2L);
+        News news = new News();
+        news.setNewsId(2L);
+        comment.setNews(news);
         comment.setCommentText("test1");
-        commentRepository.update(comment);
-        Comment foundComment = commentRepository.find(comment.getCommentId());
+        commentRepository.save(comment);
+        Comment foundComment = commentRepository.findOne(comment.getCommentId());
 
-        assertEquals((Long) 1L, foundComment.getNewsId());
+        assertEquals((Long) 1L, foundComment.getNews().getNewsId());
         assertEquals("test1", foundComment.getCommentText());
     }
 
@@ -144,11 +152,13 @@ public class CommentRepositoryTest {
     public void commentIsNotUpdated() throws Exception {
         final Comment comment = new Comment();
         comment.setCommentId(1L);
-        comment.setNewsId(1L);
+        News news = new News();
+        news.setNewsId(1L);
+        comment.setNews(news);
         comment.setCommentText(null);
-        catchException(() -> commentRepository.update(comment));
+        catchException(() -> commentRepository.save(comment));
         assert caughtException() instanceof DaoException;
-        Comment foundComment = commentRepository.find(comment.getCommentId());
+        Comment foundComment = commentRepository.findOne(comment.getCommentId());
 
         assertEquals("test", foundComment.getCommentText());
     }

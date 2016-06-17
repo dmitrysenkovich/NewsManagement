@@ -8,8 +8,6 @@
 
     <context:annotation-config />
 
-    <import resource="spring-database.xml" />
-
     <bean id="searchUtils" class="com.epam.newsmanagement.app.utils.SearchUtils"/>
     <bean id="scriptFileUtils" class="com.epam.newsmanagement.app.utils.ScriptFileUtils"/>
     <bean class="org.springframework.beans.factory.config.MethodInvokingBean">

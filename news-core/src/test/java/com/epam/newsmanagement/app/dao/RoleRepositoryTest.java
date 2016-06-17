@@ -68,20 +68,20 @@ public class RoleRepositoryTest {
     public void roleIsAdded() throws Exception {
         Role role = new Role();
         role.setRoleName("test");
-        Long roleId = roleRepository.add(role);
+        role = roleRepository.save(role);
         connection = DriverManager.getConnection(testDbUrl, testDbUsername, testDbPassword);
         IDataSet actualDataSet = getActualDataSet(connection);
         ITable rolesTable = actualDataSet.getTable("ROLES");
 
         assertEquals(3, rolesTable.getRowCount());
-        assertNotNull(roleId);
+        assertNotNull(role.getRoleId());
     }
 
 
     @Test
     public void roleIsNotAdded() throws Exception {
         Role role = new Role();
-        catchException(() -> roleRepository.add(role));
+        catchException(() -> roleRepository.save(role));
         assert caughtException() instanceof DaoException;
         connection = DriverManager.getConnection(testDbUrl, testDbUsername, testDbPassword);
         IDataSet actualDataSet = getActualDataSet(connection);
@@ -93,7 +93,7 @@ public class RoleRepositoryTest {
 
     @Test
     public void roleIsFound() throws Exception {
-        Role role = roleRepository.find(1L);
+        Role role = roleRepository.findOne(1L);
 
         assertNotNull(role);
     }
@@ -101,7 +101,7 @@ public class RoleRepositoryTest {
 
     @Test(expected = DaoException.class)
     public void roleIsNotFound() throws Exception {
-        roleRepository.find(-1L);
+        roleRepository.findOne(-1L);
     }
 
 
@@ -110,8 +110,8 @@ public class RoleRepositoryTest {
         Role role = new Role();
         role.setRoleId(1L);
         role.setRoleName("test1");
-        roleRepository.update(role);
-        Role foundRole = roleRepository.find(role.getRoleId());
+        roleRepository.save(role);
+        Role foundRole = roleRepository.findOne(role.getRoleId());
 
         assertEquals("test1", foundRole.getRoleName());
     }
@@ -122,9 +122,9 @@ public class RoleRepositoryTest {
         Role role = new Role();
         role.setRoleId(1L);
         role.setRoleName(null);
-        catchException(() -> roleRepository.update(role));
+        catchException(() -> roleRepository.save(role));
         assert caughtException() instanceof DaoException;
-        Role foundRole = roleRepository.find(role.getRoleId());
+        Role foundRole = roleRepository.findOne(role.getRoleId());
 
         assertEquals("test", foundRole.getRoleName());
     }

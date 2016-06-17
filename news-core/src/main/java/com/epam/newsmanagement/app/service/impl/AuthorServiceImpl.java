@@ -7,6 +7,7 @@ import com.epam.newsmanagement.app.model.Author;
 import com.epam.newsmanagement.app.model.News;
 import com.epam.newsmanagement.app.service.AuthorService;
 import org.apache.log4j.Logger;
+import org.hibernate.HibernateException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -28,9 +29,8 @@ public class AuthorServiceImpl implements AuthorService {
     public Author add(Author author) throws ServiceException {
         logger.info("Adding new author..");
         try {
-            Long id = authorRepository.add(author);
-            author.setAuthorId(id);
-        } catch (DaoException e) {
+            author = authorRepository.save(author);
+        } catch (HibernateException e) {
             logger.error("Failed to add new author");
             throw new ServiceException(e);
         }
@@ -44,8 +44,8 @@ public class AuthorServiceImpl implements AuthorService {
         logger.info("Retrieving author..");
         Author author;
         try {
-            author = authorRepository.find(authorId);
-        } catch (DaoException e) {
+            author = authorRepository.findOne(authorId);
+        } catch (HibernateException e) {
             logger.error("Failed to find author");
             throw new ServiceException(e);
         }
@@ -60,8 +60,8 @@ public class AuthorServiceImpl implements AuthorService {
     public void update(Author author) throws ServiceException {
         logger.info("Updating author..");
         try {
-            authorRepository.update(author);
-        } catch (DaoException e) {
+            authorRepository.save(author);
+        } catch (HibernateException e) {
             logger.error("Failed to update author");
             throw new ServiceException(e);
         }
@@ -75,7 +75,7 @@ public class AuthorServiceImpl implements AuthorService {
         logger.info("Deleting author..");
         try {
             authorRepository.delete(author);
-        } catch (DaoException e) {
+        } catch (HibernateException e) {
             logger.error("Failed to delete author");
             throw new ServiceException(e);
         }
@@ -87,10 +87,11 @@ public class AuthorServiceImpl implements AuthorService {
     @Transactional(rollbackFor = ServiceException.class)
     public void makeAuthorExpired(Author author) throws ServiceException {
         logger.info("Making author expired..");
-        author.setExpired(new Timestamp(new java.util.Date().getTime()));
         try {
-            authorRepository.makeAuthorExpired(author);
-        } catch (DaoException e) {
+            author = authorRepository.findOne(author.getAuthorId());
+            author.setExpired(new Timestamp(new java.util.Date().getTime()));
+            authorRepository.save(author);
+        } catch (HibernateException e) {
             logger.error("Failed to make author expired");
             throw new ServiceException(e);
         }
@@ -104,7 +105,7 @@ public class AuthorServiceImpl implements AuthorService {
         List<Author> authorsByNews;
         try {
             authorsByNews = authorRepository.getAllByNews(news);
-        } catch (DaoException e) {
+        } catch (HibernateException e) {
             logger.error("Failed to retrieve news authors");
             throw new ServiceException(e);
         }
@@ -120,7 +121,7 @@ public class AuthorServiceImpl implements AuthorService {
         List<Author> notExpiredAuthors;
         try {
             notExpiredAuthors = authorRepository.getNotExpired();
-        } catch (DaoException e) {
+        } catch (HibernateException e) {
             logger.error("Failed to retrieve not expired authors");
             throw new ServiceException(e);
         }
@@ -135,8 +136,8 @@ public class AuthorServiceImpl implements AuthorService {
         logger.info("Retrieving all authors..");
         List<Author> allAuthors;
         try {
-            allAuthors = authorRepository.getAll();
-        } catch (DaoException e) {
+            allAuthors = authorRepository.findAll();
+        } catch (HibernateException e) {
             logger.error("Failed to retrieve all authors");
             throw new ServiceException(e);
         }
@@ -151,8 +152,8 @@ public class AuthorServiceImpl implements AuthorService {
         logger.info("Checking author existence..");
         boolean exists;
         try {
-            exists = authorRepository.exists(author);
-        } catch (DaoException e) {
+            exists = authorRepository.exists(author.getAuthorName());
+        } catch (HibernateException e) {
             logger.error("Failed to check author existence");
             throw new ServiceException(e);
         }

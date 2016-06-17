@@ -7,7 +7,7 @@ import java.sql.Timestamp;
  */
 public class Comment {
     private Long commentId;
-    private Long newsId;
+    private News news;
     private String commentText;
     private Timestamp creationDate;
 
@@ -21,12 +21,12 @@ public class Comment {
         this.commentId = commentId;
     }
 
-    public Long getNewsId() {
-        return newsId;
+    public News getNews() {
+        return news;
     }
 
-    public void setNewsId(Long newsId) {
-        this.newsId = newsId;
+    public void setNews(News news) {
+        this.news = news;
     }
 
     public String getCommentText() {
@@ -46,17 +46,17 @@ public class Comment {
     }
 
     @Override
-    public boolean equals(Object object) {
-        if (this == object)
+    public boolean equals(Object o) {
+        if (this == o)
             return true;
-        if (object == null || getClass() != object.getClass())
+        if (o == null || getClass() != o.getClass())
             return false;
 
-        Comment comment = (Comment) object;
+        Comment comment = (Comment) o;
 
         if (commentId != null ? !commentId.equals(comment.commentId) : comment.commentId != null)
             return false;
-        if (newsId != null ? !newsId.equals(comment.newsId) : comment.newsId != null)
+        if (news != null ? !news.equals(comment.news) : comment.news != null)
             return false;
         if (commentText != null ? !commentText.equals(comment.commentText) : comment.commentText != null)
             return false;
@@ -67,7 +67,7 @@ public class Comment {
     @Override
     public int hashCode() {
         int result = commentId != null ? commentId.hashCode() : 0;
-        result = 31 * result + (newsId != null ? newsId.hashCode() : 0);
+        result = 31 * result + (news != null ? news.hashCode() : 0);
         result = 31 * result + (commentText != null ? commentText.hashCode() : 0);
         result = 31 * result + (creationDate != null ? creationDate.hashCode() : 0);
         return result;
@@ -77,7 +77,7 @@ public class Comment {
     public String toString() {
         return "Comment{" +
                 "commentId=" + commentId +
-                ", newsId=" + newsId +
+                ", news=" + news +
                 ", commentText='" + commentText + '\'' +
                 ", creationDate=" + creationDate +
                 '}';

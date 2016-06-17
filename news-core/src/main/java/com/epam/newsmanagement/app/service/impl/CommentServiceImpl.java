@@ -7,6 +7,7 @@ import com.epam.newsmanagement.app.model.Comment;
 import com.epam.newsmanagement.app.model.News;
 import com.epam.newsmanagement.app.service.CommentService;
 import org.apache.log4j.Logger;
+import org.hibernate.HibernateException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -27,12 +28,11 @@ public class CommentServiceImpl implements CommentService {
     @Transactional(rollbackFor = ServiceException.class)
     public Comment add(News news, Comment comment) throws ServiceException {
         logger.info("Adding new comment..");
-        comment.setNewsId(news.getNewsId());
+        comment.setNews(news);
         comment.setCreationDate(new Timestamp(new java.util.Date().getTime()));
         try {
-            Long id = commentRepository.add(comment);
-            comment.setCommentId(id);
-        } catch (DaoException e) {
+            comment = commentRepository.save(comment);
+        } catch (HibernateException e) {
             logger.error("Failed to add new comment");
             throw new ServiceException(e);
         }
@@ -46,8 +46,8 @@ public class CommentServiceImpl implements CommentService {
         logger.info("Retrieving comment..");
         Comment comment;
         try {
-            comment = commentRepository.find(commentId);
-        } catch (DaoException e) {
+            comment = commentRepository.findOne(commentId);
+        } catch (HibernateException e) {
             logger.error("Failed to find comment");
             throw new ServiceException(e);
         }
@@ -61,8 +61,8 @@ public class CommentServiceImpl implements CommentService {
     public void update(Comment comment) throws ServiceException {
         logger.info("Updating comment..");
         try {
-            commentRepository.update(comment);
-        } catch (DaoException e) {
+            commentRepository.save(comment);
+        } catch (HibernateException e) {
             logger.error("Failed to update comment");
             throw new ServiceException(e);
         }
@@ -76,7 +76,7 @@ public class CommentServiceImpl implements CommentService {
         logger.info("Deleting comment..");
         try {
             commentRepository.delete(comment);
-        } catch (DaoException e) {
+        } catch (HibernateException e) {
             logger.error("Failed to delete comment");
             throw new ServiceException(e);
         }
@@ -90,7 +90,7 @@ public class CommentServiceImpl implements CommentService {
         logger.info("Deleting comments..");
         try {
             commentRepository.deleteAll(comments);
-        } catch (DaoException e) {
+        } catch (HibernateException e) {
             logger.error("Failed to delete comments");
             throw new ServiceException(e);
         }
@@ -104,7 +104,7 @@ public class CommentServiceImpl implements CommentService {
         Long commentsCount;
         try {
             commentsCount = commentRepository.countAllByNews(news);
-        } catch (DaoException e) {
+        } catch (HibernateException e) {
             logger.error("Failed to count all news comments");
             throw new ServiceException(e);
         }
@@ -119,7 +119,7 @@ public class CommentServiceImpl implements CommentService {
         List<Comment> commentsByNews;
         try {
             commentsByNews = commentRepository.getAllByNews(news);
-        } catch (DaoException e) {
+        } catch (HibernateException e) {
             logger.error("Failed to retrieve all news comments");
             throw new ServiceException(e);
         }

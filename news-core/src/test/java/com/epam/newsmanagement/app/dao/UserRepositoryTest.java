@@ -1,6 +1,7 @@
 package com.epam.newsmanagement.app.dao;
 
 import com.epam.newsmanagement.app.exception.DaoException;
+import com.epam.newsmanagement.app.model.Role;
 import com.epam.newsmanagement.app.model.User;
 import com.github.springtestdbunit.DbUnitTestExecutionListener;
 import com.github.springtestdbunit.annotation.DatabaseSetup;
@@ -67,25 +68,29 @@ public class UserRepositoryTest {
     @Test
     public void userIsAdded() throws Exception {
         User user = new User();
-        user.setRoleId(1L);
+        Role role = new Role();
+        role.setRoleId(1L);
+        user.setRole(role);
         user.setUserName("test");
         user.setLogin("test");
         user.setPassword("test");
-        Long userId = userRepository.add(user);
+        user = userRepository.save(user);
         connection = DriverManager.getConnection(testDbUrl, testDbUsername, testDbPassword);
         IDataSet actualDataSet = getActualDataSet(connection);
         ITable usersTable = actualDataSet.getTable("USERS");
 
         assertEquals(2, usersTable.getRowCount());
-        assertNotNull(userId);
+        assertNotNull(user.getUserId());
     }
 
 
     @Test
     public void userIsNotAddedInvalidField() throws Exception {
         User user = new User();
-        user.setRoleId(1L);
-        catchException(() -> userRepository.add(user));
+        Role role = new Role();
+        role.setRoleId(1L);
+        user.setRole(role);
+        catchException(() -> userRepository.save(user));
         assert caughtException() instanceof DaoException;
         connection = DriverManager.getConnection(testDbUrl, testDbUsername, testDbPassword);
         IDataSet actualDataSet = getActualDataSet(connection);
@@ -98,11 +103,13 @@ public class UserRepositoryTest {
     @Test
     public void userIsNotAddedRoleIsInvalid() throws Exception {
         User user = new User();
-        user.setRoleId(-1L);
+        Role role = new Role();
+        role.setRoleId(-1L);
+        user.setRole(role);
         user.setUserName("test");
         user.setLogin("test");
         user.setPassword("test");
-        catchException(() -> userRepository.add(user));
+        catchException(() -> userRepository.save(user));
         assert caughtException() instanceof DaoException;
         connection = DriverManager.getConnection(testDbUrl, testDbUsername, testDbPassword);
         IDataSet actualDataSet = getActualDataSet(connection);
@@ -114,7 +121,7 @@ public class UserRepositoryTest {
 
     @Test
     public void userIsFound() throws Exception {
-        User user = userRepository.find(1L);
+        User user = userRepository.findOne(1L);
 
         assertNotNull(user);
     }
@@ -122,7 +129,7 @@ public class UserRepositoryTest {
 
     @Test(expected = DaoException.class)
     public void userIsNotFound() throws Exception {
-        userRepository.find(-1L);
+        userRepository.findOne(-1L);
     }
 
 
@@ -130,14 +137,16 @@ public class UserRepositoryTest {
     public void userIsUpdated() throws Exception {
         User user = new User();
         user.setUserId(1L);
-        user.setRoleId(2L);
+        Role role = new Role();
+        role.setRoleId(2L);
+        user.setRole(role);
         user.setUserName("test1");
         user.setLogin("test1");
         user.setPassword("test1");
-        userRepository.update(user);
-        User foundUser = userRepository.find(user.getUserId());
+        userRepository.save(user);
+        User foundUser = userRepository.findOne(user.getUserId());
 
-        assertEquals((Long) 2L, foundUser.getRoleId());
+        assertEquals((Long) 2L, foundUser.getRole().getRoleId());
         assertEquals("test1", foundUser.getUserName());
         assertEquals("test1", foundUser.getLogin());
         assertEquals("test1", foundUser.getPassword());
@@ -148,10 +157,12 @@ public class UserRepositoryTest {
     public void userIsNotUpdatedInvalidField() throws Exception {
         User user = new User();
         user.setUserId(1L);
-        user.setRoleId(1L);
-        catchException(() -> userRepository.update(user));
+        Role role = new Role();
+        role.setRoleId(1L);
+        user.setRole(role);
+        catchException(() -> userRepository.save(user));
         assert caughtException() instanceof DaoException;
-        User foundUser = userRepository.find(user.getUserId());
+        User foundUser = userRepository.findOne(user.getUserId());
 
         assertEquals("test", foundUser.getUserName());
     }
@@ -161,15 +172,17 @@ public class UserRepositoryTest {
     public void userIsNotUpdatedRoleIsInvalid() throws Exception {
         User user = new User();
         user.setUserId(1L);
-        user.setRoleId(-1L);
+        Role role = new Role();
+        role.setRoleId(-1L);
+        user.setRole(role);
         user.setUserName("test");
         user.setLogin("test");
         user.setPassword("test");
-        catchException(() -> userRepository.update(user));
+        catchException(() -> userRepository.save(user));
         assert caughtException() instanceof DaoException;
-        User foundUser = userRepository.find(user.getUserId());
+        User foundUser = userRepository.findOne(user.getUserId());
 
-        assertEquals((Long) 1L, foundUser.getRoleId());
+        assertEquals((Long) 1L, foundUser.getRole().getRoleId());
     }
 
 

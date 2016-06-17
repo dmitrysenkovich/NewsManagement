@@ -42,7 +42,7 @@ public class AuthorServiceTest {
     public void added() throws Exception {
         Author author = new Author();
         author.setAuthorId(1L);
-        when(authorRepository.add(author)).thenReturn(1L);
+        when(authorRepository.save(author)).thenReturn(author);
         author = authorService.add(author);
 
         assertEquals((Long) 1L, author.getAuthorId());
@@ -51,7 +51,7 @@ public class AuthorServiceTest {
 
     @Test(expected = ServiceException.class)
     public void didNotAdd() throws Exception {
-        doThrow(new DaoException()).when(authorRepository).add(any(Author.class));
+        doThrow(new DaoException()).when(authorRepository).save(any(Author.class));
         authorService.add(new Author());
     }
 
@@ -60,7 +60,7 @@ public class AuthorServiceTest {
     public void found() throws Exception {
         Author author = new Author();
         author.setAuthorId(1L);
-        when(authorRepository.find(1L)).thenReturn(author);
+        when(authorRepository.findOne(1L)).thenReturn(author);
         author = authorService.find(1L);
 
         assertEquals((Long) 1L, author.getAuthorId());
@@ -69,21 +69,21 @@ public class AuthorServiceTest {
 
     @Test(expected = ServiceException.class)
     public void didNotFind() throws Exception {
-        doThrow(new DaoException()).when(authorRepository).find(any(Long.class));
+        doThrow(new DaoException()).when(authorRepository).findOne(any(Long.class));
         authorService.find(1L);
     }
 
 
     @Test
     public void updated() throws Exception {
-        doNothing().when(authorRepository).update(any(Author.class));
+        doNothing().when(authorRepository).save(any(Author.class));
         authorService.update(new Author());
     }
 
 
     @Test(expected = ServiceException.class)
     public void didNotUpdate() throws Exception {
-        doThrow(new DaoException()).when(authorRepository).update(any(Author.class));
+        doThrow(new DaoException()).when(authorRepository).save(any(Author.class));
         authorService.update(new Author());
     }
 
@@ -96,14 +96,14 @@ public class AuthorServiceTest {
 
     @Test
     public void authorIsMadeExpired() throws Exception {
-        doNothing().when(authorRepository).makeAuthorExpired(any(Author.class));
+        doNothing().when(authorRepository).save(any(Author.class));
         authorService.makeAuthorExpired(new Author());
     }
 
 
     @Test(expected = ServiceException.class)
     public void authorIsNotMadeExpired() throws Exception {
-        doThrow(new DaoException()).when(authorRepository).makeAuthorExpired(any(Author.class));
+        doThrow(new DaoException()).when(authorRepository).save(any(Author.class));
         authorService.makeAuthorExpired(new Author());
     }
 
@@ -123,7 +123,7 @@ public class AuthorServiceTest {
 
     @Test
     public void gotAllAuthors() throws Exception {
-        when(authorRepository.getAll()).thenReturn(new ArrayList<>());
+        when(authorRepository.findAll()).thenReturn(new ArrayList<>());
         List<Author> allAuthors = authorService.getAll();
         assertNotNull(allAuthors);
     }
@@ -131,7 +131,7 @@ public class AuthorServiceTest {
 
     @Test(expected = ServiceException.class)
     public void didNotGetAllAuthors() throws Exception {
-        doThrow(new DaoException()).when(authorRepository).getAll();
+        doThrow(new DaoException()).when(authorRepository).findAll();
         authorService.getAll();
     }
 
@@ -151,14 +151,14 @@ public class AuthorServiceTest {
 
     @Test
     public void checkedAuthorExistence() throws Exception {
-        when(authorRepository.exists(any(Author.class))).thenReturn(true);
+        when(authorRepository.exists(any(String.class))).thenReturn(true);
         authorService.exists(new Author());
     }
 
 
     @Test(expected = ServiceException.class)
     public void didNotCheckAuthorExistence() throws Exception {
-        doThrow(new DaoException()).when(authorRepository).exists(any(Author.class));
+        doThrow(new DaoException()).when(authorRepository).exists(any(String.class));
         authorService.exists(new Author());
     }
 }

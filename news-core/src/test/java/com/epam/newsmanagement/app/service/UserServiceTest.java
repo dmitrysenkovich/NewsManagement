@@ -41,11 +41,11 @@ public class UserServiceTest {
         user.setUserId(1L);
         Role role = new Role();
         role.setRoleId(1L);
-        when(userRepository.add(user)).thenReturn(1L);
+        when(userRepository.save(user)).thenReturn(user);
         user = userService.add(user, role);
 
         assertEquals((Long) 1L, user.getUserId());
-        assertEquals((Long) 1L, user.getRoleId());
+        assertEquals((Long) 1L, user.getRole().getRoleId());
     }
 
 
@@ -53,7 +53,7 @@ public class UserServiceTest {
     public void didNotAdd() throws Exception {
         Role role = new Role();
         role.setRoleId(1L);
-        doThrow(new DaoException()).when(userRepository).add(any(User.class));
+        doThrow(new DaoException()).when(userRepository).save(any(User.class));
         userService.add(new User(), role);
     }
 
@@ -62,7 +62,7 @@ public class UserServiceTest {
     public void found() throws Exception {
         User user = new User();
         user.setUserId(1L);
-        when(userRepository.find(1L)).thenReturn(user);
+        when(userRepository.findOne(1L)).thenReturn(user);
         user = userService.find(1L);
 
         assertEquals((Long) 1L, user.getUserId());
@@ -71,21 +71,21 @@ public class UserServiceTest {
 
     @Test(expected = ServiceException.class)
     public void didNotFind() throws Exception {
-        doThrow(new DaoException()).when(userRepository).find(any(Long.class));
+        doThrow(new DaoException()).when(userRepository).findOne(any(Long.class));
         userService.find(1L);
     }
 
 
     @Test
     public void updated() throws Exception {
-        doNothing().when(userRepository).update(any(User.class));
+        doNothing().when(userRepository).save(any(User.class));
         userService.update(new User());
     }
 
 
     @Test(expected = ServiceException.class)
     public void didNotUpdate() throws Exception {
-        doThrow(new DaoException()).when(userRepository).update(any(User.class));
+        doThrow(new DaoException()).when(userRepository).save(any(User.class));
         userService.update(new User());
     }
 

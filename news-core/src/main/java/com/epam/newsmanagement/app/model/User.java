@@ -5,7 +5,7 @@ package com.epam.newsmanagement.app.model;
  */
 public class User {
     private Long userId;
-    private Long roleId;
+    private Role role;
     private String userName;
     private String login;
     private String password;
@@ -20,12 +20,12 @@ public class User {
         this.userId = userId;
     }
 
-    public Long getRoleId() {
-        return roleId;
+    public Role getRole() {
+        return role;
     }
 
-    public void setRoleId(Long roleId) {
-        this.roleId = roleId;
+    public void setRole(Role role) {
+        this.role = role;
     }
 
     public String getUserName() {
@@ -53,17 +53,17 @@ public class User {
     }
 
     @Override
-    public boolean equals(Object object) {
-        if (this == object)
+    public boolean equals(Object o) {
+        if (this == o)
             return true;
-        if (object == null || getClass() != object.getClass())
+        if (o == null || getClass() != o.getClass())
             return false;
 
-        User user = (User) object;
+        User user = (User) o;
 
         if (userId != null ? !userId.equals(user.userId) : user.userId != null)
             return false;
-        if (roleId != null ? !roleId.equals(user.roleId) : user.roleId != null)
+        if (role != null ? !role.equals(user.role) : user.role != null)
             return false;
         if (userName != null ? !userName.equals(user.userName) : user.userName != null)
             return false;
@@ -76,7 +76,7 @@ public class User {
     @Override
     public int hashCode() {
         int result = userId != null ? userId.hashCode() : 0;
-        result = 31 * result + (roleId != null ? roleId.hashCode() : 0);
+        result = 31 * result + (role != null ? role.hashCode() : 0);
         result = 31 * result + (userName != null ? userName.hashCode() : 0);
         result = 31 * result + (login != null ? login.hashCode() : 0);
         result = 31 * result + (password != null ? password.hashCode() : 0);
@@ -87,7 +87,7 @@ public class User {
     public String toString() {
         return "User{" +
                 "userId=" + userId +
-                ", roleId=" + roleId +
+                ", role=" + role +
                 ", userName='" + userName + '\'' +
                 ", login='" + login + '\'' +
                 ", password='" + password + '\'' +

@@ -1,42 +1,20 @@
 package com.epam.newsmanagement.app.dao;
 
-import com.epam.newsmanagement.app.exception.DaoException;
-import com.epam.newsmanagement.app.model.News;
 import com.epam.newsmanagement.app.model.Tag;
-
-import java.util.List;
+import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.data.jpa.repository.Query;
+import org.springframework.data.repository.query.Param;
 
 /**
  * Tag repository.
  */
-public interface TagRepository extends CrudRepository<Tag, Long> {
-    /**
-     * Returns news tags.
-     * @param news specifies news
-     * which tags are to be retrieved.
-     * @return news tags.
-     * @throws DaoException
-     */
-    default List<Tag> getAllByNews(News news) throws DaoException {
-        throw new DaoException();
-    }
-
-    /**
-     * Returns all tags.
-     * @return all tags.
-     * @throws DaoException
-     */
-    default List<Tag> getAll() throws DaoException {
-        throw new DaoException();
-    }
-
+public interface TagRepository extends JpaRepository<Tag, Long>, TagRepositoryCustom {
     /**
      * Checks if tag exists.
-     * @param tag tag to be checked.
+     * @param tagName tagName
+     * of the tag to be checked.
      * @return check result.
-     * @throws DaoException
      */
-    default boolean exists(Tag tag) throws DaoException {
-        throw new DaoException();
-    }
+    @Query("select case when count(*) > 0 then True else False end from Tag T where T.tagName = :tagName")
+    boolean exists(@Param("tagName") String tagName);
 }
