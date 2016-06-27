@@ -622,3 +622,9 @@ ul.pagination li a:hover:not(.active) {background-color: #ddd;}
     color: red;
     padding-bottom: 10px;
 }
+
+#concurrent-modification {
+    text-align: center;
+    color: red;
+    padding-bottom: 10px;
+}

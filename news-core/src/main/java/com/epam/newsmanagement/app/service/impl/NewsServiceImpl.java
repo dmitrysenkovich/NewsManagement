@@ -3,7 +3,6 @@ package com.epam.newsmanagement.app.service.impl;
 import com.epam.newsmanagement.app.dao.AuthorRepository;
 import com.epam.newsmanagement.app.dao.NewsRepository;
 import com.epam.newsmanagement.app.dao.TagRepository;
-import com.epam.newsmanagement.app.exception.DaoException;
 import com.epam.newsmanagement.app.exception.ServiceException;
 import com.epam.newsmanagement.app.model.Author;
 import com.epam.newsmanagement.app.model.News;
@@ -13,11 +12,13 @@ import com.epam.newsmanagement.app.utils.SearchCriteria;
 import com.epam.newsmanagement.app.utils.SearchUtils;
 import org.apache.log4j.Logger;
 import org.hibernate.HibernateException;
+import org.hibernate.StaleObjectStateException;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.orm.jpa.JpaOptimisticLockingFailureException;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.sql.Date;
 import java.sql.Timestamp;
+import java.util.Date;
 import java.util.List;
 
 /**
@@ -42,7 +43,6 @@ public class NewsServiceImpl implements NewsService {
         public News add(News news, List<Author> authors, List<Tag> tags) throws ServiceException {
         logger.info("Adding news..");
         news.setCreationDate(new Timestamp(new java.util.Date().getTime()));
-        news.setModificationDate(new Date(new java.util.Date().getTime()));
         try {
             news = newsRepository.save(news);
         } catch (HibernateException e) {
@@ -149,12 +149,16 @@ public class NewsServiceImpl implements NewsService {
     @Override
     @Transactional(rollbackFor = ServiceException.class)
     public void update(News news) throws ServiceException {
-        news.setModificationDate(new Date(new java.util.Date().getTime()));
         logger.info("Updating news..");
         try {
-            News oldNews = newsRepository.findOne(news.getNewsId());
-            news.setCreationDate(oldNews.getCreationDate());
             newsRepository.save(news);
+            newsRepository.flush();
+            News newNews = newsRepository.findOne(news.getNewsId());
+            Date newModificationDate = newNews.getModificationDate();
+            news.setModificationDate(newModificationDate);
+        } catch (JpaOptimisticLockingFailureException e) {
+            logger.error("Attempt to update news concurrent");
+            throw new ServiceException(e);
         } catch (HibernateException e) {
             logger.error("Failed to update news");
             throw new ServiceException(e);

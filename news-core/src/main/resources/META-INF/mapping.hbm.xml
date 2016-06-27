@@ -23,17 +23,17 @@
         <property name="commentText" column="COMMENT_TEXT" type="string"/>
         <property name="creationDate" column="CREATION_DATE" type="timestamp"/>
     </class>
-    <class name="com.epam.newsmanagement.app.model.News" table="NEWS">
+    <class name="com.epam.newsmanagement.app.model.News" table="NEWS" optimistic-lock="version" dynamic-update="true">
         <id name="newsId" type="long" column="NEWS_ID">
             <generator class="sequence-identity" >
                 <param name="sequence">NEWS_IDS_SEQUENCE</param>
             </generator>
         </id>
+        <timestamp name="modificationDate" column="MODIFICATION_DATE" source="db"/>
         <property name="title" column="TITLE" type="string"/>
         <property name="shortText" column="SHORT_TEXT" type="string"/>
         <property name="fullText" column="FULL_TEXT" type="string"/>
         <property name="creationDate" column="CREATION_DATE" type="timestamp"/>
-        <property name="modificationDate" column="MODIFICATION_DATE" type="date"/>
     </class>
     <class name="com.epam.newsmanagement.app.model.Role" table="ROLES">
         <id name="roleId" type="long" column="ROLE_ID">

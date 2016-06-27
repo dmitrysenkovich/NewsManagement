@@ -37,7 +37,7 @@ var header = $("meta[name='_csrf_header']").attr("content");
 var token = $("meta[name='_csrf']").attr("content");
 
 
-$('#save-news-button').click(function () {
+$('#save-news-button').on('click', function () {
     if (processing)
         return;
 
@@ -90,7 +90,9 @@ $('#save-news-button').click(function () {
         newsId: newsId,
         title: title,
         shortText: shortText.replaceAll('\n', '\\n'),
-        fullText: fullText.replaceAll('\n', '\\n')
+        fullText: fullText.replaceAll('\n', '\\n'),
+        creationDate: $('#creation-date-in-milliseconds').val(),
+        modificationDate: $('#modification-date-in-milliseconds').val()
     };
     var authors = [];
     for (var i = 0; i < checkedAuthorsIds.length; i++)
@@ -113,12 +115,28 @@ $('#save-news-button').click(function () {
         beforeSend: function(xhr){
             xhr.setRequestHeader(header, token);
         },
-        success: function(newNewsId) {
+        success: function(newNews) {
             $("<div id='news-saved'>" + news_edit.saved + "</div>").prependTo($('.new-news')).slideDown('fast');
             $('#news-saved').delay(3000).fadeOut(function() { $(this).remove(); });
-            if (!newsId)
-                $('.new-news').attr('id', newNewsId);
-            processing = false;
+            if (newNews) {
+                $('.new-news').attr('id', newNews.newsId);
+                $('#modification-date-in-milliseconds').val((Math.ceil(newNews.modificationDate/1000)-1)*1000);
+                var lastEditDate = new Date(newNews.modificationDate);
+                lastEditDate = lastEditDate.toLocaleString(localeCode.substring(0, 2), {
+                    year: 'numeric',
+                    month: 'long',
+                    day: 'numeric',
+                });
+                $('#date-textarea').val(lastEditDate);
+                processing = false;
+            }
+        },
+        error: function(xhr) {
+            if (xhr.status == 409) {
+                $("<div id='concurrent-modification'>" + news_edit.concurrent_modification + "</div>").prependTo($('.new-news')).slideDown('fast');
+                $('#concurrent-modification').delay(3000).fadeOut(function() { $(this).remove(); });
+                processing = false;
+            }
         }
     });
 });

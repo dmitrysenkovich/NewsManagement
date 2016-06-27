@@ -81,7 +81,7 @@ public class NewsRepositoryTest {
         news.setTitle("test1");
         news.setShortText("test1");
         news.setFullText("test1");
-        news.setModificationDate(new Date(new java.util.Date().getTime()));
+        news.setModificationDate(new Timestamp(new java.util.Date().getTime()));
         news.setCreationDate(new Timestamp(new java.util.Date().getTime()));
         news = newsRepository.save(news);
         connection = DriverManager.getConnection(testDbUrl, testDbUsername, testDbPassword);
@@ -127,7 +127,7 @@ public class NewsRepositoryTest {
         news.setTitle("test1");
         news.setShortText("test1");
         news.setFullText("test1");
-        news.setModificationDate(new Date(new java.util.Date().getTime()));
+        news.setModificationDate(new Timestamp(new java.util.Date().getTime()));
         newsRepository.save(news);
         News foundNews = newsRepository.findOne(news.getNewsId());
 

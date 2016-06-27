@@ -13,7 +13,9 @@ import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.apache.log4j.Logger;
+import org.hibernate.StaleObjectStateException;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.orm.jpa.JpaOptimisticLockingFailureException;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -22,6 +24,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 
 import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 import java.io.IOException;
 import java.util.List;
@@ -238,7 +241,7 @@ public class NewsController {
      */
     @RequestMapping(value = "/news/save", method = RequestMethod.PUT)
     @ResponseBody
-    public Long save(@RequestBody String requestBody) throws IOException, ServiceException {
+    public News save(@RequestBody String requestBody, HttpServletResponse response) throws IOException, ServiceException {
         JsonNode jsonNode = objectMapper.readTree(requestBody);
         News news = objectMapper.convertValue(jsonNode.get("news"), News.class);
         List<Author> authors = objectMapper.convertValue(jsonNode.get("authors"), new TypeReference<List<Author>>(){});
@@ -247,7 +250,13 @@ public class NewsController {
         if (news.getNewsId() != null) {
             logger.info("Save edited news PUT request");
 
-            newsService.update(news);
+            try {
+                newsService.update(news);
+            } catch (ServiceException e) {
+                if (e.getException() instanceof JpaOptimisticLockingFailureException)
+                    response.setStatus(HttpServletResponse.SC_CONFLICT);
+                return null;
+            }
             newsService.updateNewsAuthorsAndTags(news, authors, tags);
         }
         else {
@@ -256,6 +265,6 @@ public class NewsController {
             news = newsService.add(news, authors, tags);
         }
 
-        return news.getNewsId();
+        return news;
     }
 }
