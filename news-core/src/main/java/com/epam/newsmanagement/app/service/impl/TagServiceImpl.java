@@ -1,15 +1,13 @@
 package com.epam.newsmanagement.app.service.impl;
 
 import com.epam.newsmanagement.app.dao.TagRepository;
-import com.epam.newsmanagement.app.exception.DaoException;
 import com.epam.newsmanagement.app.exception.ServiceException;
-import com.epam.newsmanagement.app.model.Author;
 import com.epam.newsmanagement.app.model.News;
 import com.epam.newsmanagement.app.model.Tag;
 import com.epam.newsmanagement.app.service.TagService;
 import org.apache.log4j.Logger;
-import org.hibernate.HibernateException;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.dao.DataAccessException;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
@@ -30,7 +28,7 @@ public class TagServiceImpl implements TagService {
         logger.info("Adding new tag..");
         try {
             tag = tagRepository.save(tag);
-        } catch (HibernateException e) {
+        } catch (DataAccessException e) {
             logger.error("Failed to add new tag");
             throw new ServiceException(e);
         }
@@ -45,7 +43,7 @@ public class TagServiceImpl implements TagService {
         Tag tag;
         try {
             tag = tagRepository.findOne(tagId);
-        } catch (HibernateException e) {
+        } catch (DataAccessException e) {
             logger.error("Failed to find tag");
             throw new ServiceException(e);
         }
@@ -60,7 +58,7 @@ public class TagServiceImpl implements TagService {
         logger.info("Updating tag..");
         try {
             tagRepository.save(tag);
-        } catch (HibernateException e) {
+        } catch (DataAccessException e) {
             logger.error("Failed to update tag");
             throw new ServiceException(e);
         }
@@ -74,7 +72,7 @@ public class TagServiceImpl implements TagService {
         logger.info("Deleting tag..");
         try {
             tagRepository.delete(tag);
-        } catch (HibernateException e) {
+        } catch (DataAccessException e) {
             logger.error("Failed to delete tag");
             throw new ServiceException(e);
         }
@@ -88,7 +86,7 @@ public class TagServiceImpl implements TagService {
         List<Tag> tagsByNews;
         try {
             tagsByNews = tagRepository.getAllByNews(news);
-        } catch (HibernateException e) {
+        } catch (DataAccessException e) {
             logger.error("Failed to retrieve news tags");
             throw new ServiceException(e);
         }
@@ -104,7 +102,7 @@ public class TagServiceImpl implements TagService {
         List<Tag> allTags;
         try {
             allTags = tagRepository.findAll();
-        } catch (HibernateException e) {
+        } catch (DataAccessException e) {
             logger.error("Failed to retrieve all tags");
             throw new ServiceException(e);
         }
@@ -120,7 +118,7 @@ public class TagServiceImpl implements TagService {
         boolean exists;
         try {
             exists = tagRepository.exists(tag.getTagName());
-        } catch (HibernateException e) {
+        } catch (DataAccessException e) {
             logger.error("Failed to check tag existence");
             throw new ServiceException(e);
         }

@@ -1,14 +1,13 @@
 package com.epam.newsmanagement.app.service.impl;
 
 import com.epam.newsmanagement.app.dao.AuthorRepository;
-import com.epam.newsmanagement.app.exception.DaoException;
 import com.epam.newsmanagement.app.exception.ServiceException;
 import com.epam.newsmanagement.app.model.Author;
 import com.epam.newsmanagement.app.model.News;
 import com.epam.newsmanagement.app.service.AuthorService;
 import org.apache.log4j.Logger;
-import org.hibernate.HibernateException;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.dao.DataAccessException;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.sql.Timestamp;
@@ -30,7 +29,7 @@ public class AuthorServiceImpl implements AuthorService {
         logger.info("Adding new author..");
         try {
             author = authorRepository.save(author);
-        } catch (HibernateException e) {
+        } catch (DataAccessException e) {
             logger.error("Failed to add new author");
             throw new ServiceException(e);
         }
@@ -45,7 +44,7 @@ public class AuthorServiceImpl implements AuthorService {
         Author author;
         try {
             author = authorRepository.findOne(authorId);
-        } catch (HibernateException e) {
+        } catch (DataAccessException e) {
             logger.error("Failed to find author");
             throw new ServiceException(e);
         }
@@ -61,7 +60,7 @@ public class AuthorServiceImpl implements AuthorService {
         logger.info("Updating author..");
         try {
             authorRepository.save(author);
-        } catch (HibernateException e) {
+        } catch (DataAccessException e) {
             logger.error("Failed to update author");
             throw new ServiceException(e);
         }
@@ -75,7 +74,7 @@ public class AuthorServiceImpl implements AuthorService {
         logger.info("Deleting author..");
         try {
             authorRepository.delete(author);
-        } catch (HibernateException e) {
+        } catch (DataAccessException e) {
             logger.error("Failed to delete author");
             throw new ServiceException(e);
         }
@@ -91,7 +90,7 @@ public class AuthorServiceImpl implements AuthorService {
             author = authorRepository.findOne(author.getAuthorId());
             author.setExpired(new Timestamp(new java.util.Date().getTime()));
             authorRepository.save(author);
-        } catch (HibernateException e) {
+        } catch (DataAccessException e) {
             logger.error("Failed to make author expired");
             throw new ServiceException(e);
         }
@@ -105,7 +104,7 @@ public class AuthorServiceImpl implements AuthorService {
         List<Author> authorsByNews;
         try {
             authorsByNews = authorRepository.getAllByNews(news);
-        } catch (HibernateException e) {
+        } catch (DataAccessException e) {
             logger.error("Failed to retrieve news authors");
             throw new ServiceException(e);
         }
@@ -121,7 +120,7 @@ public class AuthorServiceImpl implements AuthorService {
         List<Author> notExpiredAuthors;
         try {
             notExpiredAuthors = authorRepository.getNotExpired();
-        } catch (HibernateException e) {
+        } catch (DataAccessException e) {
             logger.error("Failed to retrieve not expired authors");
             throw new ServiceException(e);
         }
@@ -137,7 +136,7 @@ public class AuthorServiceImpl implements AuthorService {
         List<Author> allAuthors;
         try {
             allAuthors = authorRepository.findAll();
-        } catch (HibernateException e) {
+        } catch (DataAccessException e) {
             logger.error("Failed to retrieve all authors");
             throw new ServiceException(e);
         }
@@ -153,7 +152,7 @@ public class AuthorServiceImpl implements AuthorService {
         boolean exists;
         try {
             exists = authorRepository.exists(author.getAuthorName());
-        } catch (HibernateException e) {
+        } catch (DataAccessException e) {
             logger.error("Failed to check author existence");
             throw new ServiceException(e);
         }

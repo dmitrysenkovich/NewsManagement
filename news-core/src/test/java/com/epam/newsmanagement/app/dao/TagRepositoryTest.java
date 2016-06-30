@@ -1,6 +1,5 @@
 package com.epam.newsmanagement.app.dao;
 
-import com.epam.newsmanagement.app.exception.DaoException;
 import com.epam.newsmanagement.app.model.News;
 import com.epam.newsmanagement.app.model.Tag;
 import com.github.springtestdbunit.DbUnitTestExecutionListener;
@@ -15,6 +14,8 @@ import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.PropertySource;
+import org.springframework.dao.DataAccessException;
+import org.springframework.orm.jpa.JpaSystemException;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.TestExecutionListeners;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
@@ -31,6 +32,7 @@ import static com.googlecode.catchexception.CatchException.caughtException;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertTrue;
 
 /**
@@ -86,7 +88,7 @@ public class TagRepositoryTest {
     public void tagIsNotAdded() throws Exception {
         Tag tag = new Tag();
         catchException(() -> tagRepository.save(tag));
-        assert caughtException() instanceof DaoException;
+        assert caughtException() instanceof DataAccessException;
         connection = DriverManager.getConnection(testDbUrl, testDbUsername, testDbPassword);
         IDataSet actualDataSet = getActualDataSet(connection);
         ITable tagsTable = actualDataSet.getTable("TAGS");
@@ -103,9 +105,11 @@ public class TagRepositoryTest {
     }
 
 
-    @Test(expected = DaoException.class)
+    @Test
     public void tagIsNotFound() throws Exception {
-        tagRepository.findOne(-1L);
+        Tag tag = tagRepository.findOne(-1L);
+
+        assertNull(tag);
     }
 
 
@@ -127,7 +131,7 @@ public class TagRepositoryTest {
         tag.setTagId(1L);
         tag.setTagName(null);
         catchException(() -> tagRepository.save(tag));
-        assert caughtException() instanceof DaoException;
+        assert caughtException() instanceof DataAccessException;
         Tag foundTag = tagRepository.findOne(tag.getTagId());
 
         assertEquals("test", foundTag.getTagName());
@@ -149,7 +153,7 @@ public class TagRepositoryTest {
     }
 
 
-    @Test
+    @Test(expected = JpaSystemException.class)
     public void tagIsNotDeleted() throws Exception {
         Tag tag = new Tag();
         tag.setTagId(-1L);

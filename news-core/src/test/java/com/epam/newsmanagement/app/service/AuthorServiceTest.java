@@ -1,7 +1,6 @@
 package com.epam.newsmanagement.app.service;
 
 import com.epam.newsmanagement.app.dao.AuthorRepository;
-import com.epam.newsmanagement.app.exception.DaoException;
 import com.epam.newsmanagement.app.exception.ServiceException;
 import com.epam.newsmanagement.app.model.Author;
 import com.epam.newsmanagement.app.model.News;
@@ -11,6 +10,7 @@ import org.junit.Test;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
+import org.springframework.dao.RecoverableDataAccessException;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -51,7 +51,7 @@ public class AuthorServiceTest {
 
     @Test(expected = ServiceException.class)
     public void didNotAdd() throws Exception {
-        doThrow(new DaoException()).when(authorRepository).save(any(Author.class));
+        doThrow(new RecoverableDataAccessException("")).when(authorRepository).save(any(Author.class));
         authorService.add(new Author());
     }
 
@@ -69,41 +69,43 @@ public class AuthorServiceTest {
 
     @Test(expected = ServiceException.class)
     public void didNotFind() throws Exception {
-        doThrow(new DaoException()).when(authorRepository).findOne(any(Long.class));
+        doThrow(new RecoverableDataAccessException("")).when(authorRepository).findOne(any(Long.class));
         authorService.find(1L);
     }
 
 
     @Test
     public void updated() throws Exception {
-        doNothing().when(authorRepository).save(any(Author.class));
+        when(authorRepository.save(any(Author.class))).thenReturn(new Author());
         authorService.update(new Author());
     }
 
 
     @Test(expected = ServiceException.class)
     public void didNotUpdate() throws Exception {
-        doThrow(new DaoException()).when(authorRepository).save(any(Author.class));
+        doThrow(new RecoverableDataAccessException("")).when(authorRepository).save(any(Author.class));
         authorService.update(new Author());
     }
 
 
     @Test(expected = ServiceException.class)
     public void notDeleted() throws Exception {
-        doThrow(new DaoException()).when(authorRepository).delete(any(Author.class));
+        doThrow(new RecoverableDataAccessException("")).when(authorRepository).delete(any(Author.class));
         authorService.delete(new Author());
     }
 
     @Test
     public void authorIsMadeExpired() throws Exception {
-        doNothing().when(authorRepository).save(any(Author.class));
+        when(authorRepository.findOne(any(Long.class))).thenReturn(new Author());
+        when(authorRepository.save(any(Author.class))).thenReturn(new Author());
         authorService.makeAuthorExpired(new Author());
     }
 
 
     @Test(expected = ServiceException.class)
     public void authorIsNotMadeExpired() throws Exception {
-        doThrow(new DaoException()).when(authorRepository).save(any(Author.class));
+        when(authorRepository.findOne(any(Long.class))).thenReturn(new Author());
+        doThrow(new RecoverableDataAccessException("")).when(authorRepository).save(any(Author.class));
         authorService.makeAuthorExpired(new Author());
     }
 
@@ -117,7 +119,7 @@ public class AuthorServiceTest {
 
     @Test(expected = ServiceException.class)
     public void didNotGetAllAuthorsByNews() throws Exception {
-        doThrow(new DaoException()).when(authorRepository).getAllByNews(any(News.class));
+        doThrow(new RecoverableDataAccessException("")).when(authorRepository).getAllByNews(any(News.class));
         authorService.getAllByNews(new News());
     }
 
@@ -131,7 +133,7 @@ public class AuthorServiceTest {
 
     @Test(expected = ServiceException.class)
     public void didNotGetAllAuthors() throws Exception {
-        doThrow(new DaoException()).when(authorRepository).findAll();
+        doThrow(new RecoverableDataAccessException("")).when(authorRepository).findAll();
         authorService.getAll();
     }
 
@@ -145,7 +147,7 @@ public class AuthorServiceTest {
 
     @Test(expected = ServiceException.class)
     public void didNotGetAllNotExpiredAuthors() throws Exception {
-        doThrow(new DaoException()).when(authorRepository).getNotExpired();
+        doThrow(new RecoverableDataAccessException("")).when(authorRepository).getNotExpired();
         authorService.getNotExpired();
     }
 
@@ -158,7 +160,7 @@ public class AuthorServiceTest {
 
     @Test(expected = ServiceException.class)
     public void didNotCheckAuthorExistence() throws Exception {
-        doThrow(new DaoException()).when(authorRepository).exists(any(String.class));
+        doThrow(new RecoverableDataAccessException("")).when(authorRepository).exists(any(String.class));
         authorService.exists(new Author());
     }
 }

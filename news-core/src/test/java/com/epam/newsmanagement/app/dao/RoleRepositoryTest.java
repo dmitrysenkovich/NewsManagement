@@ -1,6 +1,5 @@
 package com.epam.newsmanagement.app.dao;
 
-import com.epam.newsmanagement.app.exception.DaoException;
 import com.epam.newsmanagement.app.model.Role;
 import com.github.springtestdbunit.DbUnitTestExecutionListener;
 import com.github.springtestdbunit.annotation.DatabaseSetup;
@@ -14,6 +13,8 @@ import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.PropertySource;
+import org.springframework.dao.DataAccessException;
+import org.springframework.orm.jpa.JpaSystemException;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.TestExecutionListeners;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
@@ -28,6 +29,7 @@ import static com.googlecode.catchexception.CatchException.catchException;
 import static com.googlecode.catchexception.CatchException.caughtException;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertNull;
 
 /**
  * Role repository test.
@@ -82,7 +84,7 @@ public class RoleRepositoryTest {
     public void roleIsNotAdded() throws Exception {
         Role role = new Role();
         catchException(() -> roleRepository.save(role));
-        assert caughtException() instanceof DaoException;
+        assert caughtException() instanceof DataAccessException;
         connection = DriverManager.getConnection(testDbUrl, testDbUsername, testDbPassword);
         IDataSet actualDataSet = getActualDataSet(connection);
         ITable rolesTable = actualDataSet.getTable("ROLES");
@@ -99,9 +101,11 @@ public class RoleRepositoryTest {
     }
 
 
-    @Test(expected = DaoException.class)
+    @Test
     public void roleIsNotFound() throws Exception {
-        roleRepository.findOne(-1L);
+        Role role = roleRepository.findOne(-1L);
+
+        assertNull(role);
     }
 
 
@@ -123,7 +127,7 @@ public class RoleRepositoryTest {
         role.setRoleId(1L);
         role.setRoleName(null);
         catchException(() -> roleRepository.save(role));
-        assert caughtException() instanceof DaoException;
+        assert caughtException() instanceof DataAccessException;
         Role foundRole = roleRepository.findOne(role.getRoleId());
 
         assertEquals("test", foundRole.getRoleName());
@@ -145,7 +149,7 @@ public class RoleRepositoryTest {
     }
 
 
-    @Test
+    @Test(expected = JpaSystemException.class)
     public void roleIsNotDeleted() throws Exception {
         Role role = new Role();
         role.setRoleId(-1L);

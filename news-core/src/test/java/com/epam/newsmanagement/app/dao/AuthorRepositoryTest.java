@@ -1,10 +1,11 @@
 package com.epam.newsmanagement.app.dao;
 
-import com.epam.newsmanagement.app.exception.DaoException;
 import com.epam.newsmanagement.app.model.Author;
 import com.epam.newsmanagement.app.model.News;
 import com.github.springtestdbunit.DbUnitTestExecutionListener;
 import com.github.springtestdbunit.annotation.DatabaseSetup;
+import org.springframework.orm.jpa.JpaSystemException;
+import sun.reflect.generics.reflectiveObjects.NotImplementedException;
 import org.dbunit.Assertion;
 import org.dbunit.DefaultDatabaseTester;
 import org.dbunit.database.DatabaseConnection;
@@ -16,6 +17,7 @@ import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.PropertySource;
+import org.springframework.dao.DataAccessException;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.TestExecutionListeners;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
@@ -33,6 +35,7 @@ import static com.googlecode.catchexception.CatchException.caughtException;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertTrue;
 
 /**
@@ -88,7 +91,7 @@ public class AuthorRepositoryTest {
     public void authorIsNotAdded() throws Exception {
         Author author = new Author();
         catchException(() -> authorRepository.save(author));
-        assert caughtException() instanceof DaoException;
+        assert caughtException() instanceof DataAccessException;
         connection = DriverManager.getConnection(testDbUrl, testDbUsername, testDbPassword);
         IDataSet actualDataSet = getActualDataSet(connection);
         ITable authorsTable = actualDataSet.getTable("AUTHORS");
@@ -105,9 +108,11 @@ public class AuthorRepositoryTest {
     }
 
 
-    @Test(expected = DaoException.class)
+    @Test
     public void authorIsNotFound() throws Exception {
-        authorRepository.findOne(-1L);
+        Author author = authorRepository.findOne(-1L);
+
+        assertNull(author);
     }
 
 
@@ -129,14 +134,14 @@ public class AuthorRepositoryTest {
         author.setAuthorId(1L);
         author.setAuthorName(null);
         catchException(() -> authorRepository.save(author));
-        assert caughtException() instanceof DaoException;
+        assert caughtException() instanceof DataAccessException;
         Author foundAuthor = authorRepository.findOne(author.getAuthorId());
 
         assertEquals("test", foundAuthor.getAuthorName());
     }
 
 
-    @Test(expected = DaoException.class)
+    @Test(expected = NotImplementedException.class)
     public void validAuthorIsNotDeleted() throws Exception {
         Author author = new Author();
         author.setAuthorId(1L);
@@ -151,7 +156,7 @@ public class AuthorRepositoryTest {
     }
 
 
-    @Test(expected = DaoException.class)
+    @Test(expected = NotImplementedException.class)
     public void invalidAuthorIsNotDeleted() throws Exception {
         Author author = new Author();
         author.setAuthorId(-1L);
@@ -171,29 +176,12 @@ public class AuthorRepositoryTest {
         Timestamp currentDate = new Timestamp(new java.util.Date().getTime());
         Author author = new Author();
         author.setAuthorId(1L);
+        author.setAuthorName("test");
         author.setExpired(currentDate);
         authorRepository.save(author);
         Author foundAuthor = authorRepository.findOne(author.getAuthorId());
 
         assertEquals(currentDate.getDate(), foundAuthor.getExpired().getDate());
-    }
-
-
-    @Test
-    public void authorIsNotMadeExpired() throws Exception {
-        Author author = new Author();
-        author.setAuthorId(-1L);
-        Timestamp currentDate = new Timestamp(new java.util.Date().getTime());
-        author.setExpired(currentDate);
-
-        connection = DriverManager.getConnection(testDbUrl, testDbUsername, testDbPassword);
-        IDataSet oldDataSet = getActualDataSet(connection);
-        ITable oldAuthorsTable = oldDataSet.getTable("AUTHORS");
-        authorRepository.save(author);
-        IDataSet actualDataSet = getActualDataSet(connection);
-        ITable authorsTable = actualDataSet.getTable("AUTHORS");
-
-        Assertion.assertEquals(oldAuthorsTable, authorsTable);
     }
 
 

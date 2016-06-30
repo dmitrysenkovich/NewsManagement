@@ -5,8 +5,8 @@ import com.epam.newsmanagement.app.exception.ServiceException;
 import com.epam.newsmanagement.app.model.Role;
 import com.epam.newsmanagement.app.service.RoleService;
 import org.apache.log4j.Logger;
-import org.hibernate.HibernateException;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.dao.DataAccessException;
 import org.springframework.transaction.annotation.Transactional;
 
 /**
@@ -25,7 +25,7 @@ public class RoleServiceImpl implements RoleService {
         logger.info("Adding new role..");
         try {
             role = roleRepository.save(role);
-        } catch (HibernateException e) {
+        } catch (DataAccessException e) {
             logger.error("Failed to add new role");
             throw new ServiceException(e);
         }
@@ -40,7 +40,7 @@ public class RoleServiceImpl implements RoleService {
         Role role;
         try {
             role = roleRepository.findOne(roleId);
-        } catch (HibernateException e) {
+        } catch (DataAccessException e) {
             logger.error("Failed to find role");
             throw new ServiceException(e);
         }
@@ -55,7 +55,7 @@ public class RoleServiceImpl implements RoleService {
         logger.info("Updating role..");
         try {
             roleRepository.save(role);
-        } catch (HibernateException e) {
+        } catch (DataAccessException e) {
             logger.error("Failed to update role");
             throw new ServiceException(e);
         }
@@ -69,7 +69,7 @@ public class RoleServiceImpl implements RoleService {
         logger.info("Deleting role..");
         try {
             roleRepository.delete(role);
-        } catch (HibernateException e) {
+        } catch (DataAccessException e) {
             logger.error("Failed to delete role");
             throw new ServiceException(e);
         }

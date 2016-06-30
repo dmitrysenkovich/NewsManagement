@@ -1,6 +1,5 @@
 package com.epam.newsmanagement.app.service;
 
-import com.epam.newsmanagement.app.exception.DaoException;
 import com.epam.newsmanagement.app.exception.ServiceException;
 import com.epam.newsmanagement.app.model.Author;
 import com.epam.newsmanagement.app.model.News;
@@ -27,7 +26,7 @@ public interface AuthorService extends CrudService<Author> {
      * @param news specifies news
      * which authors are to be retrieved.
      * @return news authors.
-     * @throws DaoException
+     * @throws ServiceException
      */
     default List<Author> getAllByNews(News news) throws ServiceException {
         throw new ServiceException();

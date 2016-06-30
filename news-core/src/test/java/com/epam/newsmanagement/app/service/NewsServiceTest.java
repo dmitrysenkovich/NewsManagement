@@ -3,7 +3,6 @@ package com.epam.newsmanagement.app.service;
 import com.epam.newsmanagement.app.dao.AuthorRepository;
 import com.epam.newsmanagement.app.dao.NewsRepository;
 import com.epam.newsmanagement.app.dao.TagRepository;
-import com.epam.newsmanagement.app.exception.DaoException;
 import com.epam.newsmanagement.app.exception.ServiceException;
 import com.epam.newsmanagement.app.model.Author;
 import com.epam.newsmanagement.app.model.News;
@@ -13,13 +12,13 @@ import com.epam.newsmanagement.app.utils.SearchCriteria;
 import com.epam.newsmanagement.app.utils.SearchUtils;
 import org.junit.Before;
 import org.junit.Test;
-import org.junit.runner.RunWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
-import org.powermock.modules.junit4.PowerMockRunner;
+import org.springframework.dao.RecoverableDataAccessException;
 
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.LinkedList;
 import java.util.List;
 
@@ -37,7 +36,6 @@ import static org.mockito.Mockito.when;
 /**
  * News service test.
  */
-@RunWith(PowerMockRunner.class)
 public class NewsServiceTest {
     @InjectMocks
     private NewsServiceImpl newsService;
@@ -61,6 +59,7 @@ public class NewsServiceTest {
     @Test
     public void notAddedNewsAuthorsAreNullTagsAreNull() throws Exception {
         News news = new News();
+        news.setNewsId(1L);
         when(newsRepository.save(news)).thenReturn(news);
         catchException(() -> newsService.add(news, null, null));
         assert caughtException() instanceof ServiceException;
@@ -126,7 +125,7 @@ public class NewsServiceTest {
 
     @Test
     public void didNotAddNewsAuthorsAreNullTagsAreNullNewsFailure() throws Exception {
-        doThrow(new DaoException()).when(newsRepository).save(any(News.class));
+        doThrow(new RecoverableDataAccessException("")).when(newsRepository).save(any(News.class));
         catchException(() -> newsService.add(new News(), null, null));
         assert caughtException() instanceof ServiceException;
 
@@ -140,7 +139,7 @@ public class NewsServiceTest {
     public void didNotAddNewsAuthorsAreNotNullTagsAreNullNewsFailure() throws Exception {
         List<Author> authors = new LinkedList<>();
         authors.add(new Author());
-        doThrow(new DaoException()).when(newsRepository).save(any(News.class));
+        doThrow(new RecoverableDataAccessException("")).when(newsRepository).save(any(News.class));
         catchException(() -> newsService.add(new News(), authors, null));
         assert caughtException() instanceof ServiceException;
 
@@ -154,7 +153,7 @@ public class NewsServiceTest {
     public void didNotAddNewsAuthorsAreNullTagsAreNotNullNewsFailure() throws Exception {
         List<Tag> tags = new LinkedList<>();
         tags.add(new Tag());
-        doThrow(new DaoException()).when(newsRepository).save(any(News.class));
+        doThrow(new RecoverableDataAccessException("")).when(newsRepository).save(any(News.class));
         catchException(() -> newsService.add(new News(), null, tags));
         assert caughtException() instanceof ServiceException;
 
@@ -170,7 +169,7 @@ public class NewsServiceTest {
         authors.add(new Author());
         List<Tag> tags = new LinkedList<>();
         tags.add(new Tag());
-        doThrow(new DaoException()).when(newsRepository).save(any(News.class));
+        doThrow(new RecoverableDataAccessException("")).when(newsRepository).save(any(News.class));
         catchException(() -> newsService.add(new News(), authors, tags));
         assert caughtException() instanceof ServiceException;
 
@@ -212,7 +211,7 @@ public class NewsServiceTest {
         List<Tag> tags = new LinkedList<>();
         tags.add(new Tag());
         when(newsRepository.save(any(News.class))).thenReturn(new News());
-        doThrow(new DaoException()).when(tagRepository).addAll(any(News.class), any(List.class));
+        doThrow(new RecoverableDataAccessException("")).when(tagRepository).addAll(any(News.class), any(List.class));
         catchException(() -> newsService.add(new News(), null, tags));
         assert caughtException() instanceof ServiceException;
 
@@ -229,7 +228,7 @@ public class NewsServiceTest {
         List<Tag> tags = new LinkedList<>();
         tags.add(new Tag());
         when(newsRepository.save(any(News.class))).thenReturn(new News());
-        doThrow(new DaoException()).when(tagRepository).addAll(any(News.class), any(List.class));
+        doThrow(new RecoverableDataAccessException("")).when(tagRepository).addAll(any(News.class), any(List.class));
         catchException(() -> newsService.add(new News(), authors, tags));
         assert caughtException() instanceof ServiceException;
 
@@ -252,21 +251,24 @@ public class NewsServiceTest {
 
     @Test(expected = ServiceException.class)
     public void didNotFind() throws Exception {
-        doThrow(new DaoException()).when(newsRepository).findOne(any(Long.class));
+        doThrow(new RecoverableDataAccessException("")).when(newsRepository).findOne(any(Long.class));
         newsService.find(1L);
     }
 
 
     @Test
     public void updated() throws Exception {
-        doNothing().when(newsRepository).save(any(News.class));
+        News news = new News();
+        news.setModificationDate(new Date());
+        when(newsRepository.save(any(News.class))).thenReturn(news);
+        when(newsRepository.findOne(any(Long.class))).thenReturn(news);
         newsService.update(new News());
     }
 
 
     @Test(expected = ServiceException.class)
     public void didNotUpdate() throws Exception {
-        doThrow(new DaoException()).when(newsRepository).save(any(News.class));
+        doThrow(new RecoverableDataAccessException("")).when(newsRepository).save(any(News.class));
         newsService.update(new News());
     }
 
@@ -282,7 +284,7 @@ public class NewsServiceTest {
 
     @Test(expected = ServiceException.class)
     public void didNotDelete() throws Exception {
-        doThrow(new DaoException()).when(newsRepository).delete(any(News.class));
+        doThrow(new RecoverableDataAccessException("")).when(newsRepository).delete(any(News.class));
         newsService.delete(new News());
     }
 
@@ -299,7 +301,7 @@ public class NewsServiceTest {
 
     @Test(expected = ServiceException.class)
     public void didNotFindNewsBySearchCriteria() throws Exception {
-        doThrow(new DaoException()).when(newsRepository).search(any(String.class));
+        doThrow(new RecoverableDataAccessException("")).when(newsRepository).search(any(String.class));
         when(searchUtils.getSearchQuery(any(SearchCriteria.class))).thenReturn(new String());
         newsService.search(new SearchCriteria());
     }
@@ -316,7 +318,7 @@ public class NewsServiceTest {
 
     @Test(expected = ServiceException.class)
     public void didNotFindSortedNews() throws Exception {
-        doThrow(new DaoException()).when(newsRepository).findAllSorted();
+        doThrow(new RecoverableDataAccessException("")).when(newsRepository).findAllSorted();
         newsService.findAllSorted();
     }
 
@@ -332,7 +334,7 @@ public class NewsServiceTest {
 
     @Test(expected = ServiceException.class)
     public void didNotCountAllNews() throws Exception {
-        doThrow(new DaoException()).when(newsRepository).countAll();
+        doThrow(new RecoverableDataAccessException("")).when(newsRepository).countAll();
         newsService.countAll();
     }
 
@@ -349,7 +351,7 @@ public class NewsServiceTest {
 
     @Test(expected = ServiceException.class)
     public void didNotCountNewsBySearchCriteria() throws Exception {
-        doThrow(new DaoException()).when(newsRepository).countPagesBySearchCriteria(any(String.class));
+        doThrow(new RecoverableDataAccessException("")).when(newsRepository).countPagesBySearchCriteria(any(String.class));
         when(searchUtils.getSearchQuery(any(SearchCriteria.class))).thenReturn(new String());
         newsService.countPagesBySearchCriteria(new SearchCriteria());
     }
@@ -364,7 +366,7 @@ public class NewsServiceTest {
 
     @Test(expected = ServiceException.class)
     public void didNotDeleteAllNews() throws Exception {
-        doThrow(new DaoException()).when(newsRepository).deleteAll(any(List.class));
+        doThrow(new RecoverableDataAccessException("")).when(newsRepository).deleteAll(any(List.class));
         newsService.deleteAll(new ArrayList<>());
     }
 
@@ -381,7 +383,7 @@ public class NewsServiceTest {
 
     @Test(expected = ServiceException.class)
     public void didNotRetrieveNewRowNumberBySearchCriteria() throws Exception {
-        doThrow(new DaoException()).when(newsRepository).rowNumberBySearchCriteria(any(String.class));
+        doThrow(new RecoverableDataAccessException("")).when(newsRepository).rowNumberBySearchCriteria(any(String.class));
         when(searchUtils.getSearchQuery(any(SearchCriteria.class))).thenReturn(new String());
         newsService.rowNumberBySearchCriteria(new SearchCriteria(), new News());
     }

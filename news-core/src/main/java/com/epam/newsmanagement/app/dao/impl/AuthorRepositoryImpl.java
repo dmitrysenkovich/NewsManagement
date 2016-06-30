@@ -1,19 +1,12 @@
 package com.epam.newsmanagement.app.dao.impl;
 
 import com.epam.newsmanagement.app.dao.AuthorRepositoryCustom;
-import com.epam.newsmanagement.app.exception.DaoException;
 import com.epam.newsmanagement.app.model.Author;
 import com.epam.newsmanagement.app.model.News;
-import com.epam.newsmanagement.app.model.Tag;
 
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
 import javax.persistence.Query;
-import java.sql.Connection;
-import java.sql.PreparedStatement;
-import java.sql.ResultSet;
-import java.sql.SQLException;
-import java.util.LinkedList;
 import java.util.List;
 
 /**

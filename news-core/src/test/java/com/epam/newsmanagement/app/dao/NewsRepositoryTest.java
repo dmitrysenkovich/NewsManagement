@@ -1,6 +1,5 @@
 package com.epam.newsmanagement.app.dao;
 
-import com.epam.newsmanagement.app.exception.DaoException;
 import com.epam.newsmanagement.app.model.News;
 import com.epam.newsmanagement.app.utils.SearchCriteria;
 import com.epam.newsmanagement.app.utils.SearchUtils;
@@ -16,6 +15,8 @@ import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.PropertySource;
+import org.springframework.dao.DataAccessException;
+import org.springframework.orm.jpa.JpaSystemException;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.TestExecutionListeners;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
@@ -24,10 +25,11 @@ import org.unitils.database.annotations.Transactional;
 import org.unitils.database.util.TransactionMode;
 
 import java.sql.Connection;
-import java.sql.Date;
 import java.sql.DriverManager;
 import java.sql.Timestamp;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.LinkedList;
 import java.util.List;
 
@@ -35,6 +37,7 @@ import static com.googlecode.catchexception.CatchException.catchException;
 import static com.googlecode.catchexception.CatchException.caughtException;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertTrue;
 
 /**
@@ -97,7 +100,7 @@ public class NewsRepositoryTest {
     public void newsIsNotAdded() throws Exception {
         final News news = new News();
         catchException(() -> newsRepository.save(news));
-        assert caughtException() instanceof DaoException;
+        assert caughtException() instanceof DataAccessException;
         connection = DriverManager.getConnection(testDbUrl, testDbUsername, testDbPassword);
         IDataSet actualDataSet = getActualDataSet(connection);
         ITable newsTable = actualDataSet.getTable("NEWS");
@@ -114,20 +117,20 @@ public class NewsRepositoryTest {
     }
 
 
-    @Test(expected = DaoException.class)
+    @Test
     public void newsIsNotFound() throws Exception {
-        newsRepository.findOne(-1L);
+        News news = newsRepository.findOne(-1L);
+
+        assertNull(news);
     }
 
 
     @Test
     public void newsIsUpdated() throws Exception {
-        News news = new News();
-        news.setNewsId(1L);
+        News news = newsRepository.findOne(1L);
         news.setTitle("test1");
         news.setShortText("test1");
         news.setFullText("test1");
-        news.setModificationDate(new Timestamp(new java.util.Date().getTime()));
         newsRepository.save(news);
         News foundNews = newsRepository.findOne(news.getNewsId());
 
@@ -143,7 +146,7 @@ public class NewsRepositoryTest {
         news.setNewsId(1L);
         news.setTitle(null);
         catchException(()->newsRepository.save(news));
-        assert caughtException() instanceof DaoException;
+        assert caughtException() instanceof DataAccessException;
         News foundNews = newsRepository.findOne(news.getNewsId());
 
         assertEquals("title1", foundNews.getTitle());
@@ -152,8 +155,7 @@ public class NewsRepositoryTest {
 
     @Test
     public void newsIsDeleted() throws Exception {
-        News news = new News();
-        news.setNewsId(1L);
+        News news = newsRepository.findOne(1L);
         newsRepository.delete(news);
         connection = DriverManager.getConnection(testDbUrl, testDbUsername, testDbPassword);
         IDataSet actualDataSet = getActualDataSet(connection);
@@ -169,7 +171,7 @@ public class NewsRepositoryTest {
     }
 
 
-    @Test
+    @Test(expected = JpaSystemException.class)
     public void newsIsNotDeleted() throws Exception {
         News news = new News();
         news.setNewsId(-1L);
@@ -236,14 +238,14 @@ public class NewsRepositoryTest {
     }
 
 
-    @Test(expected = DaoException.class)
+    @Test(expected = DataAccessException.class)
     public void searchNothingFoundInvalidSearchQuery() throws Exception {
         String searchQuery = "test";
         newsRepository.search(searchQuery);
     }
 
 
-    @Test(expected = DaoException.class)
+    @Test(expected = NullPointerException.class)
     public void searchNothingIsFoundSearchQueryIsNull() throws Exception {
         String searchQuery = null;
         newsRepository.search(searchQuery);
@@ -300,48 +302,6 @@ public class NewsRepositoryTest {
 
 
     @Test
-    public void deletedAll() throws Exception {
-        List<Long> newsIds = new ArrayList<>();
-        newsIds.add(1L);
-        newsIds.add(2L);
-        newsIds.add(3L);
-        newsRepository.deleteAll(newsIds);
-        connection = DriverManager.getConnection(testDbUrl, testDbUsername, testDbPassword);
-        IDataSet actualDataSet = getActualDataSet(connection);
-        ITable newsTable = actualDataSet.getTable("NEWS");
-        ITable newsAuthorTable = actualDataSet.getTable("NEWS_AUTHOR");
-        ITable newsTagTable = actualDataSet.getTable("NEWS_TAG");
-        ITable commentTable = actualDataSet.getTable("COMMENTS");
-
-        assertEquals(0L, newsTable.getRowCount());
-        assertEquals(0L, newsAuthorTable.getRowCount());
-        assertEquals(0L, newsTagTable.getRowCount());
-        assertEquals(0L, commentTable.getRowCount());
-    }
-
-
-    @Test
-    public void didNotDeletedAllInvalidNews() throws Exception {
-        List<Long> newsIds = new ArrayList<>();
-        newsIds.add(1L);
-        newsIds.add(2L);
-        newsIds.add(4L);
-        newsRepository.deleteAll(newsIds);
-        connection = DriverManager.getConnection(testDbUrl, testDbUsername, testDbPassword);
-        IDataSet actualDataSet = getActualDataSet(connection);
-        ITable newsTable = actualDataSet.getTable("NEWS");
-        ITable newsAuthorTable = actualDataSet.getTable("NEWS_AUTHOR");
-        ITable newsTagTable = actualDataSet.getTable("NEWS_TAG");
-        ITable commentTable = actualDataSet.getTable("COMMENTS");
-
-        assertEquals(1L, newsTable.getRowCount());
-        assertEquals(1L, newsAuthorTable.getRowCount());
-        assertEquals(2L, newsTagTable.getRowCount());
-        assertEquals(3L, commentTable.getRowCount());
-    }
-
-
-    @Test
     public void gotRowNumberBySearchCriteria() throws Exception {
         SearchCriteria searchCriteria = new SearchCriteria();
         List<Long> authorsIds = new ArrayList<>();
@@ -358,7 +318,7 @@ public class NewsRepositoryTest {
     }
 
 
-    @Test(expected = DaoException.class)
+    @Test(expected = DataAccessException.class)
     public void didNotGetRowNumberBySearchCriteria() throws Exception {
         SearchCriteria searchCriteria = new SearchCriteria();
         List<Long> authorsIds = new ArrayList<>();

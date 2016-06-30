@@ -4,5 +4,6 @@
     http://www.springframework.org/schema/beans/spring-beans-3.0.xsd">
 
     <bean id="searchUtils" class="com.epam.newsmanagement.app.utils.SearchUtils"/>
+    <bean id="scriptFileUtils" class="com.epam.newsmanagement.app.utils.ScriptFileUtils"/>
 
 </beans>

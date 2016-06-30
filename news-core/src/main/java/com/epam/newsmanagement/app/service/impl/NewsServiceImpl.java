@@ -11,9 +11,8 @@ import com.epam.newsmanagement.app.service.NewsService;
 import com.epam.newsmanagement.app.utils.SearchCriteria;
 import com.epam.newsmanagement.app.utils.SearchUtils;
 import org.apache.log4j.Logger;
-import org.hibernate.HibernateException;
-import org.hibernate.StaleObjectStateException;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.dao.DataAccessException;
 import org.springframework.orm.jpa.JpaOptimisticLockingFailureException;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -45,7 +44,7 @@ public class NewsServiceImpl implements NewsService {
         news.setCreationDate(new Timestamp(new java.util.Date().getTime()));
         try {
             news = newsRepository.save(news);
-        } catch (HibernateException e) {
+        } catch (DataAccessException e) {
             logger.error("Failed to add news");
             throw new ServiceException(e);
         }
@@ -55,7 +54,7 @@ public class NewsServiceImpl implements NewsService {
 
             try {
                 authorRepository.addAll(news, authors);
-            } catch (HibernateException e) {
+            } catch (DataAccessException e) {
                 logger.error("Failed to add authors to news");
                 logger.error("Failed to add news");
                 throw new ServiceException(e);
@@ -73,7 +72,7 @@ public class NewsServiceImpl implements NewsService {
 
             try {
                 tagRepository.addAll(news, tags);
-            } catch (HibernateException e) {
+            } catch (DataAccessException e) {
                 logger.error("Failed to add tags to news");
                 logger.error("Failed to add news");
                 throw new ServiceException(e);
@@ -94,7 +93,7 @@ public class NewsServiceImpl implements NewsService {
         try {
             logger.info("Deleting all news authors..");
             authorRepository.deleteAllRelationsByNews(news);
-        } catch (HibernateException e) {
+        } catch (DataAccessException e) {
             logger.error("Failed to delete all news authors");
             logger.error("Failed to update news authors and tags");
             throw new ServiceException(e);
@@ -103,7 +102,7 @@ public class NewsServiceImpl implements NewsService {
         try {
             logger.info("Deleting all news tags..");
             tagRepository.deleteAllRelationsByNews(news);
-        } catch (HibernateException e) {
+        } catch (DataAccessException e) {
             logger.error("Failed to delete all news tags");
             logger.error("Failed to update news authors and tags");
             throw new ServiceException(e);
@@ -112,7 +111,7 @@ public class NewsServiceImpl implements NewsService {
         try {
             logger.info("Adding all news to authors relations..");
             authorRepository.addAll(news, authors);
-        } catch (HibernateException e) {
+        } catch (DataAccessException e) {
             logger.error("Failed to add all news authors");
             logger.error("Failed to update news authors and tags");
             throw new ServiceException(e);
@@ -121,7 +120,7 @@ public class NewsServiceImpl implements NewsService {
         try {
             logger.info("Adding all news to tags relations..");
             tagRepository.addAll(news, tags);
-        } catch (HibernateException e) {
+        } catch (DataAccessException e) {
             logger.error("Failed to add all news tags");
             logger.error("Failed to update news authors and tags");
             throw new ServiceException(e);
@@ -137,7 +136,7 @@ public class NewsServiceImpl implements NewsService {
         News news;
         try {
             news = newsRepository.findOne(newsId);
-        } catch (HibernateException e) {
+        } catch (DataAccessException e) {
             logger.error("Failed to find news");
             throw new ServiceException(e);
         }
@@ -159,7 +158,7 @@ public class NewsServiceImpl implements NewsService {
         } catch (JpaOptimisticLockingFailureException e) {
             logger.error("Attempt to update news concurrent");
             throw new ServiceException(e);
-        } catch (HibernateException e) {
+        } catch (DataAccessException e) {
             logger.error("Failed to update news");
             throw new ServiceException(e);
         }
@@ -173,7 +172,7 @@ public class NewsServiceImpl implements NewsService {
         logger.info("Deleting news..");
         try {
             newsRepository.delete(news);
-        } catch (HibernateException e) {
+        } catch (DataAccessException e) {
             logger.error("Failed to delete news");
             throw new ServiceException(e);
         }
@@ -188,7 +187,7 @@ public class NewsServiceImpl implements NewsService {
         List<News> fitNews;
         try {
             fitNews = newsRepository.search(SEARCH_CRITERIA_QUERY);
-        } catch (HibernateException e) {
+        } catch (DataAccessException e) {
             logger.error("Failed to find news by search criteria");
             throw new ServiceException(e);
         }
@@ -203,7 +202,7 @@ public class NewsServiceImpl implements NewsService {
         List<News> sortedNews;
         try {
             sortedNews = newsRepository.findAllSorted();
-        } catch (HibernateException e) {
+        } catch (DataAccessException e) {
             logger.error("Failed to retrieve all news sorted by comments count");
             throw new ServiceException(e);
         }
@@ -218,7 +217,7 @@ public class NewsServiceImpl implements NewsService {
         Long newsCount;
         try {
             newsCount = newsRepository.countAll();
-        } catch (HibernateException e) {
+        } catch (DataAccessException e) {
             logger.error("Failed to count all news");
             throw new ServiceException(e);
         }
@@ -234,7 +233,7 @@ public class NewsServiceImpl implements NewsService {
         Long fitNewsPagesCount;
         try {
             fitNewsPagesCount = newsRepository.countPagesBySearchCriteria(COUNT_PAGES_BY_SEARCH_CRITERIA_QUERY);
-        } catch (HibernateException e) {
+        } catch (DataAccessException e) {
             logger.error("Failed to count news pages by search criteria");
             throw new ServiceException(e);
         }
@@ -249,7 +248,7 @@ public class NewsServiceImpl implements NewsService {
         logger.info("Deleting list of news..");
         try {
             newsRepository.deleteAll(newsIds);
-        } catch (HibernateException e) {
+        } catch (DataAccessException e) {
             logger.error("Failed to delete list of news");
             throw new ServiceException(e);
         }
@@ -264,7 +263,7 @@ public class NewsServiceImpl implements NewsService {
         Long newsRowNumber;
         try {
             newsRowNumber = newsRepository.rowNumberBySearchCriteria(ROW_NUMBER_BY_SEARCH_CRITERIA_QUERY);
-        } catch (HibernateException e) {
+        } catch (DataAccessException e) {
             logger.error("Failed to retrieve news row number by search criteria");
             throw new ServiceException(e);
         }

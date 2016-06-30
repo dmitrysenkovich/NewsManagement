@@ -1,14 +1,13 @@
 package com.epam.newsmanagement.app.service.impl;
 
 import com.epam.newsmanagement.app.dao.UserRepository;
-import com.epam.newsmanagement.app.exception.DaoException;
 import com.epam.newsmanagement.app.exception.ServiceException;
 import com.epam.newsmanagement.app.model.Role;
 import com.epam.newsmanagement.app.model.User;
 import com.epam.newsmanagement.app.service.UserService;
 import org.apache.log4j.Logger;
-import org.hibernate.HibernateException;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.dao.DataAccessException;
 import org.springframework.transaction.annotation.Transactional;
 
 /**
@@ -28,7 +27,7 @@ public class UserServiceImpl implements UserService {
         user.setRole(role);
         try {
             user = userRepository.save(user);
-        } catch (HibernateException e) {
+        } catch (DataAccessException e) {
             logger.error("Failed to add new user");
             throw new ServiceException(e);
         }
@@ -43,7 +42,7 @@ public class UserServiceImpl implements UserService {
         User user;
         try {
             user = userRepository.findOne(userId);
-        } catch (HibernateException e) {
+        } catch (DataAccessException e) {
             logger.error("Failed to find user");
             throw new ServiceException(e);
         }
@@ -58,7 +57,7 @@ public class UserServiceImpl implements UserService {
         logger.info("Updating user..");
         try {
             userRepository.save(user);
-        } catch (HibernateException e) {
+        } catch (DataAccessException e) {
             logger.error("Failed to update user");
             throw new ServiceException(e);
         }
@@ -72,7 +71,7 @@ public class UserServiceImpl implements UserService {
         logger.info("Deleting user..");
         try {
             userRepository.delete(user);
-        } catch (HibernateException e) {
+        } catch (DataAccessException e) {
             logger.error("Failed to delete user");
             throw new ServiceException(e);
         }
@@ -86,7 +85,7 @@ public class UserServiceImpl implements UserService {
         String userName;
         try {
             userName = userRepository.userNameByLogin(login);
-        } catch (HibernateException e) {
+        } catch (DataAccessException e) {
             logger.error("Failed to find user name by login");
             throw new ServiceException(e);
         }

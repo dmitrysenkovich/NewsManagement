@@ -1,7 +1,6 @@
 package com.epam.newsmanagement.app.service;
 
 import com.epam.newsmanagement.app.dao.CommentRepository;
-import com.epam.newsmanagement.app.exception.DaoException;
 import com.epam.newsmanagement.app.exception.ServiceException;
 import com.epam.newsmanagement.app.model.Comment;
 import com.epam.newsmanagement.app.model.News;
@@ -11,6 +10,7 @@ import org.junit.Test;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
+import org.springframework.dao.RecoverableDataAccessException;
 
 import java.util.ArrayList;
 import java.util.LinkedList;
@@ -57,7 +57,7 @@ public class CommentServiceTest {
     public void didNotAdd() throws Exception {
         News news = new News();
         news.setNewsId(1L);
-        doThrow(new DaoException()).when(commentRepository).save(any(Comment.class));
+        doThrow(new RecoverableDataAccessException("")).when(commentRepository).save(any(Comment.class));
         commentService.add(news, new Comment());
     }
 
@@ -75,21 +75,21 @@ public class CommentServiceTest {
 
     @Test(expected = ServiceException.class)
     public void didNotFind() throws Exception {
-        doThrow(new DaoException()).when(commentRepository).findOne(any(Long.class));
+        doThrow(new RecoverableDataAccessException("")).when(commentRepository).findOne(any(Long.class));
         commentService.find(1L);
     }
 
 
     @Test
     public void updated() throws Exception {
-        doNothing().when(commentRepository).save(any(Comment.class));
+        when(commentRepository.save(any(Comment.class))).thenReturn(new Comment());
         commentService.update(new Comment());
     }
 
 
     @Test(expected = ServiceException.class)
     public void didNotUpdate() throws Exception {
-        doThrow(new DaoException()).when(commentRepository).save(any(Comment.class));
+        doThrow(new RecoverableDataAccessException("")).when(commentRepository).save(any(Comment.class));
         commentService.update(new Comment());
     }
 
@@ -103,7 +103,7 @@ public class CommentServiceTest {
 
     @Test(expected = ServiceException.class)
     public void didNotDelete() throws Exception {
-        doThrow(new DaoException()).when(commentRepository).delete(any(Comment.class));
+        doThrow(new RecoverableDataAccessException("")).when(commentRepository).delete(any(Comment.class));
         commentService.delete(new Comment());
     }
 
@@ -123,7 +123,7 @@ public class CommentServiceTest {
         List<Comment> comments = new LinkedList<>();
         comments.add(new Comment());
         comments.add(new Comment());
-        doThrow(new DaoException()).when(commentRepository).deleteAll(any(List.class));
+        doThrow(new RecoverableDataAccessException("")).when(commentRepository).deleteAll(any(List.class));
         commentService.deleteAll(comments);
     }
 
@@ -139,7 +139,7 @@ public class CommentServiceTest {
 
     @Test(expected = ServiceException.class)
     public void didNotCountAllCommentsByNews() throws Exception {
-        doThrow(new DaoException()).when(commentRepository).countAllByNews(any(News.class));
+        doThrow(new RecoverableDataAccessException("")).when(commentRepository).countAllByNews(any(News.class));
         commentService.countAllByNews(new News());
     }
 
@@ -155,7 +155,7 @@ public class CommentServiceTest {
 
     @Test(expected = ServiceException.class)
     public void didNotGetAllCommentsByNews() throws Exception {
-        doThrow(new DaoException()).when(commentRepository).getAllByNews(any(News.class));
+        doThrow(new RecoverableDataAccessException("")).when(commentRepository).getAllByNews(any(News.class));
         commentService.getAllByNews(new News());
     }
 }

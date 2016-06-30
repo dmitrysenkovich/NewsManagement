@@ -1,7 +1,6 @@
 package com.epam.newsmanagement.app.service;
 
 import com.epam.newsmanagement.app.dao.UserRepository;
-import com.epam.newsmanagement.app.exception.DaoException;
 import com.epam.newsmanagement.app.exception.ServiceException;
 import com.epam.newsmanagement.app.model.Role;
 import com.epam.newsmanagement.app.model.User;
@@ -11,6 +10,7 @@ import org.junit.Test;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
+import org.springframework.dao.RecoverableDataAccessException;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
@@ -53,7 +53,7 @@ public class UserServiceTest {
     public void didNotAdd() throws Exception {
         Role role = new Role();
         role.setRoleId(1L);
-        doThrow(new DaoException()).when(userRepository).save(any(User.class));
+        doThrow(new RecoverableDataAccessException("")).when(userRepository).save(any(User.class));
         userService.add(new User(), role);
     }
 
@@ -71,21 +71,21 @@ public class UserServiceTest {
 
     @Test(expected = ServiceException.class)
     public void didNotFind() throws Exception {
-        doThrow(new DaoException()).when(userRepository).findOne(any(Long.class));
+        doThrow(new RecoverableDataAccessException("")).when(userRepository).findOne(any(Long.class));
         userService.find(1L);
     }
 
 
     @Test
     public void updated() throws Exception {
-        doNothing().when(userRepository).save(any(User.class));
+        when(userRepository.save(any(User.class))).thenReturn(new User());
         userService.update(new User());
     }
 
 
     @Test(expected = ServiceException.class)
     public void didNotUpdate() throws Exception {
-        doThrow(new DaoException()).when(userRepository).save(any(User.class));
+        doThrow(new RecoverableDataAccessException("")).when(userRepository).save(any(User.class));
         userService.update(new User());
     }
 
@@ -99,7 +99,7 @@ public class UserServiceTest {
 
     @Test(expected = ServiceException.class)
     public void didNotDelete() throws Exception {
-        doThrow(new DaoException()).when(userRepository).delete(any(User.class));
+        doThrow(new RecoverableDataAccessException("")).when(userRepository).delete(any(User.class));
         userService.delete(new User());
     }
 
@@ -115,7 +115,7 @@ public class UserServiceTest {
 
     @Test(expected = ServiceException.class)
     public void didNotFindUserNameByLogin() throws Exception {
-        doThrow(new DaoException()).when(userRepository).userNameByLogin(any(String.class));
+        doThrow(new RecoverableDataAccessException("")).when(userRepository).userNameByLogin(any(String.class));
         userService.userNameByLogin(new String());
     }
 }

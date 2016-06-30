@@ -1,6 +1,5 @@
 package com.epam.newsmanagement.app.dao;
 
-import com.epam.newsmanagement.app.exception.DaoException;
 import com.epam.newsmanagement.app.model.Role;
 import com.epam.newsmanagement.app.model.User;
 import com.github.springtestdbunit.DbUnitTestExecutionListener;
@@ -15,6 +14,8 @@ import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.PropertySource;
+import org.springframework.dao.DataAccessException;
+import org.springframework.orm.jpa.JpaSystemException;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.TestExecutionListeners;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
@@ -29,6 +30,7 @@ import static com.googlecode.catchexception.CatchException.catchException;
 import static com.googlecode.catchexception.CatchException.caughtException;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertNull;
 
 /**
  * User repository test.
@@ -91,7 +93,7 @@ public class UserRepositoryTest {
         role.setRoleId(1L);
         user.setRole(role);
         catchException(() -> userRepository.save(user));
-        assert caughtException() instanceof DaoException;
+        assert caughtException() instanceof DataAccessException;
         connection = DriverManager.getConnection(testDbUrl, testDbUsername, testDbPassword);
         IDataSet actualDataSet = getActualDataSet(connection);
         ITable usersTable = actualDataSet.getTable("USERS");
@@ -110,7 +112,7 @@ public class UserRepositoryTest {
         user.setLogin("test");
         user.setPassword("test");
         catchException(() -> userRepository.save(user));
-        assert caughtException() instanceof DaoException;
+        assert caughtException() instanceof DataAccessException;
         connection = DriverManager.getConnection(testDbUrl, testDbUsername, testDbPassword);
         IDataSet actualDataSet = getActualDataSet(connection);
         ITable usersTable = actualDataSet.getTable("USERS");
@@ -127,9 +129,11 @@ public class UserRepositoryTest {
     }
 
 
-    @Test(expected = DaoException.class)
+    @Test
     public void userIsNotFound() throws Exception {
-        userRepository.findOne(-1L);
+        User user = userRepository.findOne(-1L);
+
+        assertNull(user);
     }
 
 
@@ -161,7 +165,7 @@ public class UserRepositoryTest {
         role.setRoleId(1L);
         user.setRole(role);
         catchException(() -> userRepository.save(user));
-        assert caughtException() instanceof DaoException;
+        assert caughtException() instanceof DataAccessException;
         User foundUser = userRepository.findOne(user.getUserId());
 
         assertEquals("test", foundUser.getUserName());
@@ -179,7 +183,7 @@ public class UserRepositoryTest {
         user.setLogin("test");
         user.setPassword("test");
         catchException(() -> userRepository.save(user));
-        assert caughtException() instanceof DaoException;
+        assert caughtException() instanceof DataAccessException;
         User foundUser = userRepository.findOne(user.getUserId());
 
         assertEquals((Long) 1L, foundUser.getRole().getRoleId());
@@ -199,7 +203,7 @@ public class UserRepositoryTest {
     }
 
 
-    @Test
+    @Test(expected = JpaSystemException.class)
     public void userIsNotDeleted() throws Exception {
         User user = new User();
         user.setUserId(-1L);
@@ -221,9 +225,11 @@ public class UserRepositoryTest {
     }
 
 
-    @Test(expected = DaoException.class)
+    @Test
     public void didNotGetUserNameByLogin() throws Exception {
         String login = "test1";
-        userRepository.userNameByLogin(login);
+        String userName = userRepository.userNameByLogin(login);
+
+        assertNull(userName);
     }
 }

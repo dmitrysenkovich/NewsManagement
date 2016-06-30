@@ -1,7 +1,6 @@
 package com.epam.newsmanagement.app.service;
 
 import com.epam.newsmanagement.app.dao.TagRepository;
-import com.epam.newsmanagement.app.exception.DaoException;
 import com.epam.newsmanagement.app.exception.ServiceException;
 import com.epam.newsmanagement.app.model.News;
 import com.epam.newsmanagement.app.model.Tag;
@@ -11,6 +10,7 @@ import org.junit.Test;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
+import org.springframework.dao.RecoverableDataAccessException;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -51,7 +51,7 @@ public class TagServiceTest {
 
     @Test(expected = ServiceException.class)
     public void didNotAdd() throws Exception {
-        doThrow(new DaoException()).when(tagRepository).save(any(Tag.class));
+        doThrow(new RecoverableDataAccessException("")).when(tagRepository).save(any(Tag.class));
         tagService.add(new Tag());
     }
 
@@ -69,21 +69,21 @@ public class TagServiceTest {
 
     @Test(expected = ServiceException.class)
     public void didNotFind() throws Exception {
-        doThrow(new DaoException()).when(tagRepository).findOne(any(Long.class));
+        doThrow(new RecoverableDataAccessException("")).when(tagRepository).findOne(any(Long.class));
         tagService.find(1L);
     }
 
 
     @Test
     public void updated() throws Exception {
-        doNothing().when(tagRepository).save(any(Tag.class));
+        when(tagRepository.save(any(Tag.class))).thenReturn(new Tag());
         tagService.update(new Tag());
     }
 
 
     @Test(expected = ServiceException.class)
     public void didNotUpdate() throws Exception {
-        doThrow(new DaoException()).when(tagRepository).save(any(Tag.class));
+        doThrow(new RecoverableDataAccessException("")).when(tagRepository).save(any(Tag.class));
         tagService.update(new Tag());
     }
 
@@ -97,7 +97,7 @@ public class TagServiceTest {
 
     @Test(expected = ServiceException.class)
     public void didNotDelete() throws Exception {
-        doThrow(new DaoException()).when(tagRepository).delete(any(Tag.class));
+        doThrow(new RecoverableDataAccessException("")).when(tagRepository).delete(any(Tag.class));
         tagService.delete(new Tag());
     }
 
@@ -113,7 +113,7 @@ public class TagServiceTest {
 
     @Test(expected = ServiceException.class)
     public void didNotGetAllTagsByNews() throws Exception {
-        doThrow(new DaoException()).when(tagRepository).getAllByNews(any(News.class));
+        doThrow(new RecoverableDataAccessException("")).when(tagRepository).getAllByNews(any(News.class));
         tagService.getAllByNews(new News());
     }
 
@@ -129,7 +129,7 @@ public class TagServiceTest {
 
     @Test(expected = ServiceException.class)
     public void didNotGetAllTags() throws Exception {
-        doThrow(new DaoException()).when(tagRepository).findAll();
+        doThrow(new RecoverableDataAccessException("")).when(tagRepository).findAll();
         tagService.getAll();
     }
 
@@ -145,7 +145,7 @@ public class TagServiceTest {
 
     @Test(expected = ServiceException.class)
     public void didNotCheckTagExistence() throws Exception {
-        doThrow(new DaoException()).when(tagRepository).exists(any(String.class));
+        doThrow(new RecoverableDataAccessException("")).when(tagRepository).exists(any(String.class));
         tagService.exists(new Tag());
     }
 }
