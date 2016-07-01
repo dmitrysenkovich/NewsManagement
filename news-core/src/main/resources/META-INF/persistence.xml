@@ -19,8 +19,11 @@
             <property name="hibernate.connection.username" value="dmitry" />
             <property name="hibernate.connection.password" value="pass" />
 
+
             <property name="hibernate.hbm2ddl.auto" value="update"/>
             <property name="hibernate.jdbc.use_get_generated_keys" value="true"/>
+            <property name="hibernate.cache.region.factory_class" value="org.hibernate.cache.ehcache.EhCacheRegionFactory" />
+            <property name="hibernate.cache.use_query_cache" value="true" />
             <property name="hibernate.show_sql" value="true"/>
         </properties>
     </persistence-unit>

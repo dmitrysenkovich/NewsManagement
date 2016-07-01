@@ -5,6 +5,7 @@
 
 <hibernate-mapping>
     <class name="com.epam.newsmanagement.app.model.Author" table="AUTHORS">
+        <cache usage="read-write" />
         <id name="authorId" type="long" column="AUTHOR_ID">
             <generator class="sequence-identity" >
                 <param name="sequence">AUTHORS_IDS_SEQUENCE</param>
@@ -14,6 +15,7 @@
         <property name="expired" column="EXPIRED" type="timestamp"/>
     </class>
     <class name="com.epam.newsmanagement.app.model.Comment" table="COMMENTS">
+        <cache usage="nonstrict-read-write" />
         <id name="commentId" type="long" column="COMMENT_ID">
             <generator class="sequence-identity" >
                 <param name="sequence">COMMENTS_IDS_SEQUENCE</param>
@@ -24,6 +26,7 @@
         <property name="creationDate" column="CREATION_DATE" type="timestamp"/>
     </class>
     <class name="com.epam.newsmanagement.app.model.News" table="NEWS" optimistic-lock="version">
+        <cache usage="read-write" />
         <id name="newsId" type="long" column="NEWS_ID">
             <generator class="sequence-identity" >
                 <param name="sequence">NEWS_IDS_SEQUENCE</param>
@@ -36,6 +39,7 @@
         <property name="creationDate" column="CREATION_DATE" type="timestamp"/>
     </class>
     <class name="com.epam.newsmanagement.app.model.Role" table="ROLES">
+        <cache usage="read-write" />
         <id name="roleId" type="long" column="ROLE_ID">
             <generator class="sequence-identity" >
                 <param name="sequence">ROLES_IDS_SEQUENCE</param>
@@ -44,6 +48,7 @@
         <property name="roleName" column="ROLE_NAME" type="string"/>
     </class>
     <class name="com.epam.newsmanagement.app.model.Tag" table="TAGS">
+        <cache usage="read-write" />
         <id name="tagId" type="long" column="TAG_ID">
             <generator class="sequence-identity" >
                 <param name="sequence">TAGS_IDS_SEQUENCE</param>
@@ -52,6 +57,7 @@
         <property name="tagName" column="TAG_NAME" type="string"/>
     </class>
     <class name="com.epam.newsmanagement.app.model.User" table="USERS">
+        <cache usage="read-write" />
         <id name="userId" type="long" column="USER_ID">
             <generator class="sequence-identity" >
                 <param name="sequence">USERS_IDS_SEQUENCE</param>
