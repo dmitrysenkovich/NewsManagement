@@ -6,12 +6,8 @@ import net.sf.jsqlparser.expression.operators.relational.ExpressionList;
 import net.sf.jsqlparser.parser.CCJSqlParserManager;
 import net.sf.jsqlparser.statement.insert.Insert;
 import org.apache.log4j.Logger;
-import org.springframework.beans.factory.annotation.Autowired;
 
 import java.io.BufferedReader;
-import java.io.File;
-import java.io.FileNotFoundException;
-import java.io.FileReader;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
@@ -122,8 +118,12 @@ public class DatabaseInitializingUtils {
         }
 
         CCJSqlParserManager parserManager = new CCJSqlParserManager();
+        long currentQueryNumber = 0;
         for(String query : queries)
         {
+            currentQueryNumber++;
+            if (currentQueryNumber % 5000 == 0)
+                logger.info("Inserted " + currentQueryNumber + " queries");
             if(!query.equals(""))
             {
                 boolean newsInsert = query.contains("INSERT INTO NEWS VALUES");

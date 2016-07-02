@@ -58,9 +58,9 @@
                                     </c:set>
                                 </c:if>
                                 <input id="date-textarea" type="text" value="${newsDate}" disabled>
-                                <input id="creation-date-in-milliseconds" type="number" value="${news.creationDate.getTime()}" hidden>
+                                <input id="creation-date-in-milliseconds" type="number" value="${empty news ? now.getTime() : news.creationDate.getTime()}" hidden>
                                 <input id="modification-date-in-milliseconds"
-                                       type="number" value="${not empty news.modificationDate ? news.modificationDate.getTime() : news.creationDate.getTime()}" hidden>
+                                       type="number" value="${empty news ? now.getTime() : news.modificationDate.getTime()}" hidden>
                             </div>
                         </div>
                         <div id="short-text-row">

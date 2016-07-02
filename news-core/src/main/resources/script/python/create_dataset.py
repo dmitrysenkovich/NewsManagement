@@ -12,13 +12,12 @@ import MySQLdb
 
 
 REUTERS_SITE = 'http://www.reuters.com'
-FIRST_MAIN_PAGE_URL = REUTERS_SITE + '/news/archive/politicsNews?view=page&page=2&pageSize=10'
-SECOND_MAIN_PAGE_URL = REUTERS_SITE + '/news/archive/politicsNews?view=page&page=3&pageSize=10'
-THIRD_MAIN_PAGE_URL = REUTERS_SITE + '/news/archive/politicsNews?view=page&page=4&pageSize=10'
+MAIN_PAGE_URL = REUTERS_SITE + '/news/archive/politicsNews?view=page&page={0}&pageSize=10'
 REDDIT_NEWS_PAGE_URL = 'https://www.reddit.com/r/politics/comments/4ed2h8/clinton_angrily_refuses_to_release_wall_street/'
 
-USERNAMES_COUNT = 30
-COMMENTS_COUNT = 600
+USERNAMES_COUNT = 10000
+NEWS_COUNT = 10000
+COMMENTS_COUNT = NEWS_COUNT*30
 TAGS_COUNT_PER_NEWS = 8
 AUTHORS_COUNT_PER_NEWS = 3
 
@@ -129,10 +128,10 @@ def generate_dataset(full_texts, titles, short_texts, creation_dates, \
 
     print('Adding news..')
     news_count = len(full_texts)
-    for i in range(news_count):
-        data_sql_file.write(INSERT_NEWS_ROW.format(i+1, MySQLdb.escape_string(titles[i]).decode('UTF-8').replace('\\\'', '\'\''), \
-            MySQLdb.escape_string(short_texts[i]).decode('UTF-8').replace('\\\'', '\'\''), \
-            MySQLdb.escape_string(full_texts[i]).decode('UTF-8').replace('\\\'', '\'\''), creation_dates[i], modification_dates[i]))
+    for i in range(NEWS_COUNT):
+        data_sql_file.write(INSERT_NEWS_ROW.format(i+1, MySQLdb.escape_string(titles[i%news_count]).decode('UTF-8').replace('\\\'', '\'\''), \
+            MySQLdb.escape_string(short_texts[i%news_count]).decode('UTF-8').replace('\\\'', '\'\''), \
+            MySQLdb.escape_string(full_texts[i%news_count]).decode('UTF-8').replace('\\\'', '\'\''), creation_dates[i%news_count], modification_dates[i%news_count]))
     print('Added news')
 
     data_sql_file.write('\n')
@@ -146,7 +145,7 @@ def generate_dataset(full_texts, titles, short_texts, creation_dates, \
     data_sql_file.write('\n')
 
     print('Adding news to tag relations..')
-    for i in range(news_count):
+    for i in range(NEWS_COUNT):
         tags_count_for_news = random.randint(1, TAGS_COUNT_PER_NEWS)
         for j in range(tags_count_for_news):
             tag_id = random.randint(1, tags_count)
@@ -165,7 +164,7 @@ def generate_dataset(full_texts, titles, short_texts, creation_dates, \
     data_sql_file.write('\n')
 
     print('Adding news to author relations..')
-    for i in range(news_count):
+    for i in range(NEWS_COUNT):
         authors_count_for_news = random.randint(1, AUTHORS_COUNT_PER_NEWS)
         for j in range(authors_count_for_news):
             author_id = random.randint(1, authors_count)
@@ -176,10 +175,10 @@ def generate_dataset(full_texts, titles, short_texts, creation_dates, \
 
     print('Adding comments..')
     comments_count = len(comments)
-    for i in range(comments_count):
-        news_id = random.randint(1, news_count)
+    for i in range(COMMENTS_COUNT):
+        news_id = random.randint(1, NEWS_COUNT)
         data_sql_file.write(INSERT_COMMENT_ROW.format(i+1, news_id, \
-            MySQLdb.escape_string(comments[i]).decode('UTF-8').replace('\\\'', '\'\''), creation_dates[news_id-1]))
+            MySQLdb.escape_string(comments[i%comments_count]).decode('UTF-8').replace('\\\'', '\'\''), creation_dates[news_id%news_count-1]))
     print('Added comments')
 
     data_sql_file.write('\n')
@@ -205,21 +204,20 @@ def generate_dataset(full_texts, titles, short_texts, creation_dates, \
 
 def main():
     print("Getting reuters main pages html..")
-    first_main_page_html = get_html(FIRST_MAIN_PAGE_URL)
-    second_main_page_html = get_html(SECOND_MAIN_PAGE_URL)
-    third_main_page_html = get_html(THIRD_MAIN_PAGE_URL)
+    main_pages_html = []
+    for i in range(10):
+        main_page_html = get_html(MAIN_PAGE_URL.format(i+1))
+        main_pages_html.append(main_page_html)
+        print('Got ' + str(i+1) + ' pages')
     print("Got reuters main pages html")
 
     print("Parsing reuters main pages html in titles, short_texts and news_links..")
-    titles, short_texts, news_links = parse_reuter_main_page_html(first_main_page_html)
-    another_titles, another_short_texts, another_news_links = parse_reuter_main_page_html(second_main_page_html)
-    titles.extend(another_titles)
-    short_texts.extend(another_short_texts)
-    news_links.extend(another_news_links)
-    another_titles, another_short_texts, another_news_links = parse_reuter_main_page_html(third_main_page_html)
-    titles.extend(another_titles)
-    short_texts.extend(another_short_texts)
-    news_links.extend(another_news_links)
+    titles, short_texts, news_links = parse_reuter_main_page_html(main_pages_html[0])
+    for i in range(1, 10):
+        another_titles, another_short_texts, another_news_links = parse_reuter_main_page_html(main_pages_html[i])
+        titles.extend(another_titles)
+        short_texts.extend(another_short_texts)
+        news_links.extend(another_news_links)
     print("Parsed reuters main pages html in titles, short_texts and news_links")
 
     print("Parsing reuters news pages html in authors, creation_dates, modification_dates, full_texts and tags..")
@@ -260,6 +258,9 @@ def main():
 
 
     print('Generating data sql file..')
+    for i in range(100):
+        if (short_texts[i] == full_texts[i]):
+            full_texts[i] += '.'
     generate_dataset(full_texts, titles, short_texts, creation_dates, \
         modification_dates, tags, authors, comments, usernames, logins, passwords)
     print('Generated data sql file')
