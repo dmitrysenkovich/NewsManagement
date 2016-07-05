@@ -28,7 +28,7 @@ public interface AuthorService extends CrudService<Author> {
      * @return news authors.
      * @throws ServiceException
      */
-    default List<Author> getAllByNews(News news) throws ServiceException {
+    default List<Author> findAllByNews(News news) throws ServiceException {
         throw new ServiceException();
     }
 
@@ -37,7 +37,7 @@ public interface AuthorService extends CrudService<Author> {
      * @return all not expired authors.
      * @throws ServiceException
      */
-    default List<Author> getNotExpired() throws ServiceException {
+    default List<Author> findNotExpired() throws ServiceException {
         throw new ServiceException();
     }
 
@@ -46,7 +46,7 @@ public interface AuthorService extends CrudService<Author> {
      * @return all authors.
      * @throws ServiceException
      */
-    default List<Author> getAll() throws ServiceException {
+    default List<Author> findAll() throws ServiceException {
         throw new ServiceException();
     }
 

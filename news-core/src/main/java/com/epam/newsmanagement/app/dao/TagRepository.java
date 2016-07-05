@@ -1,20 +1,48 @@
 package com.epam.newsmanagement.app.dao;
 
+import com.epam.newsmanagement.app.model.News;
 import com.epam.newsmanagement.app.model.Tag;
-import org.springframework.data.jpa.repository.JpaRepository;
-import org.springframework.data.jpa.repository.Query;
-import org.springframework.data.repository.query.Param;
+
+import java.util.List;
 
 /**
- * Tag repository.
+ * Root interface for tag repositories.
  */
-public interface TagRepository extends JpaRepository<Tag, Long>, TagRepositoryCustom {
+public interface TagRepository extends CrudRepository<Tag, Long> {
+    /**
+     * Returns news tags.
+     * @param news specifies news
+     * which tags are to be retrieved.
+     * @return news tags.
+     */
+    List<Tag> findAllByNews(News news);
+
+    /**
+     * Returns all tags.
+     * @return all tags.
+     */
+    List<Tag> findAll();
+
     /**
      * Checks if tag exists.
-     * @param tagName tagName
-     * of the tag to be checked.
+     * @param tagName tag name to be checked.
      * @return check result.
      */
-    @Query("select case when count(*) > 0 then True else False end from Tag T where T.tagName = :tagName")
-    boolean exists(@Param("tagName") String tagName);
+    boolean exists(String tagName);
+
+    /**
+     * Adds news to tag relations
+     * for each tag in passed list.
+     * @param news news.
+     * @param tags tags.
+     */
+    void addAll(News news, List<Tag> tags);
+
+    /**
+     * Deletes all tags relations
+     * by passed news.
+     * @param news relations with
+     * this news will be deleted.
+     */
+    void deleteAllRelationsByNews(News news);
 }

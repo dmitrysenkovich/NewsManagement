@@ -1,23 +1,20 @@
 package com.epam.newsmanagement.app.dao;
 
+import com.epam.newsmanagement.app.exception.DaoException;
 import com.epam.newsmanagement.app.model.Comment;
 import com.epam.newsmanagement.app.model.News;
-import org.springframework.data.jpa.repository.JpaRepository;
-import org.springframework.data.jpa.repository.Query;
-import org.springframework.data.repository.query.Param;
 
 import java.util.List;
 
 /**
- * Comment repository interface.
+ * Root interface for comment repositories.
  */
-public interface CommentRepository extends JpaRepository<Comment, Long>, CommentRepositoryCustom {
+public interface CommentRepository extends CrudRepository<Comment, Long> {
     /**
      * Deletes all comments from list.
      * @param comments comments to be deleted.
      */
-    @Query("delete from Comment C where C in (:comments)")
-    void deleteAll(@Param("comments") List<Comment> comments);
+    void deleteAll(List<Comment> comments);
 
     /**
      * Counts news comments count.
@@ -25,6 +22,13 @@ public interface CommentRepository extends JpaRepository<Comment, Long>, Comment
      * will be counted.
      * @return news comments count.
      */
-    @Query("select count(*) from Comment where news = :news")
-    Long countAllByNews(@Param("news") News news);
+    Long countAllByNews(News news);
+
+    /**
+     * Returns all news comments
+     * @param news news which comments
+     * will be retrieved.
+     * @return news comments.
+     */
+    List<Comment> findAllByNews(News news);
 }

@@ -4,7 +4,6 @@ import com.epam.newsmanagement.app.dao.AuthorRepository;
 import com.epam.newsmanagement.app.exception.ServiceException;
 import com.epam.newsmanagement.app.model.Author;
 import com.epam.newsmanagement.app.model.News;
-import com.epam.newsmanagement.app.service.impl.AuthorServiceImpl;
 import org.junit.Before;
 import org.junit.Test;
 import org.mockito.InjectMocks;
@@ -18,7 +17,6 @@ import java.util.List;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
 import static org.mockito.Matchers.any;
-import static org.mockito.Mockito.doNothing;
 import static org.mockito.Mockito.doThrow;
 import static org.mockito.Mockito.when;
 
@@ -27,7 +25,7 @@ import static org.mockito.Mockito.when;
  */
 public class AuthorServiceTest {
     @InjectMocks
-    private AuthorServiceImpl authorService;
+    private AuthorService authorService;
 
     @Mock
     private AuthorRepository authorRepository;
@@ -110,45 +108,45 @@ public class AuthorServiceTest {
     }
 
     @Test
-    public void gotAllAuthorsByNews() throws Exception {
-        when(authorRepository.getAllByNews(any(News.class))).thenReturn(new ArrayList<>());
-        List<Author> allAuthorsByNews = authorService.getAllByNews(new News());
+    public void foundAllAuthorsByNews() throws Exception {
+        when(authorRepository.findAllByNews(any(News.class))).thenReturn(new ArrayList<>());
+        List<Author> allAuthorsByNews = authorService.findAllByNews(new News());
         assertNotNull(allAuthorsByNews);
     }
 
 
     @Test(expected = ServiceException.class)
-    public void didNotGetAllAuthorsByNews() throws Exception {
-        doThrow(new RecoverableDataAccessException("")).when(authorRepository).getAllByNews(any(News.class));
-        authorService.getAllByNews(new News());
+    public void didNotFindAllAuthorsByNews() throws Exception {
+        doThrow(new RecoverableDataAccessException("")).when(authorRepository).findAllByNews(any(News.class));
+        authorService.findAllByNews(new News());
     }
 
     @Test
-    public void gotAllAuthors() throws Exception {
+    public void foundAllAuthors() throws Exception {
         when(authorRepository.findAll()).thenReturn(new ArrayList<>());
-        List<Author> allAuthors = authorService.getAll();
+        List<Author> allAuthors = authorService.findAll();
         assertNotNull(allAuthors);
     }
 
 
     @Test(expected = ServiceException.class)
-    public void didNotGetAllAuthors() throws Exception {
+    public void didNotFindAllAuthors() throws Exception {
         doThrow(new RecoverableDataAccessException("")).when(authorRepository).findAll();
-        authorService.getAll();
+        authorService.findAll();
     }
 
     @Test
-    public void gotAllNotExpiredAuthors() throws Exception {
-        when(authorRepository.getNotExpired()).thenReturn(new ArrayList<>());
-        List<Author> notExpiredAuthors = authorService.getNotExpired();
+    public void foundAllNotExpiredAuthors() throws Exception {
+        when(authorRepository.findNotExpired()).thenReturn(new ArrayList<>());
+        List<Author> notExpiredAuthors = authorService.findNotExpired();
         assertNotNull(notExpiredAuthors);
     }
 
 
     @Test(expected = ServiceException.class)
-    public void didNotGetAllNotExpiredAuthors() throws Exception {
-        doThrow(new RecoverableDataAccessException("")).when(authorRepository).getNotExpired();
-        authorService.getNotExpired();
+    public void didNotFindAllNotExpiredAuthors() throws Exception {
+        doThrow(new RecoverableDataAccessException("")).when(authorRepository).findNotExpired();
+        authorService.findNotExpired();
     }
 
     @Test

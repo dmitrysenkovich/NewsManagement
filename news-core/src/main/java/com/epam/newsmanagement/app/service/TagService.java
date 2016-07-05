@@ -17,7 +17,7 @@ public interface TagService extends CrudService<Tag> {
      * @return news tags.
      * @throws ServiceException
      */
-    default List<Tag> getAllByNews(News news) throws ServiceException {
+    default List<Tag> findAllByNews(News news) throws ServiceException {
         throw new ServiceException();
     }
 
@@ -26,7 +26,7 @@ public interface TagService extends CrudService<Tag> {
      * @return all tags.
      * @throws ServiceException
      */
-    default List<Tag> getAll() throws ServiceException {
+    default List<Tag> findAll() throws ServiceException {
         throw new ServiceException();
     }
 

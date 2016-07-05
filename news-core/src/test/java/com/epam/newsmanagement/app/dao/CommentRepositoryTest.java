@@ -27,7 +27,6 @@ import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.Timestamp;
 import java.util.Date;
-import java.util.LinkedList;
 import java.util.List;
 
 import static com.googlecode.catchexception.CatchException.catchException;
@@ -215,20 +214,20 @@ public class CommentRepositoryTest {
 
 
     @Test
-    public void gotAllNewsComment() throws Exception {
+    public void foundAllNewsComment() throws Exception {
         News news = new News();
         news.setNewsId(1L);
-        List<Comment> allComments = commentRepository.getAllByNews(news);
+        List<Comment> allComments = commentRepository.findAllByNews(news);
 
         assertEquals(2L, allComments.size());
     }
 
 
     @Test
-    public void didNotGetAllNewsComments() throws Exception {
+    public void didNotFoundAllNewsComments() throws Exception {
         News news = new News();
         news.setNewsId(4L);
-        List<Comment> allComments = commentRepository.getAllByNews(news);
+        List<Comment> allComments = commentRepository.findAllByNews(news);
 
         assertEquals(0L, allComments.size());
     }

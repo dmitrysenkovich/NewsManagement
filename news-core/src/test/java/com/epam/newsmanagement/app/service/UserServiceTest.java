@@ -1,6 +1,7 @@
 package com.epam.newsmanagement.app.service;
 
 import com.epam.newsmanagement.app.dao.UserRepository;
+import com.epam.newsmanagement.app.dao.jpa.UserRepositoryJpa;
 import com.epam.newsmanagement.app.exception.ServiceException;
 import com.epam.newsmanagement.app.model.Role;
 import com.epam.newsmanagement.app.model.User;
@@ -24,7 +25,7 @@ import static org.mockito.Mockito.when;
  */
 public class UserServiceTest {
     @InjectMocks
-    private UserServiceImpl userService;
+    private UserService userService;
 
     @Mock
     private UserRepository userRepository;

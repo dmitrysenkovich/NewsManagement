@@ -4,7 +4,6 @@ import com.epam.newsmanagement.app.dao.CommentRepository;
 import com.epam.newsmanagement.app.exception.ServiceException;
 import com.epam.newsmanagement.app.model.Comment;
 import com.epam.newsmanagement.app.model.News;
-import com.epam.newsmanagement.app.service.impl.CommentServiceImpl;
 import org.junit.Before;
 import org.junit.Test;
 import org.mockito.InjectMocks;
@@ -28,7 +27,7 @@ import static org.mockito.Mockito.when;
  */
 public class CommentServiceTest {
     @InjectMocks
-    private CommentServiceImpl commentService;
+    private CommentService commentService;
 
     @Mock
     private CommentRepository commentRepository;
@@ -145,17 +144,17 @@ public class CommentServiceTest {
 
 
     @Test
-    public void gotAllCommentsByNews() throws Exception {
-        when(commentRepository.getAllByNews(any(News.class))).thenReturn(new ArrayList<>());
-        List<Comment> allCommentsByNews = commentService.getAllByNews(new News());
+    public void foundAllCommentsByNews() throws Exception {
+        when(commentRepository.findAllByNews(any(News.class))).thenReturn(new ArrayList<>());
+        List<Comment> allCommentsByNews = commentService.findAllByNews(new News());
 
         assertNotNull(allCommentsByNews);
     }
 
 
     @Test(expected = ServiceException.class)
-    public void didNotGetAllCommentsByNews() throws Exception {
-        doThrow(new RecoverableDataAccessException("")).when(commentRepository).getAllByNews(any(News.class));
-        commentService.getAllByNews(new News());
+    public void didNotFindAllCommentsByNews() throws Exception {
+        doThrow(new RecoverableDataAccessException("")).when(commentRepository).findAllByNews(any(News.class));
+        commentService.findAllByNews(new News());
     }
 }

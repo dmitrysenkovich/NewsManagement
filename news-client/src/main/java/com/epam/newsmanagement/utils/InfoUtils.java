@@ -49,14 +49,14 @@ public class InfoUtils {
 
         Map<Long, List<Author>> authorsByNewsId = new HashMap<>();
         for (News news : newsList) {
-            List<Author> authorsByNews = authorService.getAllByNews(news);
+            List<Author> authorsByNews = authorService.findAllByNews(news);
             authorsByNewsId.put(news.getNewsId(), authorsByNews);
         }
         newsListInfo.setAuthorsByNewsId(authorsByNewsId);
 
         Map<Long, List<Tag>> tagsByNewsId = new HashMap<>();
         for (News news : newsList) {
-            List<Tag> tagsByNews = tagService.getAllByNews(news);
+            List<Tag> tagsByNews = tagService.findAllByNews(news);
             tagsByNewsId.put(news.getNewsId(), tagsByNews);
         }
         newsListInfo.setTagsByNewsId(tagsByNewsId);
@@ -88,10 +88,10 @@ public class InfoUtils {
         NewsInfo newsInfo = new NewsInfo();
         newsInfo.setNews(news);
 
-        List<Author> authors = authorService.getAllByNews(news);
+        List<Author> authors = authorService.findAllByNews(news);
         newsInfo.setAuthors(authors);
 
-        List<Comment> comments = commentService.getAllByNews(news);
+        List<Comment> comments = commentService.findAllByNews(news);
         newsInfo.setComments(comments);
 
         searchCriteria.setPageSize(1L);
@@ -100,7 +100,7 @@ public class InfoUtils {
             newsInfo.setFirst(true);
         else
             newsInfo.setFirst(false);
-        if (newsRowNumber == newsCount)
+        if (newsRowNumber.equals(newsCount))
             newsInfo.setLast(true);
         else
             newsInfo.setLast(false);

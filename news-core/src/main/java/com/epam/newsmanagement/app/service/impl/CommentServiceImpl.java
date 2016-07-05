@@ -113,11 +113,11 @@ public class CommentServiceImpl implements CommentService {
 
 
     @Override
-    public List<Comment> getAllByNews(News news) throws ServiceException {
+    public List<Comment> findAllByNews(News news) throws ServiceException {
         logger.info("Retrieving all news comments..");
         List<Comment> commentsByNews;
         try {
-            commentsByNews = commentRepository.getAllByNews(news);
+            commentsByNews = commentRepository.findAllByNews(news);
         } catch (DataAccessException e) {
             logger.error("Failed to retrieve all news comments");
             throw new ServiceException(e);

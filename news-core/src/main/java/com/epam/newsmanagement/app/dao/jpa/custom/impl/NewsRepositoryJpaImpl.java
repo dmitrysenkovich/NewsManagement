@@ -1,8 +1,7 @@
-package com.epam.newsmanagement.app.dao.impl;
+package com.epam.newsmanagement.app.dao.jpa.custom.impl;
 
-import com.epam.newsmanagement.app.dao.NewsRepositoryCustom;
+import com.epam.newsmanagement.app.dao.jpa.custom.NewsRepositoryJpaCustom;
 import com.epam.newsmanagement.app.model.News;
-import com.epam.newsmanagement.app.utils.SearchCriteria;
 
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
@@ -13,8 +12,8 @@ import java.util.List;
 /**
  * News repository implementation.
  */
-public class NewsRepositoryImpl implements NewsRepositoryCustom {
-    private static final String GET_ALL_SORTED = "(SELECT NEWS_ID, TITLE, SHORT_TEXT, " +
+public class NewsRepositoryJpaImpl implements NewsRepositoryJpaCustom {
+    private static final String FIND_ALL_SORTED = "(SELECT NEWS_ID, TITLE, SHORT_TEXT, " +
             "FULL_TEXT, CREATION_DATE, MODIFICATION_DATE, COMMENTS_COUNT " +
             "FROM NEWS JOIN (SELECT NEWS_ID, COUNT(*) COMMENTS_COUNT " +
             "                FROM COMMENTS " +
@@ -41,7 +40,7 @@ public class NewsRepositoryImpl implements NewsRepositoryCustom {
 
     @Override
     public List<News> findAllSorted() {
-        Query query = entityManager.createNativeQuery(GET_ALL_SORTED, News.class);
+        Query query = entityManager.createNativeQuery(FIND_ALL_SORTED, News.class);
         List<News> allNewsSorted = query.getResultList();
         return allNewsSorted;
     }

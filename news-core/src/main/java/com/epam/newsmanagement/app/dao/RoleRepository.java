@@ -1,10 +1,9 @@
 package com.epam.newsmanagement.app.dao;
 
 import com.epam.newsmanagement.app.model.Role;
-import org.springframework.data.jpa.repository.JpaRepository;
 
 /**
- * Role repository interface.
+ * Root interface for role repositories.
  */
-public interface RoleRepository extends JpaRepository<Role, Long> {
+public interface RoleRepository extends CrudRepository<Role, Long> {
 }

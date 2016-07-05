@@ -4,9 +4,6 @@ import com.epam.newsmanagement.app.model.Author;
 import com.epam.newsmanagement.app.model.News;
 import com.github.springtestdbunit.DbUnitTestExecutionListener;
 import com.github.springtestdbunit.annotation.DatabaseSetup;
-import org.springframework.orm.jpa.JpaSystemException;
-import sun.reflect.generics.reflectiveObjects.NotImplementedException;
-import org.dbunit.Assertion;
 import org.dbunit.DefaultDatabaseTester;
 import org.dbunit.database.DatabaseConnection;
 import org.dbunit.dataset.IDataSet;
@@ -24,6 +21,7 @@ import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 import org.springframework.test.context.support.DependencyInjectionTestExecutionListener;
 import org.unitils.database.annotations.Transactional;
 import org.unitils.database.util.TransactionMode;
+import sun.reflect.generics.reflectiveObjects.NotImplementedException;
 
 import java.sql.Connection;
 import java.sql.DriverManager;
@@ -186,32 +184,32 @@ public class AuthorRepositoryTest {
 
 
     @Test
-    public void gotAllAuthorsByNews() throws Exception {
+    public void foundAllAuthorsByNews() throws Exception {
         News news = new News();
         news.setNewsId(1L);
-        List<Author> authors = authorRepository.getAllByNews(news);
+        List<Author> authors = authorRepository.findAllByNews(news);
         assertEquals(1L, authors.size());
     }
 
 
     @Test
-    public void didNotGetAuthorsByNonExistentNews() throws Exception {
+    public void didNotFindAuthorsByNonExistentNews() throws Exception {
         News news = new News();
         news.setNewsId(4L);
-        List<Author> authors = authorRepository.getAllByNews(news);
+        List<Author> authors = authorRepository.findAllByNews(news);
         assertEquals(0L, authors.size());
     }
 
 
     @Test
     public void noNonExpiredAuthors() throws Exception {
-        List<Author> authors = authorRepository.getNotExpired();
+        List<Author> authors = authorRepository.findNotExpired();
         assertEquals(0L, authors.size());
     }
 
 
     @Test
-    public void gotAllAuthors() throws Exception {
+    public void foundAllAuthors() throws Exception {
         List<Author> allAuthors = authorRepository.findAll();
         assertEquals(2L, allAuthors.size());
     }

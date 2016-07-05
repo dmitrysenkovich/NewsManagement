@@ -1,36 +1,55 @@
 package com.epam.newsmanagement.app.dao;
 
 import com.epam.newsmanagement.app.model.Author;
-import org.springframework.dao.DataAccessException;
-import org.springframework.data.jpa.repository.JpaRepository;
-import org.springframework.data.jpa.repository.Query;
-import org.springframework.data.repository.query.Param;
-import sun.reflect.generics.reflectiveObjects.NotImplementedException;
+import com.epam.newsmanagement.app.model.News;
 
 import java.util.List;
 
 /**
- * Author repository interface.
+ * Root interface for author repositories.
  */
-public interface AuthorRepository extends JpaRepository<Author, Long>, AuthorRepositoryCustom {
+public interface AuthorRepository extends CrudRepository<Author, Long> {
+
+    /**
+     * Returns news authors.
+     * @param news specifies news
+     * which authors are to be retrieved.
+     * @return news authors.
+     */
+    List<Author> findAllByNews(News news);
+
     /**
      * Returns all not expired authors.
      * @return all not expired authors.
      */
-    @Query("from Author where expired is null")
-    List<Author> getNotExpired();
+    List<Author> findNotExpired();
+
+    /**
+     * Returns all authors.
+     * @return all authors.
+     */
+    List<Author> findAll();
 
     /**
      * Checks if author exists.
-     * @param authorName authorName
-     * of the author to be checked.
+     * @param authorName author name to be checked.
      * @return check result.
      */
-    @Query("select case when count(*) > 0 then True else False end from Author A where A.authorName = :authorName")
-    boolean exists(@Param("authorName") String authorName);
+    boolean exists(String authorName);
 
-    @Override
-    default void delete(Author author) throws DataAccessException {
-        throw new NotImplementedException();
-    }
+    /**
+     * Adds news to author relations
+     * for each author in passed list.
+     * @param news news.
+     * @param authors authors.
+     */
+    void addAll(News news, List<Author> authors);
+
+    /**
+     * Deletes all authors relations
+     * by passed news.
+     * @param news relations with
+     * this news will be deleted.
+     */
+    void deleteAllRelationsByNews(News news);
 }

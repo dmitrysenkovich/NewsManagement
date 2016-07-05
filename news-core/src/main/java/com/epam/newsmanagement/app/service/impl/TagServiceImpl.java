@@ -81,11 +81,11 @@ public class TagServiceImpl implements TagService {
 
 
     @Override
-    public List<Tag> getAllByNews(News news) throws ServiceException {
+    public List<Tag> findAllByNews(News news) throws ServiceException {
         logger.info("Retrieving news tags..");
         List<Tag> tagsByNews;
         try {
-            tagsByNews = tagRepository.getAllByNews(news);
+            tagsByNews = tagRepository.findAllByNews(news);
         } catch (DataAccessException e) {
             logger.error("Failed to retrieve news tags");
             throw new ServiceException(e);
@@ -97,7 +97,7 @@ public class TagServiceImpl implements TagService {
 
 
     @Override
-    public List<Tag> getAll() throws ServiceException {
+    public List<Tag> findAll() throws ServiceException {
         logger.info("Retrieving all tags..");
         List<Tag> allTags;
         try {

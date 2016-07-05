@@ -169,20 +169,20 @@ public class TagRepositoryTest {
 
 
     @Test
-    public void gotAlLByNews() throws Exception {
+    public void foundAlLByNews() throws Exception {
         News news = new News();
         news.setNewsId(3L);
-        List<Tag> allByNews = tagRepository.getAllByNews(news);
+        List<Tag> allByNews = tagRepository.findAllByNews(news);
 
         assertEquals(2L, allByNews.size());
     }
 
 
     @Test
-    public void didNotGetAllByNews() throws Exception {
+    public void didNotFindAllByNews() throws Exception {
         News news = new News();
         news.setNewsId(4L);
-        List<Tag> allByNews = tagRepository.getAllByNews(news);
+        List<Tag> allByNews = tagRepository.findAllByNews(news);
 
         assertEquals(0L, allByNews.size());
     }

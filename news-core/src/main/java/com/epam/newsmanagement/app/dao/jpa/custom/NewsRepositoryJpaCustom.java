@@ -1,4 +1,4 @@
-package com.epam.newsmanagement.app.dao;
+package com.epam.newsmanagement.app.dao.jpa.custom;
 
 import com.epam.newsmanagement.app.model.News;
 import com.epam.newsmanagement.app.utils.SearchCriteria;
@@ -9,7 +9,7 @@ import java.util.List;
  * Interface with methods
  * implemented manually.
  */
-public interface NewsRepositoryCustom {
+public interface NewsRepositoryJpaCustom {
     /**
      * Retrieves all news specified
      * by SEARCH_CRITERIA_QUERY string

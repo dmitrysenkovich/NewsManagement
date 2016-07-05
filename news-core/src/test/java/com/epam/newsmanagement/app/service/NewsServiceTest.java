@@ -7,7 +7,6 @@ import com.epam.newsmanagement.app.exception.ServiceException;
 import com.epam.newsmanagement.app.model.Author;
 import com.epam.newsmanagement.app.model.News;
 import com.epam.newsmanagement.app.model.Tag;
-import com.epam.newsmanagement.app.service.impl.NewsServiceImpl;
 import com.epam.newsmanagement.app.utils.SearchCriteria;
 import com.epam.newsmanagement.app.utils.SearchUtils;
 import org.junit.Before;
@@ -38,7 +37,7 @@ import static org.mockito.Mockito.when;
  */
 public class NewsServiceTest {
     @InjectMocks
-    private NewsServiceImpl newsService;
+    private NewsService newsService;
 
     @Mock
     private NewsRepository newsRepository;

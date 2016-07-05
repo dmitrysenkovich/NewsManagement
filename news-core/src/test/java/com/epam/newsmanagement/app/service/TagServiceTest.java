@@ -4,7 +4,6 @@ import com.epam.newsmanagement.app.dao.TagRepository;
 import com.epam.newsmanagement.app.exception.ServiceException;
 import com.epam.newsmanagement.app.model.News;
 import com.epam.newsmanagement.app.model.Tag;
-import com.epam.newsmanagement.app.service.impl.TagServiceImpl;
 import org.junit.Before;
 import org.junit.Test;
 import org.mockito.InjectMocks;
@@ -27,7 +26,7 @@ import static org.mockito.Mockito.when;
  */
 public class TagServiceTest {
     @InjectMocks
-    private TagServiceImpl tagService;
+    private TagService tagService;
 
     @Mock
     private TagRepository tagRepository;
@@ -103,34 +102,34 @@ public class TagServiceTest {
 
 
     @Test
-    public void gotAllTagsByNews() throws Exception {
-        when(tagRepository.getAllByNews(any(News.class))).thenReturn(new ArrayList<>());
-        List<Tag> allTagsByNews = tagService.getAllByNews(new News());
+    public void foundAllTagsByNews() throws Exception {
+        when(tagRepository.findAllByNews(any(News.class))).thenReturn(new ArrayList<>());
+        List<Tag> allTagsByNews = tagService.findAllByNews(new News());
 
         assertNotNull(allTagsByNews);
     }
 
 
     @Test(expected = ServiceException.class)
-    public void didNotGetAllTagsByNews() throws Exception {
-        doThrow(new RecoverableDataAccessException("")).when(tagRepository).getAllByNews(any(News.class));
-        tagService.getAllByNews(new News());
+    public void didNotFindAllTagsByNews() throws Exception {
+        doThrow(new RecoverableDataAccessException("")).when(tagRepository).findAllByNews(any(News.class));
+        tagService.findAllByNews(new News());
     }
 
 
     @Test
-    public void gotAllTags() throws Exception {
+    public void foundAllTags() throws Exception {
         when(tagRepository.findAll()).thenReturn(new ArrayList<>());
-        List<Tag> allTags = tagService.getAll();
+        List<Tag> allTags = tagService.findAll();
 
         assertNotNull(allTags);
     }
 
 
     @Test(expected = ServiceException.class)
-    public void didNotGetAllTags() throws Exception {
+    public void didNotFindAllTags() throws Exception {
         doThrow(new RecoverableDataAccessException("")).when(tagRepository).findAll();
-        tagService.getAll();
+        tagService.findAll();
     }
 
 

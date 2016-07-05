@@ -1,4 +1,4 @@
-package com.epam.newsmanagement.app.dao;
+package com.epam.newsmanagement.app.dao.jpa.custom;
 
 import com.epam.newsmanagement.app.model.News;
 import com.epam.newsmanagement.app.model.Tag;
@@ -9,14 +9,14 @@ import java.util.List;
  * Interface with methods
  * implemented manually.
  */
-public interface TagRepositoryCustom {
+public interface TagRepositoryJpaCustom {
     /**
      * Returns news tags.
      * @param news specifies news
      * which tags are to be retrieved.
      * @return news tags.
      */
-    List<Tag> getAllByNews(News news);
+    List<Tag> findAllByNews(News news);
 
     /**
      * Adds news to tag relations

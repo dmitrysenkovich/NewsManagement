@@ -92,7 +92,7 @@ public class SearchUtils {
             authorIdsInString.insert(0, "(");
             authorIdsInString.deleteCharAt(authorIdsInString.length() - 1);
             authorIdsInString.setCharAt(authorIdsInString.length() - 1, ')');
-            authorsMatchingChecking = MessageFormat.format(AUTHORS_PART, authorIdsInString, authorIds.size());
+            authorsMatchingChecking = MessageFormat.format(AUTHORS_PART, authorIdsInString, Long.toString(authorIds.size()));
         }
 
         String tagsMatchingChecking = "";
@@ -104,7 +104,7 @@ public class SearchUtils {
             tagIdsInString.insert(0, "(");
             tagIdsInString.deleteCharAt(tagIdsInString.length() - 1);
             tagIdsInString.setCharAt(tagIdsInString.length() - 1, ')');
-            tagsMatchingChecking = MessageFormat.format(TAGS_PART, tagIdsInString, tagIds.size());
+            tagsMatchingChecking = MessageFormat.format(TAGS_PART, tagIdsInString, Long.toString(tagIds.size()));
         }
 
         String and = "";
@@ -156,7 +156,7 @@ public class SearchUtils {
 
         String searchQuery = MessageFormat.format(PAGE_MAIN_PART, where,
                 queryParts[0], queryParts[1], queryParts[2],
-                ((pageIndex-1)*pageSize+1), (pageIndex)*pageSize);
+                Long.toString(((pageIndex-1)*pageSize+1)), Long.toString((pageIndex)*pageSize));
         return searchQuery;
     }
 
@@ -194,7 +194,7 @@ public class SearchUtils {
         if (pageSize == null || pageSize < 1)
             pageSize = DEFAULT_PAGE_SIZE;
 
-        String countQuery = MessageFormat.format(COUNT_MAIN_PART, pageSize,
+        String countQuery = MessageFormat.format(COUNT_MAIN_PART, Long.toString(pageSize),
                 where, queryParts[0], queryParts[1], queryParts[2]);
         return countQuery;
     }
@@ -218,7 +218,7 @@ public class SearchUtils {
             where = "WHERE ";
 
         String rowNumberQuery = MessageFormat.format(ROW_NUMBER_MAIN_PART,
-                where, queryParts[0], queryParts[1], queryParts[2], newsId);
+                where, queryParts[0], queryParts[1], queryParts[2], Long.toString(newsId));
         return rowNumberQuery;
     }
 }

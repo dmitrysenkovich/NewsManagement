@@ -65,10 +65,10 @@ public class PagesController {
 
         ModelAndView modelAndView = new ModelAndView("news-list");
 
-        List<Author> notExpiredAuthors = authorService.getNotExpired();
+        List<Author> notExpiredAuthors = authorService.findNotExpired();
         modelAndView.addObject("notExpiredAuthors", notExpiredAuthors);
 
-        List<Tag> tags = tagService.getAll();
+        List<Tag> tags = tagService.findAll();
         modelAndView.addObject("tags", tags);
 
         SearchCriteria searchCriteria = new SearchCriteria();
@@ -147,19 +147,19 @@ public class PagesController {
 
         ModelAndView modelAndView = new ModelAndView("news-edit");
 
-        List<Author> notExpiredAuthors = authorService.getNotExpired();
+        List<Author> notExpiredAuthors = authorService.findNotExpired();
         modelAndView.addObject("notExpiredAuthors", notExpiredAuthors);
 
-        List<Tag> tags = tagService.getAll();
+        List<Tag> tags = tagService.findAll();
         modelAndView.addObject("tags", tags);
 
         News news = newsService.find(newsId);
         modelAndView.addObject("news", news);
 
-        List<Author> newsAuthors = authorService.getAllByNews(news);
+        List<Author> newsAuthors = authorService.findAllByNews(news);
         modelAndView.addObject("newsAuthors", newsAuthors);
 
-        List<Tag> newsTags = tagService.getAllByNews(news);
+        List<Tag> newsTags = tagService.findAllByNews(news);
         modelAndView.addObject("newsTags", newsTags);
 
         String login = authorizationUtils.getCurrentUserLogin();
@@ -182,10 +182,10 @@ public class PagesController {
 
         ModelAndView modelAndView = new ModelAndView("news-edit");
 
-        List<Author> notExpiredAuthors = authorService.getNotExpired();
+        List<Author> notExpiredAuthors = authorService.findNotExpired();
         modelAndView.addObject("notExpiredAuthors", notExpiredAuthors);
 
-        List<Tag> tags = tagService.getAll();
+        List<Tag> tags = tagService.findAll();
         modelAndView.addObject("tags", tags);
 
         String login = authorizationUtils.getCurrentUserLogin();
@@ -207,7 +207,7 @@ public class PagesController {
 
         ModelAndView modelAndView = new ModelAndView("authors");
 
-        List<Author> authors = authorService.getAll();
+        List<Author> authors = authorService.findAll();
         modelAndView.addObject("authors", authors);
 
         return modelAndView;
@@ -225,7 +225,7 @@ public class PagesController {
 
         ModelAndView modelAndView = new ModelAndView("tags");
 
-        List<Tag> tags = tagService.getAll();
+        List<Tag> tags = tagService.findAll();
         modelAndView.addObject("tags", tags);
 
         return modelAndView;

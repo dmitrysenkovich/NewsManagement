@@ -50,7 +50,7 @@ public interface CommentService extends CrudService<Comment> {
      * @return news comments.
      * @throws ServiceException
      */
-    default List<Comment> getAllByNews(News news) throws ServiceException {
+    default List<Comment> findAllByNews(News news) throws ServiceException {
         throw new ServiceException();
     }
 }

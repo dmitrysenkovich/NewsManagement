@@ -44,7 +44,7 @@ public class NewsListCommand implements Command {
 
         List<Author> notExpiredAuthors;
         try {
-            notExpiredAuthors = authorService.getNotExpired();
+            notExpiredAuthors = authorService.findNotExpired();
             request.setAttribute("notExpiredAuthors", notExpiredAuthors);
         } catch (ServiceException e) {
             logger.error("Failed to generate news list page", e);
@@ -54,7 +54,7 @@ public class NewsListCommand implements Command {
 
         List<Tag> tags;
         try {
-            tags = tagService.getAll();
+            tags = tagService.findAll();
             request.setAttribute("tags", tags);
         } catch (ServiceException e) {
             logger.error("Failed to generate news list page", e);
