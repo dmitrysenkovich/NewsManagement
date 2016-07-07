@@ -71,6 +71,7 @@ public class TagServiceImpl implements TagService {
     public void delete(Tag tag) throws ServiceException {
         logger.info("Deleting tag..");
         try {
+            tag = tagRepository.findOne(tag.getTagId());
             tagRepository.delete(tag);
         } catch (DataAccessException e) {
             logger.error("Failed to delete tag");

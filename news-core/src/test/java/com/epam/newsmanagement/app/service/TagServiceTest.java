@@ -4,6 +4,7 @@ import com.epam.newsmanagement.app.dao.TagRepository;
 import com.epam.newsmanagement.app.exception.ServiceException;
 import com.epam.newsmanagement.app.model.News;
 import com.epam.newsmanagement.app.model.Tag;
+import com.epam.newsmanagement.app.service.impl.TagServiceImpl;
 import org.junit.Before;
 import org.junit.Test;
 import org.mockito.InjectMocks;
@@ -26,7 +27,7 @@ import static org.mockito.Mockito.when;
  */
 public class TagServiceTest {
     @InjectMocks
-    private TagService tagService;
+    private TagServiceImpl tagService;
 
     @Mock
     private TagRepository tagRepository;

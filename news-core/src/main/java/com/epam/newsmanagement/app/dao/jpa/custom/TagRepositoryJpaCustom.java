@@ -11,6 +11,14 @@ import java.util.List;
  */
 public interface TagRepositoryJpaCustom {
     /**
+     * Checks if tag exists.
+     * @param tagName tagName
+     * of the tag to be checked.
+     * @return check result.
+     */
+    boolean exists(String tagName);
+
+    /**
      * Returns news tags.
      * @param news specifies news
      * which tags are to be retrieved.

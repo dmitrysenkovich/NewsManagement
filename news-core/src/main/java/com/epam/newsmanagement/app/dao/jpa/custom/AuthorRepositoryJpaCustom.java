@@ -2,6 +2,8 @@ package com.epam.newsmanagement.app.dao.jpa.custom;
 
 import com.epam.newsmanagement.app.model.Author;
 import com.epam.newsmanagement.app.model.News;
+import org.springframework.data.jpa.repository.Query;
+import org.springframework.data.repository.query.Param;
 
 import java.util.List;
 
@@ -10,6 +12,14 @@ import java.util.List;
  * implemented manually.
  */
 public interface AuthorRepositoryJpaCustom {
+    /**
+     * Checks if author exists.
+     * @param authorName authorName
+     * of the author to be checked.
+     * @return check result.
+     */
+    boolean exists(String authorName);
+
     /**
      * Returns news authors.
      * @param news specifies news

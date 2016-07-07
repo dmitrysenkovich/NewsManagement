@@ -27,6 +27,6 @@ public interface CommentRepositoryJpa extends CommentRepository, JpaRepository<C
      * will be counted.
      * @return news comments count.
      */
-    @Query("select count(*) from Comment where news = :news")
+    @Query("select count(C) from Comment C where C.news = :news")
     Long countAllByNews(@Param("news") News news);
 }

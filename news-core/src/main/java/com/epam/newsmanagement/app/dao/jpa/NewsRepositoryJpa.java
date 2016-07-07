@@ -18,7 +18,7 @@ public interface NewsRepositoryJpa extends NewsRepository, JpaRepository<News, L
      * Counts all news.
      * @return news count.
      */
-    @Query("select count(*) from News")
+    @Query("select count(N) from News N")
     Long countAll();
 
     /**
@@ -26,6 +26,6 @@ public interface NewsRepositoryJpa extends NewsRepository, JpaRepository<News, L
      * @param newsIds ids of news to be deleted.
      */
     @Modifying
-    @Query("delete from News where newsId in :newsIds")
+    @Query("delete from News N where N.newsId in :newsIds")
     void deleteAll(@Param("newsIds") List<Long> newsIds);
 }

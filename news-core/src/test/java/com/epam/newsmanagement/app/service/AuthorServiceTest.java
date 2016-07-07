@@ -4,6 +4,7 @@ import com.epam.newsmanagement.app.dao.AuthorRepository;
 import com.epam.newsmanagement.app.exception.ServiceException;
 import com.epam.newsmanagement.app.model.Author;
 import com.epam.newsmanagement.app.model.News;
+import com.epam.newsmanagement.app.service.impl.AuthorServiceImpl;
 import org.junit.Before;
 import org.junit.Test;
 import org.mockito.InjectMocks;
@@ -25,7 +26,7 @@ import static org.mockito.Mockito.when;
  */
 public class AuthorServiceTest {
     @InjectMocks
-    private AuthorService authorService;
+    private AuthorServiceImpl authorService;
 
     @Mock
     private AuthorRepository authorRepository;

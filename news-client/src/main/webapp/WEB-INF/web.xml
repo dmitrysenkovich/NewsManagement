@@ -32,7 +32,7 @@
     </context-param>
     <context-param>
         <param-name>spring.profiles.active</param-name>
-        <param-value>hibernate</param-value>
+        <param-value>jpa,eclipselink</param-value>
     </context-param>
 
 	<filter>

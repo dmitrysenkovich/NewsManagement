@@ -1,0 +1,12 @@
+<ehcache>
+    <diskStore path="java.io.tmpdir"/>
+    <cache name="newsManagementCache"
+           maxEntriesLocalHeap="10000"
+           maxEntriesLocalDisk="10000"
+           eternal="false"
+           diskSpoolBufferSizeMB="100"
+           timeToIdleSeconds="300"
+           timeToLiveSeconds="600"
+           memoryStoreEvictionPolicy="LFU">
+    </cache>
+</ehcache>

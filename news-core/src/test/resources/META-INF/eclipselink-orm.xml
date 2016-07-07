@@ -1,0 +1,127 @@
+<?xml version="1.0"?>
+<entity-mappings
+        xmlns="http://www.eclipse.org/eclipselink/xsds/persistence/orm"
+        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+        xsi:schemaLocation="http://www.eclipse.org/eclipselink/xsds/persistence/orm http://www.eclipse.org/eclipselink/xsds/eclipselink_orm_2_1.xsd"
+        version="2.1">
+    <entity class="com.epam.newsmanagement.app.model.Author">
+        <table name="AUTHORS" />
+        <cache type="SOFT" size="30" />
+        <attributes>
+            <id name="authorId">
+                <column name="AUTHOR_ID" />
+                <generated-value generator="AUTHORS_IDS_SEQUENCE"/>
+                <sequence-generator name="AUTHORS_IDS_SEQUENCE"/>
+            </id>
+            <basic name="authorName">
+                <column name="AUTHOR_NAME" />
+            </basic>
+            <basic name="expired">
+                <column name="EXPIRED" />
+            </basic>
+        </attributes>
+    </entity>
+
+    <entity class="com.epam.newsmanagement.app.model.Comment">
+        <table name="COMMENTS" />
+        <cache type="SOFT" size="2000" />
+        <attributes>
+            <id name="commentId">
+                <column name="COMMENT_ID" />
+                <generated-value generator="COMMENTS_IDS_SEQUENCE"/>
+                <sequence-generator name="COMMENTS_IDS_SEQUENCE"/>
+            </id>
+            <basic name="commentText">
+                <column name="COMMENT_TEXT" />
+            </basic>
+            <basic name="creationDate">
+                <column name="CREATION_DATE" />
+            </basic>
+            <many-to-one name="news" target-entity="com.epam.newsmanagement.app.model.News">
+                <join-column name="NEWS_ID" />
+            </many-to-one>
+        </attributes>
+    </entity>
+
+    <entity class="com.epam.newsmanagement.app.model.News">
+        <table name="NEWS" />
+        <cache type="SOFT" size="500" />
+        <attributes>
+            <id name="newsId">
+                <column name="NEWS_ID" />
+                <generated-value generator="NEWS_IDS_SEQUENCE" strategy="SEQUENCE"/>
+                <sequence-generator name="NEWS_IDS_SEQUENCE" allocation-size="2" sequence-name="NEWS_IDS_SEQUENCE"/>
+            </id>
+            <basic name="title">
+                <column name="TITLE" />
+            </basic>
+            <basic name="shortText">
+                <column name="SHORT_TEXT" />
+            </basic>
+            <basic name="fullText">
+                <column name="FULL_TEXT" />
+            </basic>
+            <basic name="creationDate">
+                <column name="CREATION_DATE" />
+            </basic>
+            <basic name="modificationDate">
+                <column name="MODIFICATION_DATE" />
+                <temporal>DATE</temporal>
+            </basic>
+        </attributes>
+    </entity>
+
+    <entity class="com.epam.newsmanagement.app.model.Role">
+        <table name="ROLES" />
+        <cache type="SOFT" size="5" />
+        <attributes>
+            <id name="roleId">
+                <column name="ROLE_ID" />
+                <generated-value generator="ROLES_IDS_SEQUENCE"/>
+                <sequence-generator name="ROLES_IDS_SEQUENCE"/>
+            </id>
+            <basic name="roleName">
+                <column name="ROLE_NAME" />
+            </basic>
+        </attributes>
+    </entity>
+
+    <entity class="com.epam.newsmanagement.app.model.Tag">
+        <table name="TAGS" />
+        <cache type="SOFT" size="50" />
+        <attributes>
+            <id name="tagId">
+                <column name="TAG_ID" />
+                <generated-value generator="TAGS_IDS_SEQUENCE"/>
+                <sequence-generator name="TAGS_IDS_SEQUENCE"/>
+            </id>
+            <basic name="tagName">
+                <column name="TAG_NAME" />
+            </basic>
+        </attributes>
+    </entity>
+
+    <entity class="com.epam.newsmanagement.app.model.User">
+        <table name="USERS" />
+        <cache type="SOFT" size="50" />
+        <attributes>
+            <id name="userId">
+                <column name="USER_ID" />
+                <generated-value generator="USERS_IDS_SEQUENCE"/>
+                <sequence-generator name="USERS_IDS_SEQUENCE"/>
+            </id>
+            <basic name="userName">
+                <column name="USER_NAME" />
+            </basic>
+            <basic name="login">
+                <column name="LOGIN" />
+            </basic>
+            <basic name="password">
+                <column name="PASSWORD" />
+            </basic>
+            <many-to-one name="role" target-entity="com.epam.newsmanagement.app.model.Role">
+                <join-column name="ROLE_ID" />
+            </many-to-one>
+        </attributes>
+    </entity>
+</entity-mappings>

@@ -4,6 +4,7 @@ import com.epam.newsmanagement.app.dao.CommentRepository;
 import com.epam.newsmanagement.app.exception.ServiceException;
 import com.epam.newsmanagement.app.model.Comment;
 import com.epam.newsmanagement.app.model.News;
+import com.epam.newsmanagement.app.service.impl.CommentServiceImpl;
 import org.junit.Before;
 import org.junit.Test;
 import org.mockito.InjectMocks;
@@ -27,7 +28,7 @@ import static org.mockito.Mockito.when;
  */
 public class CommentServiceTest {
     @InjectMocks
-    private CommentService commentService;
+    private CommentServiceImpl commentService;
 
     @Mock
     private CommentRepository commentRepository;

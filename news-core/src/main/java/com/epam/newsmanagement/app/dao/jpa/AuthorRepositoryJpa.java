@@ -6,7 +6,6 @@ import com.epam.newsmanagement.app.exception.NotImplementedException;
 import com.epam.newsmanagement.app.model.Author;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
-import org.springframework.data.repository.query.Param;
 
 import java.util.List;
 
@@ -18,17 +17,8 @@ public interface AuthorRepositoryJpa extends AuthorRepository, JpaRepository<Aut
      * Returns all not expired authors.
      * @return all not expired authors.
      */
-    @Query("from Author where expired is null")
+    @Query("from Author A where A.expired is null")
     List<Author> findNotExpired();
-
-    /**
-     * Checks if author exists.
-     * @param authorName authorName
-     * of the author to be checked.
-     * @return check result.
-     */
-    @Query("select case when count(*) > 0 then True else False end from Author A where A.authorName = :authorName")
-    boolean exists(@Param("authorName") String authorName);
 
     /**
      * Forbids author deleting.

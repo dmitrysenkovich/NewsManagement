@@ -1,11 +1,12 @@
-<persistence xmlns="http://java.sun.com/xml/ns/persistence"
+    <persistence xmlns="http://java.sun.com/xml/ns/persistence"
              xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
              xsi:schemaLocation="http://java.sun.com/xml/ns/persistence
              http://java.sun.com/xml/ns/persistence/persistence_2_0.xsd"
              version="2.0">
 
     <persistence-unit name="entityManager">
-        <provider>org.hibernate.ejb.HibernatePersistence</provider>
+        <provider>org.eclipse.persistence.jpa.PersistenceProvider</provider>
+        <mapping-file>META-INF/eclipselink-orm.xml</mapping-file>
 
         <class>com.epam.newsmanagement.app.model.Author</class>
         <class>com.epam.newsmanagement.app.model.Comment</class>
@@ -13,15 +14,14 @@
         <class>com.epam.newsmanagement.app.model.Role</class>
         <class>com.epam.newsmanagement.app.model.Tag</class>
         <class>com.epam.newsmanagement.app.model.User</class>
+        <shared-cache-mode>ALL</shared-cache-mode>
         <properties>
-            <property name="hibernate.connection.url" value="jdbc:oracle:thin:@localhost" />
-            <property name="hibernate.connection.driver_class" value="oracle.jdbc.driver.OracleDriver" />
-            <property name="hibernate.connection.username" value="dmitry" />
-            <property name="hibernate.connection.password" value="pass" />
-
-            <property name="hibernate.hbm2ddl.auto" value="update"/>
-            <property name="hibernate.jdbc.use_get_generated_keys" value="true"/>
-            <property name="hibernate.show_sql" value="true"/>
+            <property name="eclipselink.target-database" value="org.eclipse.persistence.platform.database.OraclePlatform"/>
+            
+            <property name="eclipselink.weaving" value="false"/>
+            <property name="eclipselink.logging.level" value="FINE"/>
+            <property name="eclipselink.logging.level.sql" value="FINE"/>
+            <property name="eclipselink.logging.parameters" value="true"/>
         </properties>
     </persistence-unit>
 </persistence>

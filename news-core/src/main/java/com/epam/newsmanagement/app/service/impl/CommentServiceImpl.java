@@ -74,6 +74,7 @@ public class CommentServiceImpl implements CommentService {
     public void delete(Comment comment) throws ServiceException {
         logger.info("Deleting comment..");
         try {
+            comment = commentRepository.findOne(comment.getCommentId());
             commentRepository.delete(comment);
         } catch (DataAccessException e) {
             logger.error("Failed to delete comment");
