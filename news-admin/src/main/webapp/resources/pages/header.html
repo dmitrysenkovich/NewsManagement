@@ -1,0 +1,13 @@
+<div id="header">
+    <h1 id="title">{{ 'header.header' | translate }}</h1>
+    <form id="greeting" ng-show="authenticated">
+        {{ 'header.greeting' | translate }} {{ userName }}
+        <span>
+            <button id="logout-button" type="submit" ng-click="logout()">{{ 'header.logout_button' | translate }}</button>
+        </span>
+    </form>
+    <div id="language">
+        <a href="javascript:void(0)" data-ng-click="changeLocale('English')">{{ 'header.english' | translate }}</a>
+        <a href="javascript:void(0)" data-ng-click="changeLocale('Russian')">{{ 'header.russian' | translate }}</a>
+    </div>
+</div>

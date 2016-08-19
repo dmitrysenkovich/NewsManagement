@@ -1,0 +1,49 @@
+<div id="content" class="scrollable news-content">
+    <div id="{{ news.length ? news.newsId : '' }}" class="new-news">
+        <div id='invalid-news' ng-show="invalidNews">{{ 'news_edit.invalid' | translate }}</div>
+        <div id='no-author-selected' ng-show="noAuthorSelected">{{ 'news_edit.no_author' | translate }}</div>
+        <div id='news-saved' ng-show="newsSaved">{{ 'news_edit.saved' | translate }}</div>
+        <div id='concurrent-modification' ng-show="concurrentModification">{{ 'news_edit.concurrent_modification' | translate }}</div>
+        <div id="new-news-title-row">
+            <div id="new-news-title-label">
+                {{ 'news_edit.title' | translate }}:
+            </div>
+            <div id="new-news-title">
+                <input id="new-news-textarea" type="text" value="{{ news.title }}">
+            </div>
+        </div>
+        <div id="date-row">
+            <div id="date-title">
+                {{ 'news_edit.date' | translate }}:
+            </div>
+            <div id="date">
+                <input id="date-textarea" type="text" value="{{ newsDate }}" disabled>
+                <input id="creation-date-in-milliseconds" type="number" value="{{ !news.length ? now : news.creationDate }}" hidden>
+                <input id="modification-date-in-milliseconds"
+                       type="number" value="{{ !news.length ? now : news.modificationDate }}" hidden>
+            </div>
+        </div>
+        <div id="short-text-row">
+            <div id="short-text-title">
+                {{ 'news_edit.brief' | translate }}:
+            </div>
+            <div id="short-text">
+                <textarea id="short-text-textarea" rows="4" >{{ news.shortText }}</textarea>
+            </div>
+        </div>
+        <div id="text-row">
+            <div id="text-title">
+                {{ 'news_edit.content' | translate }}:
+            </div>
+            <div id="text">
+                <textarea id="text-textarea" rows="6" >{{ news.fullText }}</textarea>
+            </div>
+        </div>
+    </div>
+    <div id="filter-row">
+        <div ng-include src="'/news-admin/resources/pages/filter-row-template.html'"></div>
+    </div>
+    <div id="save-news-button-wrapper">
+        <button id="save-news-button" ng-click="save()">{{ 'news_edit.save' | translate }}</button>
+    </div>
+</div>

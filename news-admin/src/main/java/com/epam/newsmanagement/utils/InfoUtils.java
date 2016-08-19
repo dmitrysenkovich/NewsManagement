@@ -78,14 +78,16 @@ public class InfoUtils {
     /**
      * Generates news info
      * needed to render certain news.
-     * @param news news which
+     * @param newsId id of the news which
      * info is to be retrieved.
      * @param searchCriteria search criteria.
      * @return news information.
      * @throws ServiceException
      */
-    public NewsInfo getNewsInfo(News news, SearchCriteria searchCriteria, Long newsRowNumber) throws ServiceException {
+    public NewsInfo getNewsInfo(Long newsId, SearchCriteria searchCriteria) throws ServiceException {
         NewsInfo newsInfo = new NewsInfo();
+
+        News news = newsService.find(newsId);
         newsInfo.setNews(news);
 
         List<Author> authors = authorService.findAllByNews(news);
@@ -94,17 +96,62 @@ public class InfoUtils {
         List<Comment> comments = commentService.findAllByNews(news);
         newsInfo.setComments(comments);
 
+        Long newsRowNumber = newsService.rowNumberBySearchCriteria(searchCriteria, news);
+
         searchCriteria.setPageSize(1L);
         Long newsCount = newsService.countPagesBySearchCriteria(searchCriteria);
-        if (newsRowNumber == 1)
-            newsInfo.setFirst(true);
-        else
-            newsInfo.setFirst(false);
-        if (newsRowNumber.equals(newsCount))
-            newsInfo.setLast(true);
-        else
-            newsInfo.setLast(false);
+        if (newsRowNumber != 1) {
+            searchCriteria.setPageIndex(newsRowNumber - 1);
+            Long previousId = newsService.search(searchCriteria).get(0).getNewsId();
+            newsInfo.setPreviousId(previousId);
+        }
+        if (!newsRowNumber.equals(newsCount)) {
+            searchCriteria.setPageIndex(newsRowNumber + 1);
+            Long nextId = newsService.search(searchCriteria).get(0).getNewsId();
+            newsInfo.setNextId(nextId);
+        }
 
         return newsInfo;
+    }
+
+
+    /**
+     * Constructs news edit info for
+     * certain news by id.
+     * @param newsId specifies news.
+     * @return new edit info.
+     * @throws ServiceException
+     */
+    public NewsEditInfo getNewsEditInfo(Long newsId) throws ServiceException {
+        NewsEditInfo newsEditInfo = new NewsEditInfo();
+
+        News news = newsService.find(newsId);
+        newsEditInfo.setNews(news);
+
+        List<Author> authors = authorService.findAllByNews(news);
+        newsEditInfo.setAuthors(authors);
+
+        List<Tag> tags = tagService.findAllByNews(news);
+        newsEditInfo.setTags(tags);
+
+        return newsEditInfo;
+    }
+
+
+    /**
+     * Retrieves all authors and tags.
+     * @return all authors and tags.
+     * @throws ServiceException
+     */
+    public AuthorsAndTagsInfo getAuthorsAndTagsInfo() throws ServiceException {
+        AuthorsAndTagsInfo authorsAndTagsInfo = new AuthorsAndTagsInfo();
+
+        List<Author> notExpiredAuthors = authorService.findNotExpired();
+        authorsAndTagsInfo.setNotExpiredAuthors(notExpiredAuthors);
+
+        List<Tag> tags = tagService.findAll();
+        authorsAndTagsInfo.setTags(tags);
+
+        return authorsAndTagsInfo;
     }
 }

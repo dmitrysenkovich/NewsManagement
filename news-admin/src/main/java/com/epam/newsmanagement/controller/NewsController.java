@@ -7,16 +7,17 @@ import com.epam.newsmanagement.app.model.Tag;
 import com.epam.newsmanagement.app.service.NewsService;
 import com.epam.newsmanagement.app.utils.SearchCriteria;
 import com.epam.newsmanagement.utils.InfoUtils;
+import com.epam.newsmanagement.utils.NewsEditInfo;
 import com.epam.newsmanagement.utils.NewsInfo;
 import com.epam.newsmanagement.utils.NewsListInfo;
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.apache.log4j.Logger;
-import org.hibernate.StaleObjectStateException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.orm.jpa.JpaOptimisticLockingFailureException;
 import org.springframework.stereotype.Controller;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
@@ -45,6 +46,40 @@ public class NewsController {
 
     @Autowired
     private ObjectMapper objectMapper;
+
+
+    /**
+     * Dispatches certain news request.
+     * @param newsId info about news
+     * with this id will be retrieved.
+     * @param searchCriteriaInString searchCriteria
+     * encoded in string.
+     * @return news model and view.
+     * @throws ServiceException
+     */
+    @RequestMapping(value = "/news", method = RequestMethod.GET)
+    @ResponseBody
+    public NewsInfo news(@RequestParam Long newsId,
+                         @RequestParam(name = "searchCriteria", required = false) String searchCriteriaInString)
+            throws ServiceException, IOException {
+        logger.info("News GET request");
+
+        SearchCriteria searchCriteria = new SearchCriteria();
+        if (searchCriteriaInString != null)
+            searchCriteria = objectMapper.readValue(searchCriteriaInString, SearchCriteria.class);
+        NewsInfo newsInfo = infoUtils.getNewsInfo(newsId, searchCriteria);
+        return newsInfo;
+    }
+
+
+    @RequestMapping(value = "/news/edit", method = RequestMethod.GET)
+    @ResponseBody
+    public NewsEditInfo newsEdit(@RequestParam Long newsId) throws ServiceException {
+        logger.info("News edit GET request");
+
+        NewsEditInfo newsEditInfo = infoUtils.getNewsEditInfo(newsId);
+        return newsEditInfo;
+    }
 
 
     /**
@@ -129,60 +164,6 @@ public class NewsController {
         NewsListInfo newsListInfo = infoUtils.getNewsListInfo(newsList, searchCriteria);
 
         return newsListInfo;
-    }
-
-
-    /**
-     * Dispatches request to the previous
-     * news according current search criteria.
-     * @param request request.
-     * @return previous news information.
-     * @throws ServiceException
-     */
-    @RequestMapping(value = "/news/previous", method = RequestMethod.GET)
-    @ResponseBody
-    public NewsInfo previous(HttpServletRequest request) throws ServiceException {
-        logger.info("Previous news GET request");
-
-        HttpSession session = request.getSession(false);
-        SearchCriteria searchCriteria = (SearchCriteria) session.getAttribute("searchCriteria");
-        Long newsRowNumber = (Long) session.getAttribute("newsRowNumber");
-        newsRowNumber--;
-        session.setAttribute("newsRowNumber", newsRowNumber);
-        searchCriteria.setPageIndex(newsRowNumber);
-        searchCriteria.setPageSize(1L);
-        News news = newsService.search(searchCriteria).get(0);
-
-        NewsInfo newsInfo = infoUtils.getNewsInfo(news, searchCriteria, newsRowNumber);
-
-        return newsInfo;
-    }
-
-
-    /**
-     * Dispatches request to the next
-     * news according current search criteria.
-     * @param request request.
-     * @return next news information.
-     * @throws ServiceException
-     */
-    @RequestMapping(value = "/news/next", method = RequestMethod.GET)
-    @ResponseBody
-    public NewsInfo next(HttpServletRequest request) throws ServiceException {
-        logger.info("Next news GET request");
-
-        HttpSession session = request.getSession(false);
-        SearchCriteria searchCriteria = (SearchCriteria) session.getAttribute("searchCriteria");
-        Long newsRowNumber = (Long) session.getAttribute("newsRowNumber");
-        newsRowNumber++;
-        session.setAttribute("newsRowNumber", newsRowNumber);
-        searchCriteria.setPageIndex(newsRowNumber);
-        searchCriteria.setPageSize(1L);
-        News news = newsService.search(searchCriteria).get(0);
-
-        NewsInfo newsInfo = infoUtils.getNewsInfo(news, searchCriteria, newsRowNumber);
-
-        return newsInfo;
     }
 
 

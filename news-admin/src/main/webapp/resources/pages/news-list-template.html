@@ -1,0 +1,29 @@
+<div id='no-news-found-message' ng-hide="newsList.length > 0">{{ 'news_list.no_news' | translate }}</div>
+<div id="{{ news.newsId }}" class="short-news" ng-repeat="news in newsList">
+    <div class="short-news-title-row">
+        <div class="short-news-title">
+            <a href="javascript:void(0)" data-ng-click="goToNews($event)">
+                {{ news.title }}
+            </a>
+        </div>
+        <div class="short-news-authors">
+            {{ authorsInStringByNewsId[news.newsId] }}
+        </div>
+        <div class="short-news-last-edit">
+            <u>
+                {{ lastEditDateByNewsId[news.newsId] }}
+            </u>
+        </div>
+    </div>
+    <div class="short-news-short-text-row">
+        {{ news.shortText | newslines }}
+    </div>
+    <div class="short-news-footer-row">
+        <div class="short-news-tags">
+            {{ tagsInStringByNewsId[news.newsId] }}
+        </div>
+        <div class="short-news-others">
+            <span style="color: #ff0000">{{ 'news_list.comments' | translate }}({{ commentsCountByNewsId[news.newsId] }})</span> <a href="/news-admin/edit/{{ news.newsId }}">{{ 'news_list.edit' | translate }}</a> <input id="{{ news.newsId }}" type="checkbox" />
+        </div>
+    </div>
+</div>

@@ -1,0 +1,17 @@
+<div id="content" class="scrollable news-content">
+    <div id="items-list">
+        <div id='item-added' ng-show="tagAdded">{{ 'tags.added' | translate }}</div>
+        <div id='item-updated' ng-show="tagUpdated">{{ 'tags.updated' | translate }}</div>
+        <div id='tag-deleted' ng-show="tagDeleted">{{ 'tags.expired' | translate }}</div>
+        <div id='item-exists' ng-show="tagExists">{{ 'tags.exists' | translate }}</div>
+        <div id='invalid-tag-name' ng-show="invalidTag">{{ 'tags.invalid' | translate }}</div>
+        <div ng-repeat="tag in tags" id="{{ tag.tagId }}" ng-include src="'/news-admin/resources/pages/tag-row-template.html'" class="item"></div>
+    </div>
+    <div id="add-item">
+        <div class="item-label">{{ 'tags.add_tag' | translate }}:</div>
+        <div class="item-name"><input id="new-item-name-textarea" type="text" value=""></div>
+        <div id="save-item-link">
+            <a href="javascript:void(0)" class="add-tag-link" ng-click="add($event)"><u>{{ 'tags.save' | translate }}</u></a>
+        </div>
+    </div>
+</div>

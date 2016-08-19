@@ -1,0 +1,44 @@
+<html ng-app="newsManagementApp">
+    <head>
+        <meta charset="utf-8">
+        <base href="/news-admin/">
+
+        <title>News Management</title>
+
+        <link href="http://localhost:8082/news-admin/resources/css/style.css" rel="stylesheet">
+        <link href="http://localhost:8082/news-admin/resources/css/jquery.multiselect.css" rel="stylesheet">
+        <link href="http://localhost:8082/news-admin/resources/assets/style.css" rel="stylesheet">
+        <link href="http://localhost:8082/news-admin/resources/assets/prettify.css" rel="stylesheet">
+        <link href="http://ajax.googleapis.com/ajax/libs/jqueryui/1/themes/ui-lightness/jquery-ui.css" rel="stylesheet">
+
+        <script type="text/javascript" src="http://ajax.googleapis.com/ajax/libs/jquery/1/jquery.js"></script>
+        <script type="text/javascript" src="http://ajax.googleapis.com/ajax/libs/jqueryui/1/jquery-ui.min.js"></script>
+        <script type="text/javascript" src="http://localhost:8082/news-admin/resources/js/jquery.multiselect.min.js"></script>
+        <script type="text/javascript" src="http://localhost:8082/news-admin/resources/assets/prettify.js"></script>
+        <script type="text/javascript" src="http://localhost:8082/news-admin/resources/js/jquery.i18n.properties.min.js"></script>
+        <script type="text/javascript" src="http://localhost:8082/news-admin/resources/js/angular.min.js"></script>
+        <script type="text/javascript" src="http://localhost:8082/news-admin/resources/js/angular-route.js"></script>
+        <script type="text/javascript" src="http://localhost:8082/news-admin/resources/js/spring-security-csrf-token-interceptor.min.js"></script>
+        <script type="text/javascript" src="http://localhost:8082/news-admin/resources/js/angular-cookie.min.js"></script>
+        <script type="text/javascript" src="http://localhost:8082/news-admin/resources/js/angular-repeat-n.min.js"></script>
+        <script type="text/javascript" src="http://localhost:8082/news-admin/resources/js/spin.min.js"></script>
+        <script type="text/javascript" src="http://localhost:8082/news-admin/resources/js/angular-spinners.min.js"></script>
+        <script type="text/javascript" src="http://localhost:8082/news-admin/resources/js/angular-loading-spinner.js"></script>
+        <script type="text/javascript" src="http://localhost:8082/news-admin/resources/js/underscore-1.4.4.js"></script>
+        <script type="text/javascript" src="http://localhost:8082/news-admin/resources/js/i18n-3.0.0.rc3.js"></script>
+        <script type="text/javascript" src="http://localhost:8082/news-admin/resources/js/I18nAdapter.js"></script>
+        <script type="text/javascript" src="http://localhost:8082/news-admin/resources/js/I18nAngular.js"></script>
+        <script type="text/javascript" src="http://localhost:8082/news-admin/resources/js/app.js"></script>
+    </head>
+    <body data-ng-controller="authenticationController">
+        <div id="container">
+            <div ng-include src="'/news-admin/resources/pages/header.html'"></div>
+            <div id="crutch">
+                <div ng-include src="'/news-admin/resources/pages/navbar.html'"></div>
+                <span us-spinner="{radius:20, width:4, length: 8}"></span>
+                <div data-ng-view ng-cloak ng-show="loaded"></div>
+            </div>
+            <div ng-include src="'/news-admin/resources/pages/footer.html'"></div>
+        </div>
+    </body>
+</html>

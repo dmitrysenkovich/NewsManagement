@@ -1,0 +1,10 @@
+<div class="item-label">{{ 'tags.tag' | translate }}:</div>
+<div class="item-name"><input class="item-name-textarea" type="text" value="{{ tag.tagName }}" disabled></div>
+<div class="item-action">
+    <div class="item-update-links" hidden>
+        <a href="javascript:void(0)" class="update-tag-link" data-ng-click="update($event)"><u>{{ 'tags.update' | translate }}</u></a>
+        <a href="javascript:void(0)" class="delete-tag-link" data-ng-click="delete($event)"><u>{{ 'tags.delete' | translate }}</u></a>
+        <a href="javascript:void(0)" class="cancel-tag-link" data-ng-click="hideEditBar($event)"><u>{{ 'tags.cancel' | translate }}</u></a>
+    </div>
+    <a href="javascript:void(0)" class="edit-tag-link" data-ng-click="showEditBar($event)"><u>{{ 'tags.edit' | translate }}</u></a>
+</div>

@@ -1,0 +1,13 @@
+<div id="user-content">
+    <form id="login-form" name="loginForm" ng-submit="authenticate()">
+        <div id="error-message-login" ng-show="loginError">{{ 'login.error' | translate }}</div>
+        <div id="message-login" ng-show="logoutMessage">{{ 'login.logout' | translate }}</div>
+        <div class="login-row">
+            <div class="label">{{ 'login.login' | translate }}:</div><input id="login" name="login" class="login-form-input" type="text" ng-model="credentials.login"><br>
+        </div>
+        <div class="login-row">
+            <div class="label">{{ 'login.password' | translate }}:</div><input id="password" name="password" class="login-form-input" type="password" ng-model="credentials.password"><br>
+        </div>
+        <button id="login-button" class="row-padded" type="submit">{{ 'login.login' | translate }}</button>
+    </form>
+</div>

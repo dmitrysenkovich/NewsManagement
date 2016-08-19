@@ -6,6 +6,8 @@ import com.epam.newsmanagement.app.model.News;
 import com.epam.newsmanagement.app.service.CommentService;
 import com.epam.newsmanagement.app.service.NewsService;
 import com.epam.newsmanagement.app.utils.SearchCriteria;
+import com.fasterxml.jackson.databind.JsonNode;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import org.apache.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
@@ -17,6 +19,7 @@ import org.springframework.web.bind.annotation.ResponseBody;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;
+import java.io.IOException;
 
 /**
  * Comments controller. Responsible
@@ -31,26 +34,27 @@ public class CommentsController {
     @Autowired
     private CommentService commentService;
 
+    @Autowired
+    private ObjectMapper objectMapper;
+
 
     /**
      * Adds new comment to the news.
-     * @param commentText new comment
-     * text
-     * @param request request.
+     * @param requestBody contains current
+     * news id and new comment text in JSON.
      * @return new comment.
      * @throws ServiceException
      */
     @RequestMapping(value = "/comment/add", method = RequestMethod.PUT)
     @ResponseBody
-    public Comment add(@RequestBody String commentText, HttpServletRequest request) throws ServiceException {
+    public Comment add(@RequestBody String requestBody) throws ServiceException, IOException {
         logger.info("Add PUT request");
 
-        HttpSession session = request.getSession(false);
-        SearchCriteria searchCriteria = (SearchCriteria) session.getAttribute("searchCriteria");
-        Long newsRowNumber = (Long) session.getAttribute("newsRowNumber");
-        searchCriteria.setPageIndex(newsRowNumber);
-        searchCriteria.setPageSize(1L);
-        News news = newsService.search(searchCriteria).get(0);
+        JsonNode jsonNode = objectMapper.readTree(requestBody);
+        Long newsId = objectMapper.convertValue(jsonNode.get("newsId"), Long.class);
+        String commentText = objectMapper.convertValue(jsonNode.get("commentText"), String.class);
+
+        News news = newsService.find(newsId);
 
         Comment comment = new Comment();
         comment.setCommentText(commentText);

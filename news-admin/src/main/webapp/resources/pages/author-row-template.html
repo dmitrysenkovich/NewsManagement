@@ -1,0 +1,10 @@
+<div class="item-label">{{ 'authors.author' | translate }}:</div>
+<div class="item-name"><input class="item-name-textarea" type="text" value="{{ author.authorName }}" disabled></div>
+<div class="item-action">
+    <div class="item-update-links" hidden>
+        <a href="javascript:void(0)" class="update-author-link" data-ng-click="update($event)"><u>{{ 'authors.update' | translate }}</u></a>
+        <a href="javascript:void(0)" class="expire-author-link" data-ng-click="expire($event)" ng-hide="{{ author.expired }}"><u>{{ 'authors.expire' | translate }}</u></a>
+        <a href="javascript:void(0)" class="cancel-author-link" data-ng-click="hideEditBar($event)"><u>{{ 'authors.cancel' | translate }}</u></a>
+    </div>
+    <a href="javascript:void(0)" class="edit-author-link" data-ng-click="showEditBar($event)"><u>{{ 'authors.edit' | translate }}</u></a>
+</div>

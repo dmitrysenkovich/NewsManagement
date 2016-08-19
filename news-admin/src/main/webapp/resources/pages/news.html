@@ -1,0 +1,53 @@
+<div id="content" class="scrollable news-content">
+    <div class="news">
+        <div class="title">
+            {{ news.title }}
+        </div>
+        <div class="data-and-authors-row">
+            <div class="news-authors">
+                {{ authorsInString }}
+            </div>
+            <div class="news-last-edit">
+                <u>
+                    {{ lastEditDate }}
+                </u>
+            </div>
+        </div>
+        <div class="news-text">
+            {{ news.fullText | newslines }}
+        </div>
+        <div id="comments">
+            <div class="comment" ng-repeat="comment in comments">
+                <div class="comment-date">
+                    <u>
+                        {{ creationDate }}
+                    </u>
+                </div>
+                <div class="comment-text-wrapper">
+                    <span class="delete-comment-button-span"><button id="{{ comment.commentId }}" class="delete-comment-button" data-ng-click="deleteComment($event)">&times;</button></span>
+                    <div class="comment-text">
+                        {{ comment.commentText | newslines }}
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div id="new-comment">
+        <div id="new-comment-text">
+            <textarea id="new-post-textarea" rows="4" ></textarea>
+        </div>
+        <div id="post-comment-button-wrapper">
+            <button id="post-comment-button" ng-click="comment()">{{ 'news.comment' | translate }}</button>
+        </div>
+    </div>
+    <div id="news-footer">
+        <div id="previous-link">
+            <a id="previous" href="{{ previousNewsLink }}"
+                class="{{ !previousNewsLink ? 'disabled-page-link' : '' }}"><u>{{ 'news.previous' | translate }}</u></a>
+        </div>
+        <div id="next-link">
+            <a id="next" href="{{ nextNewsLink }}"
+                class="{{ !nextNewsLink ? 'disabled-page-link' : '' }}"><u>{{ 'news.next' | translate }}</u></a>
+        </div>
+    </div>
+</div>

@@ -12,6 +12,8 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.ResponseBody;
 
+import java.util.List;
+
 /**
  * Tags controller. Responsible
  * for managing tags.
@@ -22,6 +24,21 @@ public class TagsController {
 
     @Autowired
     private TagService tagService;
+
+
+    /**
+     * Retrieves all tags.
+     * @return all tags.
+     * @throws ServiceException
+     */
+    @RequestMapping(value = "/tags/all", method = RequestMethod.GET)
+    @ResponseBody
+    public List<Tag> getAll() throws ServiceException {
+        logger.info("All tags GET request");
+
+        List<Tag> allTags = tagService.findAll();
+        return allTags;
+    }
 
 
     /**

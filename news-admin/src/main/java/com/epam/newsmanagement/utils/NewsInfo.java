@@ -14,8 +14,8 @@ public class NewsInfo {
     private News news;
     private List<Author> authors;
     private List<Comment> comments;
-    private Boolean first;
-    private Boolean last;
+    private Long previousId;
+    private Long nextId;
 
     public News getNews() {
         return news;
@@ -41,19 +41,19 @@ public class NewsInfo {
         this.comments = comments;
     }
 
-    public Boolean getFirst() {
-        return first;
+    public Long getPreviousId() {
+        return previousId;
     }
 
-    public void setFirst(Boolean first) {
-        this.first = first;
+    public void setPreviousId(Long previousId) {
+        this.previousId = previousId;
     }
 
-    public Boolean getLast() {
-        return last;
+    public Long getNextId() {
+        return nextId;
     }
 
-    public void setLast(Boolean last) {
-        this.last = last;
+    public void setNextId(Long nextId) {
+        this.nextId = nextId;
     }
 }

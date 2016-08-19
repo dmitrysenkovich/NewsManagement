@@ -1,0 +1,17 @@
+<div id="content" class="scrollable news-content">
+    <div id="items-list">
+        <div id='item-added' ng-show="authorAdded">{{ 'authors.added' | translate }}</div>
+        <div id='item-updated' ng-show="authorUpdated">{{ 'authors.updated' | translate }}</div>
+        <div id='author-expired' ng-show="authorExpired">{{ 'authors.expired' | translate }}</div>
+        <div id='item-exists' ng-show="authorExists">{{ 'authors.exists' | translate }}</div>
+        <div id='invalid-author-name' ng-show="invalidAuthor">{{ 'authors.invalid' | translate }}</div>
+        <div ng-repeat="author in authors" id="{{ author.authorId }}" ng-include src="'/news-admin/resources/pages/author-row-template.html'" class="item"></div>
+    </div>
+    <div id="add-item">
+        <div class="item-label">{{ 'authors.add_author' | translate }}:</div>
+        <div class="item-name"><input id="new-item-name-textarea" type="text" value=""></div>
+        <div id="save-item-link">
+            <a href="javascript:void(0)" class="add-author-link" ng-click="add($event)"><u>{{ 'authors.save' | translate }}</u></a>
+        </div>
+    </div>
+</div>

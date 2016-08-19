@@ -1,0 +1,105 @@
+{
+    "header": {
+        "english": "En",
+        "russian": "Ru",
+        "logout_button": "Logout",
+        "greeting": "Hello, admin",
+        "header": "News Portal - Administration"
+    },
+
+    "navbar": {
+        "news_list": "News List",
+        "add_news": "Add News",
+        "authors": "Add/Update Authors",
+        "tags": "Add/Update Tags"
+    },
+
+    "login": {
+        "error": "Invalid username or password",
+        "logout": "You've been logged out successfully",
+        "login": "Login",
+        "password": "Password"
+    },
+
+    "error": {
+        "header": "News Administration | Error",
+        "back": "Back",
+        "bad_request": "Something terrible happened to us..",
+        "denied": "Hey, you are not admin!:\\",
+        "not_found": "Unfortunately we couldn't find the page you wanted:c",
+        "internal_error": "Something terrible happened to us..",
+        "unknown_error": "Something terrible happened to us.."
+    },
+
+    "authors": {
+        "header": "News Management | Add Authors",
+        "author": "Author",
+        "update": "update",
+        "expire": "expire",
+        "cancel": "cancel",
+        "edit": "edit",
+        "add_author": "Add Author",
+        "save": "Save",
+        "invalid": "Invalid author name",
+        "added": "Successfully added author",
+        "updated": "Successfully updated author",
+        "exists": "Author with specified name is already exists!",
+        "expired": "Author was successfully expired"
+    },
+
+    "news": {
+        "header": "News Management | News",
+        "by": "by",
+        "comment": "Post comment",
+        "previous": "PREVIOUS",
+        "next": "NEXT",
+        "back": "BACK"
+    },
+
+    "news_edit": {
+        "header": "News Management | News",
+        "title": "Title",
+        "date": "Date",
+        "brief": "Brief",
+        "content": "Content",
+        "authors_prompt": "Please select authors",
+        "tags_prompt": "Please select tags",
+        "save": "Save",
+        "saved": "News was successfully saved",
+        "no_author": "Every news must have at least one author",
+        "invalid": "News is invalid. Check if all fields are no empty",
+        "selected": "Selected",
+        "concurrent_modification": "News is being updated by other admin"
+    },
+
+    "news_list": {
+        "header": "News Management | News",
+        "authors_prompt": "Please select authors",
+        "tags_prompt": "Please select tags",
+        "filter": "Filter",
+        "reset": "Reset",
+        "no_news": "No news found:c",
+        "by": "by",
+        "comments": "Comments",
+        "edit": "Edit",
+        "delete": "Delete",
+        "view": "View",
+        "selected": "Selected"
+    },
+
+    "tags": {
+        "header": "News Management | Add Tags",
+        "tag": "Tag",
+        "update": "update",
+        "delete": "delete",
+        "cancel": "cancel",
+        "edit": "edit",
+        "add_tag": "Add Tag",
+        "save": "Save",
+        "invalid": "Invalid tag name",
+        "added": "Successfully added tag",
+        "updated": "Successfully updated tag",
+        "exists": "Tag with specified name is already exists!",
+        "deleted": "Tag was successfully deleted"
+    }
+}

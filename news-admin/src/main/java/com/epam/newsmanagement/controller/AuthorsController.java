@@ -12,6 +12,8 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.ResponseBody;
 
+import java.util.List;
+
 /**
  * Authors controller. Responsible
  * for managing authors.
@@ -22,6 +24,21 @@ public class AuthorsController {
 
     @Autowired
     private AuthorService authorService;
+
+
+    /**
+     * Retrieves all authors.
+     * @return all authors.
+     * @throws ServiceException
+     */
+    @RequestMapping(value = "/authors/all", method = RequestMethod.GET)
+    @ResponseBody
+    public List<Author> getAll() throws ServiceException {
+        logger.info("All authors GET request");
+
+        List<Author> allAuthors = authorService.findAll();
+        return allAuthors;
+    }
 
 
     /**

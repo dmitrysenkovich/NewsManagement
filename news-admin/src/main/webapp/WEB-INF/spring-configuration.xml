@@ -8,6 +8,7 @@
 
     <context:annotation-config />
 
+    <bean id="authorizationUtils" class="com.epam.newsmanagement.utils.AuthorizationUtils"/>
     <bean id="searchUtils" class="com.epam.newsmanagement.app.utils.SearchUtils"/>
     <bean id="scriptFileUtils" class="com.epam.newsmanagement.app.utils.ScriptFileUtils"/>
     <bean class="org.springframework.beans.factory.config.MethodInvokingBean">

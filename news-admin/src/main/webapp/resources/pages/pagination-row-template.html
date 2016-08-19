@@ -1,0 +1,7 @@
+<ul class="pagination">
+    <li><a id="first-page" class="{{ activePageIndex == 0 || pagesCount <= 1 ? 'disabled-page-arrow' : '' }}" href="javascript:void(0)" data-ng-click="firstPage($event)">«</a></li>
+    <li><a id="previous-page" class="{{ activePageIndex == 0 || pagesCount <= 1 ? 'disabled-page-arrow' : '' }}" href="javascript:void(0)" data-ng-click="previousPage($event)">❮</a></li>
+    <li ng-repeat-n="pagesCount > 5 ? 5 : pagesCount"><a class="page-link {{ $index == activePageIndex ? 'active' : '' }}" href="javascript:void(0)" data-ng-click="page($event)">{{ $index+firstValue }}</a></li>
+    <li><a id="next-page" class="{{ activePageIndex == activePagesCount - 1 || pagesCount <= 1 ? 'disabled-page-arrow' : '' }}" href="javascript:void(0)" data-ng-click="nextPage($event)">❯</a></li>
+    <li><a id="last-page" class="{{ activePageIndex == activePagesCount - 1 || pagesCount <= 1 ? 'disabled-page-arrow' : '' }}" href="javascript:void(0)" data-ng-click="lastPage($event)">»</a></li>
+</ul>

@@ -26,20 +26,12 @@
     </bean>
 
     <bean id="viewResolver"
-          class="org.springframework.web.servlet.view.UrlBasedViewResolver">
-        <property name="viewClass">
-            <value>
-                org.springframework.web.servlet.view.tiles3.TilesView
-            </value>
+          class="org.springframework.web.servlet.view.InternalResourceViewResolver">
+        <property name="prefix">
+            <value>/WEB-INF/pages/</value>
         </property>
-    </bean>
-
-    <bean id="tilesConfigurer"
-          class="org.springframework.web.servlet.view.tiles3.TilesConfigurer">
-        <property name="definitions">
-            <list>
-                <value>/WEB-INF/tiles.xml</value>
-            </list>
+        <property name="suffix">
+            <value>.html</value>
         </property>
     </bean>
 
@@ -57,7 +49,6 @@
     <mvc:resources mapping="/resources/**" location="/resources/" />
     <mvc:default-servlet-handler/>
 
-    <bean id="authorizationUtils" class="com.epam.newsmanagement.utils.AuthorizationUtils" />
     <bean id="infoUtils" class="com.epam.newsmanagement.utils.InfoUtils" />
     <bean id="objectMapper" class="com.fasterxml.jackson.databind.ObjectMapper" />
 

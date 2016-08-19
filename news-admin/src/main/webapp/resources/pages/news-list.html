@@ -1,0 +1,15 @@
+<div id="content" class="scrollable">
+    <div id="filter-row">
+        <div ng-include src="'/news-admin/resources/pages/filter-row-template.html'"></div>
+
+        <button id="filter-button" ng-click="filter()">{{ 'news_list.filter' | translate }}</button>
+        <button id="reset-button" ng-click="reset()">{{ 'news_list.reset' | translate }}</button>
+    </div>
+    <div id="news-list">
+        <div ng-include src="'/news-admin/resources/pages/news-list-template.html'"></div>
+    </div>
+    <button id="delete-button" ng-show="newsList.length > 0" ng-click="deleteNews()">{{ 'news_list.delete' | translate }}</button>
+    <div id="pagination-row">
+        <div ng-include src="'/news-admin/resources/pages/pagination-row-template.html'"></div>
+    </div>
+</div>
