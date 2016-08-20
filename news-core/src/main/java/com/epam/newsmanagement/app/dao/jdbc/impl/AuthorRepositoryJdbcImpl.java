@@ -83,12 +83,12 @@ public class AuthorRepositoryJdbcImpl implements AuthorRepositoryJdbc {
             preparedStatement = connection.prepareStatement(FIND);
             preparedStatement.setLong(1, authorId);
             ResultSet resultSet = preparedStatement.executeQuery();
-            resultSet.next();
-
-            author = new Author();
-            author.setAuthorId(authorId);
-            author.setAuthorName(resultSet.getString(2));
-            author.setExpired(resultSet.getTimestamp(3));
+            if (resultSet.next()) {
+                author = new Author();
+                author.setAuthorId(authorId);
+                author.setAuthorName(resultSet.getString(2));
+                author.setExpired(resultSet.getTimestamp(3));
+            }
         }
         catch (SQLException e) {
             throw new DaoException("", e);

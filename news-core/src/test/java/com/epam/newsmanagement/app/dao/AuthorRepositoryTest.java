@@ -1,5 +1,6 @@
 package com.epam.newsmanagement.app.dao;
 
+import com.epam.newsmanagement.app.exception.NotImplementedException;
 import com.epam.newsmanagement.app.model.Author;
 import com.epam.newsmanagement.app.model.News;
 import com.github.springtestdbunit.DbUnitTestExecutionListener;
@@ -21,7 +22,6 @@ import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 import org.springframework.test.context.support.DependencyInjectionTestExecutionListener;
 import org.unitils.database.annotations.Transactional;
 import org.unitils.database.util.TransactionMode;
-import sun.reflect.generics.reflectiveObjects.NotImplementedException;
 
 import java.sql.Connection;
 import java.sql.DriverManager;

@@ -54,7 +54,10 @@ public class CommentRepositoryJdbcImpl implements CommentRepositoryJdbc {
                 comment.setCommentId(resultSet.getLong(1));
             }
             else {
-
+                preparedStatement = connection.prepareStatement(UPDATE);
+                preparedStatement.setString(1, comment.getCommentText());
+                preparedStatement.setLong(2, comment.getCommentId());
+                preparedStatement.executeUpdate();
             }
         }
         catch (SQLException e) {
@@ -77,15 +80,15 @@ public class CommentRepositoryJdbcImpl implements CommentRepositoryJdbc {
             preparedStatement = connection.prepareStatement(FIND);
             preparedStatement.setLong(1, commentId);
             ResultSet resultSet = preparedStatement.executeQuery();
-            resultSet.next();
-
-            comment = new Comment();
-            comment.setCommentId(commentId);
-            News news = new News();
-            news.setNewsId(resultSet.getLong(2));
-            comment.setNews(news);
-            comment.setCommentText(resultSet.getString(3));
-            comment.setCreationDate(resultSet.getTimestamp(4));
+            if (resultSet.next()) {
+                comment = new Comment();
+                comment.setCommentId(commentId);
+                News news = new News();
+                news.setNewsId(resultSet.getLong(2));
+                comment.setNews(news);
+                comment.setCommentText(resultSet.getString(3));
+                comment.setCreationDate(resultSet.getTimestamp(4));
+            }
         }
         catch (SQLException e) {
             throw new DaoException("", e);

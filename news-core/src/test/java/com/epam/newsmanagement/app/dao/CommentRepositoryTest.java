@@ -148,7 +148,6 @@ public class CommentRepositoryTest {
         commentRepository.save(comment);
         Comment foundComment = commentRepository.findOne(comment.getCommentId());
 
-        assertEquals((Long) 2L, foundComment.getNews().getNewsId());
         assertEquals("test1", foundComment.getCommentText());
     }
 

@@ -1,5 +1,6 @@
 package com.epam.newsmanagement.app.dao;
 
+import com.epam.newsmanagement.app.exception.DaoException;
 import com.epam.newsmanagement.app.model.News;
 import com.epam.newsmanagement.app.utils.SearchCriteria;
 import com.epam.newsmanagement.app.utils.SearchUtils;
@@ -25,6 +26,7 @@ import org.unitils.database.annotations.Transactional;
 import org.unitils.database.util.TransactionMode;
 
 import java.sql.Connection;
+import java.sql.Date;
 import java.sql.DriverManager;
 import java.sql.Timestamp;
 import java.util.ArrayList;
@@ -97,6 +99,7 @@ public class NewsRepositoryTest {
     @Test
     public void newsIsNotAdded() throws Exception {
         final News news = new News();
+        news.setModificationDate(new Date(new java.util.Date().getTime()));
         catchException(() -> newsRepository.save(news));
         assert caughtException() instanceof DataAccessException;
         connection = DriverManager.getConnection(testDbUrl, testDbUsername, testDbPassword);
@@ -143,6 +146,7 @@ public class NewsRepositoryTest {
         News news = new News();
         news.setNewsId(1L);
         news.setTitle(null);
+        news.setModificationDate(new Date(new java.util.Date().getTime()));
         catchException(()->newsRepository.save(news));
         assert caughtException() instanceof DataAccessException;
         News foundNews = newsRepository.findOne(news.getNewsId());
@@ -243,7 +247,7 @@ public class NewsRepositoryTest {
     }
 
 
-    @Test(expected = NullPointerException.class)
+    @Test(expected = DaoException.class)
     public void searchNothingIsFoundSearchQueryIsNull() throws Exception {
         String searchQuery = null;
         newsRepository.search(searchQuery);

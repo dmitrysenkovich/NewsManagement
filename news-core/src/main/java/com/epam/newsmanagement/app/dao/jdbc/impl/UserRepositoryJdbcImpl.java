@@ -79,16 +79,16 @@ public class UserRepositoryJdbcImpl implements UserRepositoryJdbc {
             preparedStatement = connection.prepareStatement(FIND);
             preparedStatement.setLong(1, userId);
             ResultSet resultSet = preparedStatement.executeQuery();
-            resultSet.next();
-
-            user = new User();
-            user.setUserId(userId);
-            Role role = new Role();
-            role.setRoleId(resultSet.getLong(2));
-            user.setRole(role);
-            user.setUserName(resultSet.getString(3));
-            user.setLogin(resultSet.getString(4));
-            user.setPassword(resultSet.getString(5));
+            if (resultSet.next()) {
+                user = new User();
+                user.setUserId(userId);
+                Role role = new Role();
+                role.setRoleId(resultSet.getLong(2));
+                user.setRole(role);
+                user.setUserName(resultSet.getString(3));
+                user.setLogin(resultSet.getString(4));
+                user.setPassword(resultSet.getString(5));
+            }
         }
         catch (SQLException e) {
             throw new DaoException("", e);
@@ -129,8 +129,8 @@ public class UserRepositoryJdbcImpl implements UserRepositoryJdbc {
             preparedStatement = connection.prepareStatement(USER_NAME_BY_LOGIN);
             preparedStatement.setString(1, login);
             ResultSet resultSet = preparedStatement.executeQuery();
-            resultSet.next();
-            userName = resultSet.getString(1);
+            if (resultSet.next())
+                userName = resultSet.getString(1);
         }
         catch (SQLException e) {
             throw new DaoException("", e);

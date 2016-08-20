@@ -69,11 +69,11 @@ public class RoleRepositoryJdbcImpl implements RoleRepositoryJdbc {
             preparedStatement = connection.prepareStatement(FIND);
             preparedStatement.setLong(1, roleId);
             ResultSet resultSet = preparedStatement.executeQuery();
-            resultSet.next();
-
-            role = new Role();
-            role.setRoleId(roleId);
-            role.setRoleName(resultSet.getString(2));
+            if (resultSet.next()) {
+                role = new Role();
+                role.setRoleId(roleId);
+                role.setRoleName(resultSet.getString(2));
+            }
         }
         catch (SQLException e) {
             throw new DaoException("", e);

@@ -96,15 +96,15 @@ public class NewsRepositoryJdbcImpl implements NewsRepositoryJdbc {
             preparedStatement = connection.prepareStatement(FIND);
             preparedStatement.setLong(1, newsId);
             ResultSet resultSet = preparedStatement.executeQuery();
-            resultSet.next();
-
-            news = new News();
-            news.setNewsId(newsId);
-            news.setTitle(resultSet.getString(2));
-            news.setShortText(resultSet.getString(3));
-            news.setFullText(resultSet.getString(4));
-            news.setCreationDate(resultSet.getTimestamp(5));
-            news.setModificationDate(resultSet.getDate(6));
+            if (resultSet.next()) {
+                news = new News();
+                news.setNewsId(newsId);
+                news.setTitle(resultSet.getString(2));
+                news.setShortText(resultSet.getString(3));
+                news.setFullText(resultSet.getString(4));
+                news.setCreationDate(resultSet.getTimestamp(5));
+                news.setModificationDate(resultSet.getDate(6));
+            }
         }
         catch (SQLException e) {
             throw new DaoException("", e);

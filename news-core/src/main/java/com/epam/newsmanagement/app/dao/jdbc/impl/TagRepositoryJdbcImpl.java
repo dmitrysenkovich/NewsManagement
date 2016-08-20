@@ -42,7 +42,6 @@ public class TagRepositoryJdbcImpl implements TagRepositoryJdbc {
     public Tag save(Tag tag) throws DaoException {
         Connection connection = null;
         PreparedStatement preparedStatement = null;
-        Long tagId = null;
         try {
             connection = dataSource.getConnection();
             if (tag.getTagId() == null) {
@@ -80,11 +79,11 @@ public class TagRepositoryJdbcImpl implements TagRepositoryJdbc {
             preparedStatement = connection.prepareStatement(FIND);
             preparedStatement.setLong(1, tagId);
             ResultSet resultSet = preparedStatement.executeQuery();
-            resultSet.next();
-
-            tag = new Tag();
-            tag.setTagId(tagId);
-            tag.setTagName(resultSet.getString(2));
+            if (resultSet.next()) {
+                tag = new Tag();
+                tag.setTagId(tagId);
+                tag.setTagName(resultSet.getString(2));
+            }
         }
         catch (SQLException e) {
             throw new DaoException("", e);
