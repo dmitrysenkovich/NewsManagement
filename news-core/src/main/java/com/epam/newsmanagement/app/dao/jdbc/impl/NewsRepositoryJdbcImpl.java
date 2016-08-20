@@ -124,7 +124,9 @@ public class NewsRepositoryJdbcImpl implements NewsRepositoryJdbc {
             connection = dataSource.getConnection();
             preparedStatement = connection.prepareStatement(DELETE);
             preparedStatement.setLong(1, news.getNewsId());
-            preparedStatement.executeUpdate();
+            int rowsDeleted = preparedStatement.executeUpdate();
+            if (rowsDeleted == 0)
+                throw new SQLException("No rows deleted");
         }
         catch (SQLException e) {
             throw new DaoException("", e);

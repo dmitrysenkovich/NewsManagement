@@ -149,7 +149,7 @@ public class RoleRepositoryTest {
     }
 
 
-    @Test(expected = JpaSystemException.class)
+    @Test(expected = DataAccessException.class)
     public void roleIsNotDeleted() throws Exception {
         Role role = new Role();
         role.setRoleId(-1L);

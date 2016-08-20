@@ -108,7 +108,9 @@ public class CommentRepositoryJdbcImpl implements CommentRepositoryJdbc {
             connection = dataSource.getConnection();
             preparedStatement = connection.prepareStatement(DELETE);
             preparedStatement.setLong(1, comment.getCommentId());
-            preparedStatement.executeUpdate();
+            int rowsDeleted = preparedStatement.executeUpdate();
+            if (rowsDeleted == 0)
+                throw new SQLException("No rows deleted");
         }
         catch (SQLException e) {
             throw new DaoException("", e);

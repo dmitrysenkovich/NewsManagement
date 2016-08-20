@@ -181,7 +181,7 @@ public class CommentRepositoryTest {
     }
 
 
-    @Test(expected = JpaSystemException.class)
+    @Test(expected = DataAccessException.class)
     public void commentIsNotDeleted() throws Exception {
         Comment comment = new Comment();
         comment.setCommentId(-1L);

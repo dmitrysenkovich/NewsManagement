@@ -153,7 +153,7 @@ public class TagRepositoryTest {
     }
 
 
-    @Test(expected = JpaSystemException.class)
+    @Test(expected = DataAccessException.class)
     public void tagIsNotDeleted() throws Exception {
         Tag tag = new Tag();
         tag.setTagId(-1L);

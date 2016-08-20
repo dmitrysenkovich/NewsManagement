@@ -203,7 +203,7 @@ public class UserRepositoryTest {
     }
 
 
-    @Test(expected = JpaSystemException.class)
+    @Test(expected = DataAccessException.class)
     public void userIsNotDeleted() throws Exception {
         User user = new User();
         user.setUserId(-1L);

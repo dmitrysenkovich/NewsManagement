@@ -173,7 +173,7 @@ public class NewsRepositoryTest {
     }
 
 
-    @Test(expected = JpaSystemException.class)
+    @Test(expected = DataAccessException.class)
     public void newsIsNotDeleted() throws Exception {
         News news = new News();
         news.setNewsId(-1L);
