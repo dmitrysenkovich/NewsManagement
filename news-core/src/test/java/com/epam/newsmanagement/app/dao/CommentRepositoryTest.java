@@ -204,15 +204,6 @@ public class CommentRepositoryTest {
 
 
     @Test
-    public void countedNonExistentNewsComments() throws Exception {
-        News news = newsRepository.findOne(4L);
-        Long commentCount = commentRepository.countAllByNews(news);
-
-        assertEquals((Long) 0L, commentCount);
-    }
-
-
-    @Test
     public void foundAllNewsComment() throws Exception {
         News news = new News();
         news.setNewsId(1L);
