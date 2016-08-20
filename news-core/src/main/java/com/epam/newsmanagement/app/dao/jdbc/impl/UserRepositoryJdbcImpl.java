@@ -125,7 +125,7 @@ public class UserRepositoryJdbcImpl implements UserRepositoryJdbc {
     public String userNameByLogin(String login) throws DaoException {
         Connection connection = null;
         PreparedStatement preparedStatement = null;
-        String userName = "";
+        String userName = null;
         try {
             connection = dataSource.getConnection();
             preparedStatement = connection.prepareStatement(USER_NAME_BY_LOGIN);
