@@ -27,14 +27,15 @@ public class AuthorServiceImpl implements AuthorService {
     @Transactional(rollbackFor = ServiceException.class)
     public Author add(Author author) throws ServiceException {
         logger.info("Adding new author..");
+        Author savedAuthor;
         try {
-            author = authorRepository.save(author);
+            savedAuthor = authorRepository.save(author);
         } catch (DataAccessException e) {
             logger.error("Failed to add new author");
             throw new ServiceException(e);
         }
         logger.info("Successfully added new author");
-        return author;
+        return savedAuthor;
     }
 
 

@@ -77,6 +77,14 @@ public class DatabaseInitializingUtils {
                     statement.close();
                 } catch (SQLException e) {
                     logger.error("Error while checking if database is not empty: ", e);
+                }
+            }
+            if (connection != null) {
+                try {
+                    connection.close();
+                    connection = null;
+                } catch (SQLException e) {
+                    logger.error("Error while checking if database is not empty: ", e);
                     connection = null;
                 }
             }

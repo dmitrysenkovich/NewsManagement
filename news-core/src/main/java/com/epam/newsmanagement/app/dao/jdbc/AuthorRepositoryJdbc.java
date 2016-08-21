@@ -12,6 +12,7 @@ public interface AuthorRepositoryJdbc extends AuthorRepository {
      * Forbids author deleting.
      * @param author author.
      */
+    @Override
     default void delete(Author author) {
         throw new NotImplementedException("");
     }

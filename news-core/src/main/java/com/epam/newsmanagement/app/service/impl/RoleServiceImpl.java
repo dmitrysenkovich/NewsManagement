@@ -23,14 +23,15 @@ public class RoleServiceImpl implements RoleService {
     @Transactional(rollbackFor = ServiceException.class)
     public Role add(Role role) throws ServiceException {
         logger.info("Adding new role..");
+        Role savedRole;
         try {
-            role = roleRepository.save(role);
+            savedRole = roleRepository.save(role);
         } catch (DataAccessException e) {
             logger.error("Failed to add new role");
             throw new ServiceException(e);
         }
         logger.info("Successfully added new role");
-        return role;
+        return savedRole;
     }
 
 

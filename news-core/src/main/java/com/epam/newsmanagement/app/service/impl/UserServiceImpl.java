@@ -25,14 +25,15 @@ public class UserServiceImpl implements UserService {
     public User add(User user, Role role) throws ServiceException {
         logger.info("Adding new user..");
         user.setRole(role);
+        User savedUser;
         try {
-            user = userRepository.save(user);
+            savedUser = userRepository.save(user);
         } catch (DataAccessException e) {
             logger.error("Failed to add new user");
             throw new ServiceException(e);
         }
         logger.info("Successfully added new user");
-        return user;
+        return savedUser;
     }
 
 

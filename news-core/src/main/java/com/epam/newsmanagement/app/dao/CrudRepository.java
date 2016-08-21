@@ -1,11 +1,10 @@
 package com.epam.newsmanagement.app.dao;
 
-import com.epam.newsmanagement.app.exception.DaoException;
-
 /**
  * CRUD repository interface. Defines
  * the contract of a repository with all
  * basic operations.
+ * @param <E> identifier type.
  */
 public interface CrudRepository<T, E> {
     /**

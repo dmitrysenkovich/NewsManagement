@@ -29,14 +29,15 @@ public class CommentServiceImpl implements CommentService {
         logger.info("Adding new comment..");
         comment.setNews(news);
         comment.setCreationDate(new Timestamp(new java.util.Date().getTime()));
+        Comment savedComment;
         try {
-            comment = commentRepository.save(comment);
+            savedComment = commentRepository.save(comment);
         } catch (DataAccessException e) {
             logger.error("Failed to add new comment");
             throw new ServiceException(e);
         }
         logger.info("Successfully added new comment");
-        return comment;
+        return savedComment;
     }
 
 
@@ -74,8 +75,8 @@ public class CommentServiceImpl implements CommentService {
     public void delete(Comment comment) throws ServiceException {
         logger.info("Deleting comment..");
         try {
-            comment = commentRepository.findOne(comment.getCommentId());
-            commentRepository.delete(comment);
+            Comment persistedCommit = commentRepository.findOne(comment.getCommentId());
+            commentRepository.delete(persistedCommit);
         } catch (DataAccessException e) {
             logger.error("Failed to delete comment");
             throw new ServiceException(e);

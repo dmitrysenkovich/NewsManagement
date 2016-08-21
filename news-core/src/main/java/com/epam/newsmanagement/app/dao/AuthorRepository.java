@@ -2,7 +2,6 @@ package com.epam.newsmanagement.app.dao;
 
 import com.epam.newsmanagement.app.model.Author;
 import com.epam.newsmanagement.app.model.News;
-import com.sun.org.apache.xpath.internal.operations.Bool;
 
 import java.util.List;
 

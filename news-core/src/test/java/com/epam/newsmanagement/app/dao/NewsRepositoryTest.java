@@ -247,13 +247,6 @@ public class NewsRepositoryTest {
     }
 
 
-    @Test(expected = DaoException.class)
-    public void searchNothingIsFoundSearchQueryIsNull() throws Exception {
-        String searchQuery = null;
-        newsRepository.search(searchQuery);
-    }
-
-
     @Test
     public void searchNothingIsFound() throws Exception {
         SearchCriteria searchCriteria = new SearchCriteria();

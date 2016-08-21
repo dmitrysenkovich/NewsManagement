@@ -42,8 +42,9 @@ public class NewsServiceImpl implements NewsService {
         public News add(News news, List<Author> authors, List<Tag> tags) throws ServiceException {
         logger.info("Adding news..");
         news.setCreationDate(new Timestamp(new java.util.Date().getTime()));
+        News savedNews;
         try {
-            news = newsRepository.save(news);
+            savedNews = newsRepository.save(news);
         } catch (DataAccessException e) {
             logger.error("Failed to add news");
             throw new ServiceException(e);
@@ -53,7 +54,7 @@ public class NewsServiceImpl implements NewsService {
             logger.info("Adding authors to news..");
 
             try {
-                authorRepository.addAll(news, authors);
+                authorRepository.addAll(savedNews, authors);
             } catch (DataAccessException e) {
                 logger.error("Failed to add authors to news");
                 logger.error("Failed to add news");
@@ -71,7 +72,7 @@ public class NewsServiceImpl implements NewsService {
             logger.info("Adding tags to news..");
 
             try {
-                tagRepository.addAll(news, tags);
+                tagRepository.addAll(savedNews, tags);
             } catch (DataAccessException e) {
                 logger.error("Failed to add tags to news");
                 logger.error("Failed to add news");
@@ -81,7 +82,7 @@ public class NewsServiceImpl implements NewsService {
         }
 
         logger.info("Successfully added news");
-        return news;
+        return savedNews;
     }
 
 

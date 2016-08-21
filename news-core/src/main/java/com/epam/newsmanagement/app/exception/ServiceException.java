@@ -4,7 +4,7 @@ package com.epam.newsmanagement.app.exception;
  * Service exception.
  */
 public class ServiceException extends Exception {
-    private Throwable exception = null;
+    private Throwable exception;
 
     public ServiceException() {}
 

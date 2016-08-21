@@ -26,14 +26,15 @@ public class TagServiceImpl implements TagService {
     @Transactional(rollbackFor = ServiceException.class)
     public Tag add(Tag tag) throws ServiceException {
         logger.info("Adding new tag..");
+        Tag savedTag;
         try {
-            tag = tagRepository.save(tag);
+            savedTag = tagRepository.save(tag);
         } catch (DataAccessException e) {
             logger.error("Failed to add new tag");
             throw new ServiceException(e);
         }
         logger.info("Successfully added new tag");
-        return tag;
+        return savedTag;
     }
 
 
@@ -71,8 +72,8 @@ public class TagServiceImpl implements TagService {
     public void delete(Tag tag) throws ServiceException {
         logger.info("Deleting tag..");
         try {
-            tag = tagRepository.findOne(tag.getTagId());
-            tagRepository.delete(tag);
+            Tag persistedTag = tagRepository.findOne(tag.getTagId());
+            tagRepository.delete(persistedTag);
         } catch (DataAccessException e) {
             logger.error("Failed to delete tag");
             throw new ServiceException(e);
