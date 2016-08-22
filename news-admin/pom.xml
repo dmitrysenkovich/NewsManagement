@@ -105,6 +105,7 @@
                 <configuration>
                     <path>/news-admin</path>
                     <port>8082</port>
+                    <server>TomcatServer</server>
                 </configuration>
             </plugin>
         </plugins>
