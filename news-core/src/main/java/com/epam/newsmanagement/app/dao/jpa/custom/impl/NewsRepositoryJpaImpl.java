@@ -33,31 +33,27 @@ public class NewsRepositoryJpaImpl implements NewsRepositoryJpaCustom {
     @Override
     public List<News> search(final String SEARCH_CRITERIA_QUERY) {
         Query query = entityManager.createNativeQuery(SEARCH_CRITERIA_QUERY, News.class);
-        List<News> fitNews = query.getResultList();
-        return fitNews;
+        return query.getResultList();
     }
 
 
     @Override
     public List<News> findAllSorted() {
         Query query = entityManager.createNativeQuery(FIND_ALL_SORTED, News.class);
-        List<News> allNewsSorted = query.getResultList();
-        return allNewsSorted;
+        return query.getResultList();
     }
 
 
     @Override
     public Long countPagesBySearchCriteria(final String COUNT_PAGES_BY_SEARCH_CRITERIA_QUERY) {
         Query query = entityManager.createNativeQuery(COUNT_PAGES_BY_SEARCH_CRITERIA_QUERY);
-        Long fitNewsCount = ((BigDecimal) query.getSingleResult()).longValue();
-        return fitNewsCount;
+        return ((BigDecimal) query.getSingleResult()).longValue();
     }
 
 
     @Override
     public Long rowNumberBySearchCriteria(final String ROW_NUMBER_BY_SEARCH_CRITERIA_QUERY) {
         Query query = entityManager.createNativeQuery(ROW_NUMBER_BY_SEARCH_CRITERIA_QUERY);
-        Long newsRowNumber = ((BigDecimal) query.getSingleResult()).longValue();
-        return newsRowNumber;
+        return ((BigDecimal) query.getSingleResult()).longValue();
     }
 }

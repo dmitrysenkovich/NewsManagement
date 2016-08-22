@@ -4,6 +4,7 @@ import com.epam.newsmanagement.app.exception.ServiceException;
 
 /**
  * CRUD service interface.
+ * @param <T> the object type in a service.
  */
 public interface CrudService<T> {
     /**

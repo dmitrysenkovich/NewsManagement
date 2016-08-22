@@ -7,8 +7,6 @@ public class Tag {
     private Long tagId;
     private String tagName;
 
-    public Tag() {}
-
     public Long getTagId() {
         return tagId;
     }

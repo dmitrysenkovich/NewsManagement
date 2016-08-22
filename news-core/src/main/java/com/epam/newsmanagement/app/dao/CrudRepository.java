@@ -4,7 +4,8 @@ package com.epam.newsmanagement.app.dao;
  * CRUD repository interface. Defines
  * the contract of a repository with all
  * basic operations.
- * @param <E> identifier type.
+ * @param <T> the object type in a repository.
+ * @param <E> the identifier type.
  */
 public interface CrudRepository<T, E> {
     /**

@@ -47,17 +47,9 @@ public class NextNewsCommand implements Command {
         session.setAttribute("newsRowNumber", newsRowNumber);
         searchCriteria.setPageIndex(newsRowNumber);
         searchCriteria.setPageSize(1L);
-        News news;
-        try {
-            news = newsService.search(searchCriteria).get(0);
-        } catch (ServiceException e) {
-            logger.error("Failed to execute next news command", e);
-            response.sendRedirect("/news-client/404");
-            return;
-        }
-
         NewsInfo newsInfo;
         try {
+            News news = newsService.search(searchCriteria).get(0);
             newsInfo = infoUtils.getNewsInfo(news, searchCriteria, newsRowNumber);
         } catch (ServiceException e) {
             logger.error("Failed to execute next news command", e);

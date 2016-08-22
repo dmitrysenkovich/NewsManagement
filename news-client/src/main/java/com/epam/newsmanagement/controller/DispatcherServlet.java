@@ -19,7 +19,7 @@ import java.io.IOException;
 @WebServlet(urlPatterns = "/news-client/*", loadOnStartup = 1)
 public class DispatcherServlet extends HttpServlet {
     @Autowired
-    private CommandBuilder commandBuilder;
+    private transient CommandBuilder commandBuilder;
 
 
     /**
@@ -27,6 +27,7 @@ public class DispatcherServlet extends HttpServlet {
      * @param config servlet config.
      * @throws ServletException
      */
+    @Override
     public void init(ServletConfig config) throws ServletException {
         super.init(config);
         SpringBeanAutowiringSupport.processInjectionBasedOnServletContext(this,

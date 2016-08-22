@@ -2,8 +2,6 @@ package com.epam.newsmanagement.app.dao.jpa.custom;
 
 import com.epam.newsmanagement.app.model.Author;
 import com.epam.newsmanagement.app.model.News;
-import org.springframework.data.jpa.repository.Query;
-import org.springframework.data.repository.query.Param;
 
 import java.util.List;
 

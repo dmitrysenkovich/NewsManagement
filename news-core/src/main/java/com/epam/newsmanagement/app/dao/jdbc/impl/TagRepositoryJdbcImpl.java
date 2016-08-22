@@ -39,7 +39,7 @@ public class TagRepositoryJdbcImpl implements TagRepositoryJdbc {
 
 
     @Override
-    public Tag save(Tag tag) throws DaoException {
+    public Tag save(Tag tag) {
         Connection connection = null;
         PreparedStatement preparedStatement = null;
         try {
@@ -70,7 +70,7 @@ public class TagRepositoryJdbcImpl implements TagRepositoryJdbc {
 
 
     @Override
-    public Tag findOne(Long tagId) throws DaoException {
+    public Tag findOne(Long tagId) {
         Connection connection = null;
         PreparedStatement preparedStatement = null;
         Tag tag = null;
@@ -96,7 +96,7 @@ public class TagRepositoryJdbcImpl implements TagRepositoryJdbc {
 
 
     @Override
-    public void delete(Tag tag) throws DaoException {
+    public void delete(Tag tag) {
         Connection connection = null;
         PreparedStatement preparedStatement = null;
         try {
@@ -117,7 +117,7 @@ public class TagRepositoryJdbcImpl implements TagRepositoryJdbc {
 
 
     @Override
-    public List<Tag> findAllByNews(News news) throws DaoException {
+    public List<Tag> findAllByNews(News news) {
         Connection connection = null;
         PreparedStatement preparedStatement = null;
         List<Tag> tagsByNews = null;
@@ -146,7 +146,7 @@ public class TagRepositoryJdbcImpl implements TagRepositoryJdbc {
 
 
     @Override
-    public List<Tag> findAll() throws DaoException {
+    public List<Tag> findAll() {
         Connection connection = null;
         Statement statement = null;
         List<Tag> allTags = null;
@@ -174,7 +174,7 @@ public class TagRepositoryJdbcImpl implements TagRepositoryJdbc {
 
 
     @Override
-    public boolean exists(String tagName) throws DaoException {
+    public boolean exists(String tagName) {
         Connection connection = null;
         PreparedStatement preparedStatement = null;
         boolean exists = true;
@@ -197,7 +197,7 @@ public class TagRepositoryJdbcImpl implements TagRepositoryJdbc {
 
 
     @Override
-    public void addAll(News news, List<Tag> tags) throws DaoException {
+    public void addAll(News news, List<Tag> tags) {
         Connection connection = null;
         PreparedStatement preparedStatement = null;
         try {
@@ -220,7 +220,7 @@ public class TagRepositoryJdbcImpl implements TagRepositoryJdbc {
 
 
     @Override
-    public void deleteAllRelationsByNews(News news) throws DaoException {
+    public void deleteAllRelationsByNews(News news) {
         Connection connection = null;
         PreparedStatement preparedStatement = null;
         try {

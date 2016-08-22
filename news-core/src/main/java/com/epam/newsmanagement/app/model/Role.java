@@ -7,8 +7,6 @@ public class Role {
     private Long roleId;
     private String roleName;
 
-    public Role() {}
-
     public Long getRoleId() {
         return roleId;
     }

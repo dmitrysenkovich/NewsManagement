@@ -52,8 +52,8 @@ public class SearchUtils {
                 "Error reading authors part of search script");
         TAGS_PART = scriptFileUtils.getScriptPart(searchScriptDirectoryPath, TAGS_PART_FILE_NAME, logger,
                 "Error reading tags part of search script");
-        if (!SEARCH_MAIN_PART.equals("") && !COUNT_MAIN_PART.equals("") && !PAGE_MAIN_PART.equals("") &&
-                !ROW_NUMBER_MAIN_PART.equals("") && !AUTHORS_PART.equals("") && !TAGS_PART.equals(""))
+        if (!"".equals(SEARCH_MAIN_PART) && !"".equals(COUNT_MAIN_PART) && !"".equals(PAGE_MAIN_PART) &&
+                !"".equals(ROW_NUMBER_MAIN_PART) && !"".equals(AUTHORS_PART) && !"".equals(TAGS_PART))
             logger.info("Successfully read all search script parts");
         else
             logger.error("Error while reading script parts");
@@ -128,8 +128,7 @@ public class SearchUtils {
 
         String[] queryParts = getQueryParts(searchCriteria);
 
-        String searchQuery = MessageFormat.format(SEARCH_MAIN_PART, queryParts[0], queryParts[1], queryParts[2]);
-        return searchQuery;
+        return MessageFormat.format(SEARCH_MAIN_PART, queryParts[0], queryParts[1], queryParts[2]);
     }
 
 
@@ -154,10 +153,9 @@ public class SearchUtils {
         if (!queryParts[0].isEmpty() || !queryParts[2].isEmpty())
             where = "WHERE ";
 
-        String searchQuery = MessageFormat.format(PAGE_MAIN_PART, where,
+        return MessageFormat.format(PAGE_MAIN_PART, where,
                 queryParts[0], queryParts[1], queryParts[2],
-                Long.toString(((pageIndex-1)*pageSize+1)), Long.toString((pageIndex)*pageSize));
-        return searchQuery;
+                Long.toString((pageIndex-1)*pageSize+1), Long.toString(pageIndex*pageSize));
     }
 
 
@@ -194,9 +192,8 @@ public class SearchUtils {
         if (pageSize == null || pageSize < 1)
             pageSize = DEFAULT_PAGE_SIZE;
 
-        String countQuery = MessageFormat.format(COUNT_MAIN_PART, Long.toString(pageSize),
+        return MessageFormat.format(COUNT_MAIN_PART, Long.toString(pageSize),
                 where, queryParts[0], queryParts[1], queryParts[2]);
-        return countQuery;
     }
 
 
@@ -217,8 +214,7 @@ public class SearchUtils {
         if (!queryParts[0].isEmpty() || !queryParts[2].isEmpty())
             where = "WHERE ";
 
-        String rowNumberQuery = MessageFormat.format(ROW_NUMBER_MAIN_PART,
+        return MessageFormat.format(ROW_NUMBER_MAIN_PART,
                 where, queryParts[0], queryParts[1], queryParts[2], Long.toString(newsId));
-        return rowNumberQuery;
     }
 }

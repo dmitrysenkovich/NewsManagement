@@ -104,6 +104,7 @@
                 <version>${tomcat-plugin.version}</version>
                 <configuration>
                     <path>/news-admin</path>
+                    <port>8082</port>
                 </configuration>
             </plugin>
         </plugins>

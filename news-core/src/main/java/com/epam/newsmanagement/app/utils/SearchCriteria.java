@@ -1,18 +1,17 @@
 package com.epam.newsmanagement.app.utils;
 
+import java.io.Serializable;
 import java.util.List;
 
 /**
  * SearchCriteria class. Used
  * to encapsulate search parameters.
  */
-public class SearchCriteria {
+public class SearchCriteria implements Serializable {
     private List<Long> authorIds;
     private List<Long> tagIds;
     private Long pageIndex;
     private Long pageSize;
-
-    public SearchCriteria() {}
 
     public List<Long> getAuthorIds() {
         return authorIds;

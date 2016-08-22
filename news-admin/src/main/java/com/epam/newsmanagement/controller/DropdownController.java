@@ -1,10 +1,6 @@
 package com.epam.newsmanagement.controller;
 
 import com.epam.newsmanagement.app.exception.ServiceException;
-import com.epam.newsmanagement.app.model.Author;
-import com.epam.newsmanagement.app.model.Tag;
-import com.epam.newsmanagement.app.service.AuthorService;
-import com.epam.newsmanagement.app.service.TagService;
 import com.epam.newsmanagement.utils.AuthorsAndTagsInfo;
 import com.epam.newsmanagement.utils.InfoUtils;
 import org.apache.log4j.Logger;
@@ -31,7 +27,6 @@ public class DropdownController {
     public AuthorsAndTagsInfo getAuthorsAndTags() throws ServiceException {
         logger.info("Authors and tags GET request");
 
-        AuthorsAndTagsInfo authorsAndTagsInfo = infoUtils.getAuthorsAndTagsInfo();
-        return authorsAndTagsInfo;
+        return infoUtils.getAuthorsAndTagsInfo();
     }
 }

@@ -36,8 +36,7 @@ public class AuthorsController {
     public List<Author> getAll() throws ServiceException {
         logger.info("All authors GET request");
 
-        List<Author> allAuthors = authorService.findAll();
-        return allAuthors;
+        return authorService.findAll();
     }
 
 
@@ -55,8 +54,8 @@ public class AuthorsController {
 
         boolean exists = authorService.exists(author);
         if (!exists) {
-            author = authorService.add(author);
-            return author.getAuthorId();
+            Author savedAuthor = authorService.add(author);
+            return savedAuthor.getAuthorId();
         }
         return null;
     }

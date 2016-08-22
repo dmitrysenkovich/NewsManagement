@@ -15,6 +15,7 @@ public interface UserRepositoryJpa extends UserRepository, JpaRepository<User, L
      * @param login user login.
      * @return user name.
      */
+    @Override
     @Query("select U.userName from User U where U.login = :login")
     String userNameByLogin(@Param("login") String login);
 }

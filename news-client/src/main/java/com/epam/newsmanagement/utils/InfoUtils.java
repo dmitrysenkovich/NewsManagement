@@ -81,6 +81,7 @@ public class InfoUtils {
      * @param news news which
      * info is to be retrieved.
      * @param searchCriteria search criteria.
+     * @param newsRowNumber passed news row number.
      * @return news information.
      * @throws ServiceException
      */

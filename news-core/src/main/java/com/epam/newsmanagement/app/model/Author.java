@@ -10,8 +10,6 @@ public class Author {
     private String authorName;
     private Timestamp expired;
 
-    public Author() {}
-
     public Long getAuthorId() {
         return authorId;
     }

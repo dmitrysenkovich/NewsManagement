@@ -18,6 +18,7 @@ public interface CommentRepositoryJpa extends CommentRepository, JpaRepository<C
      * Deletes all comments from list.
      * @param comments comments to be deleted.
      */
+    @Override
     @Query("delete from Comment C where C in (:comments)")
     void deleteAll(@Param("comments") List<Comment> comments);
 
@@ -27,6 +28,7 @@ public interface CommentRepositoryJpa extends CommentRepository, JpaRepository<C
      * will be counted.
      * @return news comments count.
      */
+    @Override
     @Query("select count(C) from Comment C where C.news = :news")
     Long countAllByNews(@Param("news") News news);
 }

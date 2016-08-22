@@ -10,6 +10,7 @@ import java.io.IOException;
  * the only method implementing
  * classes must have.
  */
+@FunctionalInterface
 public interface Command {
     /**
      * The only method mentioned above.

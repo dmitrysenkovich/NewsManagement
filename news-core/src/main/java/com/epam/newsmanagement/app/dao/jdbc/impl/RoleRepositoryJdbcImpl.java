@@ -29,7 +29,7 @@ public class RoleRepositoryJdbcImpl implements RoleRepositoryJdbc {
 
 
     @Override
-    public Role save(Role role) throws DaoException {
+    public Role save(Role role) {
         Connection connection = null;
         PreparedStatement preparedStatement = null;
         try {
@@ -60,7 +60,7 @@ public class RoleRepositoryJdbcImpl implements RoleRepositoryJdbc {
 
 
     @Override
-    public Role findOne(Long roleId) throws DaoException {
+    public Role findOne(Long roleId) {
         Connection connection = null;
         PreparedStatement preparedStatement = null;
         Role role = null;
@@ -86,7 +86,7 @@ public class RoleRepositoryJdbcImpl implements RoleRepositoryJdbc {
 
 
     @Override
-    public void delete(Role role) throws DaoException {
+    public void delete(Role role) {
         Connection connection = null;
         PreparedStatement preparedStatement = null;
         try {

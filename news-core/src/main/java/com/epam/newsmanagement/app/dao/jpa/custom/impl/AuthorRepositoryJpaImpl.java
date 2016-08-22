@@ -28,7 +28,7 @@ public class AuthorRepositoryJpaImpl implements AuthorRepositoryJpaCustom {
     public boolean exists(String authorName) {
         Query query = entityManager.createNativeQuery(EXISTS);
         query.setParameter(1, authorName);
-        BigDecimal exists = ((BigDecimal) query.getSingleResult());
+        BigDecimal exists = (BigDecimal) query.getSingleResult();
         if (exists.equals(new BigDecimal(1)))
             return true;
         return false;
@@ -39,8 +39,7 @@ public class AuthorRepositoryJpaImpl implements AuthorRepositoryJpaCustom {
     public List<Author> findAllByNews(News news) {
         Query query = entityManager.createNativeQuery(FIND_ALL_BY_NEWS, Author.class);
         query.setParameter(1, news.getNewsId());
-        List<Author> authorsByNews = query.getResultList();
-        return authorsByNews;
+        return query.getResultList();
     }
 
 

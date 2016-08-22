@@ -14,8 +14,6 @@ public class News {
     private Timestamp creationDate;
     private Date modificationDate;
 
-    public News() {}
-
     public Long getNewsId() {
         return newsId;
     }

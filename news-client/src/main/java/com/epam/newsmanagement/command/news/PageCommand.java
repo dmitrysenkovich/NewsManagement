@@ -61,16 +61,9 @@ public class PageCommand implements Command {
         HttpSession session = request.getSession(false);
         session.setAttribute("searchCriteria", searchCriteria);
 
-        List<News> newsList;
-        try {
-            newsList = newsService.search(searchCriteria);
-        } catch (ServiceException e) {
-            logger.error("Failed to execute page command", e);
-            response.sendRedirect("/news-client/404");
-            return;
-        }
         NewsListInfo newsListInfo;
         try {
+            List<News> newsList = newsService.search(searchCriteria);
             newsListInfo = infoUtils.getNewsListInfo(newsList, searchCriteria);
         } catch (ServiceException e) {
             logger.error("Failed to execute page command", e);

@@ -36,8 +36,7 @@ public class TagsController {
     public List<Tag> getAll() throws ServiceException {
         logger.info("All tags GET request");
 
-        List<Tag> allTags = tagService.findAll();
-        return allTags;
+        return tagService.findAll();
     }
 
 
@@ -55,8 +54,8 @@ public class TagsController {
 
         boolean exists = tagService.exists(tag);
         if (!exists) {
-            tag = tagService.add(tag);
-            return tag.getTagId();
+            Tag savedTag = tagService.add(tag);
+            return savedTag.getTagId();
         }
         return null;
     }

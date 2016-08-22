@@ -33,7 +33,7 @@ public class UserRepositoryJdbcImpl implements UserRepositoryJdbc {
 
 
     @Override
-    public User save(User user) throws DaoException {
+    public User save(User user) {
         Connection connection = null;
         PreparedStatement preparedStatement = null;
         try {
@@ -70,7 +70,7 @@ public class UserRepositoryJdbcImpl implements UserRepositoryJdbc {
 
 
     @Override
-    public User findOne(Long userId) throws DaoException {
+    public User findOne(Long userId) {
         Connection connection = null;
         PreparedStatement preparedStatement = null;
         User user = null;
@@ -101,7 +101,7 @@ public class UserRepositoryJdbcImpl implements UserRepositoryJdbc {
 
 
     @Override
-    public void delete(User user) throws DaoException {
+    public void delete(User user) {
         Connection connection = null;
         PreparedStatement preparedStatement = null;
         try {
@@ -122,7 +122,7 @@ public class UserRepositoryJdbcImpl implements UserRepositoryJdbc {
 
 
     @Override
-    public String userNameByLogin(String login) throws DaoException {
+    public String userNameByLogin(String login) {
         Connection connection = null;
         PreparedStatement preparedStatement = null;
         String userName = null;

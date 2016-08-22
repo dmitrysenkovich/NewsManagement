@@ -39,8 +39,7 @@ public class TagRepositoryJpaImpl implements TagRepositoryJpaCustom {
     public List<Tag> findAllByNews(News news) {
         Query query = entityManager.createNativeQuery(FIND_ALL_BY_NEWS, Tag.class);
         query.setParameter(1, news.getNewsId());
-        List<Tag> tagsByNews = query.getResultList();
-        return tagsByNews;
+        return query.getResultList();
     }
 
 

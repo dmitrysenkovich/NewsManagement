@@ -49,20 +49,20 @@ public class CommandBuilder {
     public Command getCommand(HttpServletRequest request) {
         String uri = request.getRequestURI();
         String method = request.getMethod();
-        if (uri.equals("/news-client/") && method.equals("GET"))
+        if ("/news-client/".equals(uri) && "GET".equals(method))
             return newsListCommand;
-        else if (uri.equals("/news-client/news/reset") && method.equals("GET"))
+        else if ("/news-client/news/reset".equals(uri) && "GET".equals(method))
             return resetCommand;
-        else if (uri.equals("/news-client/news/filter") && method.equals("GET"))
+        else if ("/news-client/news/filter".equals(uri) && "GET".equals(method))
             return filterCommand;
-        else if (uri.equals("/news-client/news/page") && method.equals("GET"))
+        else if ("/news-client/news/page".equals(uri) && "GET".equals(method))
             return pageCommand;
-        else if (uri.equals("/news-client/news/previous") && method.equals("GET"))
+        else if ("/news-client/news/previous".equals(uri) && "GET".equals(method))
             return previousNewsCommand;
-        else if (uri.equals("/news-client/news/next") && method.equals("GET"))
+        else if ("/news-client/news/next".equals(uri) && "GET".equals(method))
             return nextNewsCommand;
-        else if (uri.startsWith("/news-client/news/") && method.equals("GET")) {
-            int idIndex = uri.lastIndexOf("/");
+        else if ("/news-client/news/".startsWith(uri) && "GET".equals(method)) {
+            int idIndex = uri.lastIndexOf('/');
             String newsIdInString = uri.substring(idIndex + 1);
             Long newsId = null;
             try {
@@ -71,10 +71,10 @@ public class CommandBuilder {
             if (newsId != null)
                 return newsCommand;
         }
-        else if (uri.equals("/news-client/comment/add") && method.equals("POST"))
+        else if ("/news-client/comment/add".equals(uri) && "POST".equals(method))
             return commentCommand;
-        else if (uri.equals("/news-client/400") || uri.equals("/news-client/403") ||
-                uri.equals("/news-client/404") || uri.equals("/news-client/500"))
+        else if ("/news-client/400".equals(uri) || "/news-client/403".equals(uri) ||
+                "/news-client/404".equals(uri) || "/news-client/500".equals(uri))
             return errorCommand;
         return null;
     }

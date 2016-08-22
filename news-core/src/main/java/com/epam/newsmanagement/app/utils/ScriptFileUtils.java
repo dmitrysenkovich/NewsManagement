@@ -43,8 +43,7 @@ public class ScriptFileUtils {
      */
     public String getTestSearchScriptDirectoryPath() {
         String searchScriptDirectoryPath = getSearchScriptDirectoryPath();
-        String testSearchScriptDirectoryPath = searchScriptDirectoryPath.replace("classes", "test-classes");
-        return testSearchScriptDirectoryPath;
+        return searchScriptDirectoryPath.replace("classes", "test-classes");
     }
 
 

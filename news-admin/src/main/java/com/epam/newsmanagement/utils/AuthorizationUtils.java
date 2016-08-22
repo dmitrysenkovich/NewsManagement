@@ -15,7 +15,6 @@ public class AuthorizationUtils {
     public String getCurrentUserLogin() {
         Authentication auth = SecurityContextHolder.getContext().getAuthentication();
         UserDetails userDetails = (UserDetails) auth.getPrincipal();
-        String login = userDetails.getUsername();
-        return login;
+        return userDetails.getUsername();
     }
 }

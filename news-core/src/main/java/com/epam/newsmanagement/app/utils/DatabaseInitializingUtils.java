@@ -35,6 +35,12 @@ public class DatabaseInitializingUtils {
             "(SELECT COUNT(*) FROM AUTHORS AUTHORS_COUNT), (SELECT COUNT(*) FROM ROLES ROLES_COUNT)";
     private static final String DATA_FILE_NAME = "data.sql";
 
+    /**
+     * Utility class with static methods only
+     * shouldn't have public constructor.
+     */
+    private DatabaseInitializingUtils() {}
+
 
     /**
      * Checks if database doesn't have rows.
@@ -132,7 +138,7 @@ public class DatabaseInitializingUtils {
             currentQueryNumber++;
             if (currentQueryNumber % 5000 == 0)
                 logger.info("Inserted " + currentQueryNumber + " queries");
-            if(!query.equals(""))
+            if(!"".equals(query))
             {
                 boolean newsInsert = query.contains("INSERT INTO NEWS VALUES");
                 boolean commentsInsert = query.contains("INSERT INTO COMMENTS VALUES");

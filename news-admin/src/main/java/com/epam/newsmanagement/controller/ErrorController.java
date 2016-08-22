@@ -30,6 +30,8 @@ public class ErrorController {
 
     /**
      * Dispatches access various types of errors.
+     * @param request http request.
+     * @param locale current locale.
      * @return error message.
      */
     @RequestMapping(value = {"/400", "/403", "/404", "/500" }, method = { RequestMethod.GET, RequestMethod.POST })

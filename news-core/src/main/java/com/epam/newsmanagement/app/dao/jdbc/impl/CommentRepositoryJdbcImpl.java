@@ -38,7 +38,7 @@ public class CommentRepositoryJdbcImpl implements CommentRepositoryJdbc {
 
 
     @Override
-    public Comment save(Comment comment) throws DaoException {
+    public Comment save(Comment comment) {
         Connection connection = null;
         PreparedStatement preparedStatement = null;
         try {
@@ -71,7 +71,7 @@ public class CommentRepositoryJdbcImpl implements CommentRepositoryJdbc {
 
 
     @Override
-    public Comment findOne(Long commentId) throws DaoException {
+    public Comment findOne(Long commentId) {
         Connection connection = null;
         PreparedStatement preparedStatement = null;
         Comment comment = null;
@@ -101,7 +101,7 @@ public class CommentRepositoryJdbcImpl implements CommentRepositoryJdbc {
 
 
     @Override
-    public void delete(Comment comment) throws DaoException {
+    public void delete(Comment comment) {
         Connection connection = null;
         PreparedStatement preparedStatement = null;
         try {
@@ -122,7 +122,7 @@ public class CommentRepositoryJdbcImpl implements CommentRepositoryJdbc {
 
 
     @Override
-    public void deleteAll(List<Comment> comments) throws DaoException {
+    public void deleteAll(List<Comment> comments) {
         Connection connection = null;
         PreparedStatement preparedStatement = null;
         try {
@@ -144,7 +144,7 @@ public class CommentRepositoryJdbcImpl implements CommentRepositoryJdbc {
 
 
     @Override
-    public Long countAllByNews(News news) throws DaoException {
+    public Long countAllByNews(News news) {
         Connection connection = null;
         PreparedStatement preparedStatement = null;
         Long count = -1L;
@@ -168,7 +168,7 @@ public class CommentRepositoryJdbcImpl implements CommentRepositoryJdbc {
 
 
     @Override
-    public List<Comment> findAllByNews(News news) throws DaoException {
+    public List<Comment> findAllByNews(News news) {
         Connection connection = null;
         PreparedStatement preparedStatement = null;
         List<Comment> commentsByNews = null;

@@ -55,6 +55,7 @@ public class AuthorizationController {
     /**
      * Gets authenticated user name.
      * @throws ServiceException
+     * @return user name.
      */
     @RequestMapping(value = "/username", method = RequestMethod.GET)
     @ResponseBody

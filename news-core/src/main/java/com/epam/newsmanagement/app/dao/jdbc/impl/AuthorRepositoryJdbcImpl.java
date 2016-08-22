@@ -41,7 +41,7 @@ public class AuthorRepositoryJdbcImpl implements AuthorRepositoryJdbc {
 
 
     @Override
-    public Author save(Author author) throws DaoException {
+    public Author save(Author author) {
         Connection connection = null;
         PreparedStatement preparedStatement = null;
         try {
@@ -74,7 +74,7 @@ public class AuthorRepositoryJdbcImpl implements AuthorRepositoryJdbc {
 
 
     @Override
-    public Author findOne(Long authorId) throws DaoException {
+    public Author findOne(Long authorId) {
         Connection connection = null;
         PreparedStatement preparedStatement = null;
         Author author = null;
@@ -101,7 +101,7 @@ public class AuthorRepositoryJdbcImpl implements AuthorRepositoryJdbc {
 
 
     @Override
-    public List<Author> findAllByNews(News news) throws DaoException {
+    public List<Author> findAllByNews(News news) {
         Connection connection = null;
         PreparedStatement preparedStatement = null;
         List<Author> authorsByNews = null;
@@ -131,7 +131,7 @@ public class AuthorRepositoryJdbcImpl implements AuthorRepositoryJdbc {
 
 
     @Override
-    public List<Author> findNotExpired() throws DaoException {
+    public List<Author> findNotExpired() {
         Connection connection = null;
         Statement statement = null;
         List<Author> notExpiredAuthors = null;
@@ -160,7 +160,7 @@ public class AuthorRepositoryJdbcImpl implements AuthorRepositoryJdbc {
 
 
     @Override
-    public List<Author> findAll() throws DaoException {
+    public List<Author> findAll() {
         Connection connection = null;
         Statement statement = null;
         List<Author> allAuthors = null;
@@ -189,7 +189,7 @@ public class AuthorRepositoryJdbcImpl implements AuthorRepositoryJdbc {
 
 
     @Override
-    public boolean exists(String authorName) throws DaoException {
+    public boolean exists(String authorName) {
         Connection connection = null;
         PreparedStatement preparedStatement = null;
         boolean exists = true;
@@ -212,7 +212,7 @@ public class AuthorRepositoryJdbcImpl implements AuthorRepositoryJdbc {
 
 
     @Override
-    public void addAll(News news, List<Author> authors) throws DaoException {
+    public void addAll(News news, List<Author> authors) {
         Connection connection = null;
         PreparedStatement preparedStatement = null;
         try {
@@ -235,7 +235,7 @@ public class AuthorRepositoryJdbcImpl implements AuthorRepositoryJdbc {
 
 
     @Override
-    public void deleteAllRelationsByNews(News news) throws DaoException {
+    public void deleteAllRelationsByNews(News news) {
         Connection connection = null;
         PreparedStatement preparedStatement = null;
         try {

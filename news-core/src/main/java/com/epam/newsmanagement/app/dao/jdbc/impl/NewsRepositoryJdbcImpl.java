@@ -87,7 +87,7 @@ public class NewsRepositoryJdbcImpl implements NewsRepositoryJdbc {
 
 
     @Override
-    public News findOne(Long newsId) throws DaoException {
+    public News findOne(Long newsId) {
         Connection connection = null;
         PreparedStatement preparedStatement = null;
         News news = null;
@@ -117,7 +117,7 @@ public class NewsRepositoryJdbcImpl implements NewsRepositoryJdbc {
 
 
     @Override
-    public void delete(News news) throws DaoException {
+    public void delete(News news) {
         Connection connection = null;
         PreparedStatement preparedStatement = null;
         try {
@@ -138,7 +138,7 @@ public class NewsRepositoryJdbcImpl implements NewsRepositoryJdbc {
 
 
     @Override
-    public List<News> search(final String SEARCH_CRITERIA_QUERY) throws DaoException {
+    public List<News> search(final String SEARCH_CRITERIA_QUERY) {
         Connection connection = null;
         Statement statement = null;
         List<News> fitNews = null;
@@ -170,7 +170,7 @@ public class NewsRepositoryJdbcImpl implements NewsRepositoryJdbc {
 
 
     @Override
-    public List<News> findAllSorted() throws DaoException {
+    public List<News> findAllSorted() {
         Connection connection = null;
         Statement statement = null;
         List<News> allNews = null;
@@ -202,7 +202,7 @@ public class NewsRepositoryJdbcImpl implements NewsRepositoryJdbc {
 
 
     @Override
-    public Long countAll() throws DaoException {
+    public Long countAll() {
         Connection connection = null;
         Statement statement = null;
         Long count = -1L;
@@ -224,7 +224,7 @@ public class NewsRepositoryJdbcImpl implements NewsRepositoryJdbc {
 
 
     @Override
-    public Long countPagesBySearchCriteria(final String COUNT_PAGES_BY_SEARCH_CRITERIA_QUERY) throws DaoException {
+    public Long countPagesBySearchCriteria(final String COUNT_PAGES_BY_SEARCH_CRITERIA_QUERY) {
         Connection connection = null;
         Statement statement = null;
         Long fitNewsCount = -1L;
@@ -246,7 +246,7 @@ public class NewsRepositoryJdbcImpl implements NewsRepositoryJdbc {
 
 
     @Override
-    public void deleteAll(List<Long> newsIds) throws DaoException {
+    public void deleteAll(List<Long> newsIds) {
         Connection connection = null;
         PreparedStatement preparedStatement = null;
         try {
@@ -268,7 +268,7 @@ public class NewsRepositoryJdbcImpl implements NewsRepositoryJdbc {
 
 
     @Override
-    public Long rowNumberBySearchCriteria(final String ROW_NUMBER_BY_SEARCH_CRITERIA_QUERY) throws DaoException {
+    public Long rowNumberBySearchCriteria(final String ROW_NUMBER_BY_SEARCH_CRITERIA_QUERY) {
         Connection connection = null;
         Statement statement = null;
         Long newsRowNumber = -1L;

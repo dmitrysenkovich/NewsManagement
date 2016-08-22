@@ -17,6 +17,7 @@ public interface AuthorRepositoryJpa extends AuthorRepository, JpaRepository<Aut
      * Returns all not expired authors.
      * @return all not expired authors.
      */
+    @Override
     @Query("from Author A where A.expired is null")
     List<Author> findNotExpired();
 
@@ -24,6 +25,7 @@ public interface AuthorRepositoryJpa extends AuthorRepository, JpaRepository<Aut
      * Forbids author deleting.
      * @param author author.
      */
+    @Override
     default void delete(Author author) {
         throw new NotImplementedException("");
     }

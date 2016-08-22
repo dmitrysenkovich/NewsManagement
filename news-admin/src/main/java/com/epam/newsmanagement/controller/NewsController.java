@@ -17,7 +17,6 @@ import org.apache.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.orm.jpa.JpaOptimisticLockingFailureException;
 import org.springframework.stereotype.Controller;
-import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
@@ -67,18 +66,22 @@ public class NewsController {
         SearchCriteria searchCriteria = new SearchCriteria();
         if (searchCriteriaInString != null)
             searchCriteria = objectMapper.readValue(searchCriteriaInString, SearchCriteria.class);
-        NewsInfo newsInfo = infoUtils.getNewsInfo(newsId, searchCriteria);
-        return newsInfo;
+        return infoUtils.getNewsInfo(newsId, searchCriteria);
     }
 
-
+    /**
+     * Returns info enough for editing news.
+     * @param newsId id of the news that
+     * will be edited.
+     * @return news edit info.
+     * @throws ServiceException
+     */
     @RequestMapping(value = "/news/edit", method = RequestMethod.GET)
     @ResponseBody
     public NewsEditInfo newsEdit(@RequestParam Long newsId) throws ServiceException {
         logger.info("News edit GET request");
 
-        NewsEditInfo newsEditInfo = infoUtils.getNewsEditInfo(newsId);
-        return newsEditInfo;
+        return infoUtils.getNewsEditInfo(newsId);
     }
 
 
@@ -101,9 +104,8 @@ public class NewsController {
         session.setAttribute("searchCriteria", searchCriteria);
 
         List<News> newsList = newsService.search(searchCriteria);
-        NewsListInfo newsListInfo = infoUtils.getNewsListInfo(newsList, searchCriteria);
 
-        return newsListInfo;
+        return infoUtils.getNewsListInfo(newsList, searchCriteria);
     }
 
 
@@ -129,9 +131,7 @@ public class NewsController {
         session.setAttribute("searchCriteria", searchCriteria);
 
         List<News> newsList = newsService.search(searchCriteria);
-        NewsListInfo newsListInfo = infoUtils.getNewsListInfo(newsList, searchCriteria);
-
-        return newsListInfo;
+        return infoUtils.getNewsListInfo(newsList, searchCriteria);
     }
 
 
@@ -161,9 +161,7 @@ public class NewsController {
         session.setAttribute("searchCriteria", searchCriteria);
 
         List<News> newsList = newsService.search(searchCriteria);
-        NewsListInfo newsListInfo = infoUtils.getNewsListInfo(newsList, searchCriteria);
-
-        return newsListInfo;
+        return infoUtils.getNewsListInfo(newsList, searchCriteria);
     }
 
 
@@ -206,9 +204,7 @@ public class NewsController {
         session.setAttribute("searchCriteria", searchCriteria);
 
         List<News> newsList = newsService.search(searchCriteria);
-        NewsListInfo newsListInfo = infoUtils.getNewsListInfo(newsList, searchCriteria);
-
-        return newsListInfo;
+        return infoUtils.getNewsListInfo(newsList, searchCriteria);
     }
 
 
@@ -216,6 +212,7 @@ public class NewsController {
      * Saves new news of updates existing.
      * @param requestBody new news
      * in JSON string.
+     * @param response http response.
      * @return news id.
      * @throws IOException
      * @throws ServiceException

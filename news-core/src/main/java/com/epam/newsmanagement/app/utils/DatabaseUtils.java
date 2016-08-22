@@ -18,7 +18,7 @@ public class DatabaseUtils {
      * close statement or connection.
      */
     public void closeConnectionAndStatement(Statement statement,
-                                            Connection connection) throws DaoException {
+                                            Connection connection) {
         if (statement != null) {
             try {
                 statement.close();

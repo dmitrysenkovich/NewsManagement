@@ -15,6 +15,9 @@ import java.io.IOException;
  */
 @WebFilter("/news-client/*")
 public class LocaleFilter implements Filter {
+    /**
+     * A stub for implementing Filter interface.
+     */
     @Override
     public void init(FilterConfig filterConfig) throws ServletException {}
 
@@ -28,6 +31,9 @@ public class LocaleFilter implements Filter {
         chain.doFilter(request, response);
     }
 
+    /**
+     * A stub for implementing Filter interface.
+     */
     @Override
     public void destroy() {}
 }

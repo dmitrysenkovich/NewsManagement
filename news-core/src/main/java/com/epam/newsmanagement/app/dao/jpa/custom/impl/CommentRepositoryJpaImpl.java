@@ -24,7 +24,6 @@ public class CommentRepositoryJpaImpl implements CommentRepositoryJpaCustom {
     public List<Comment> findAllByNews(News news) {
         Query query = entityManager.createNativeQuery(FIND_ALL_BY_NEWS, Comment.class);
         query.setParameter(1, news.getNewsId());
-        List<Comment> commentsByNews = query.getResultList();
-        return commentsByNews;
+        return query.getResultList();
     }
 }

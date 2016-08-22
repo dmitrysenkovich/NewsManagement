@@ -11,8 +11,6 @@ public class Comment {
     private String commentText;
     private Timestamp creationDate;
 
-    public Comment() {}
-
     public Long getCommentId() {
         return commentId;
     }

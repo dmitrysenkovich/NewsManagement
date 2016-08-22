@@ -1,7 +1,6 @@
 package com.epam.newsmanagement.app.dao.jpa.custom;
 
 import com.epam.newsmanagement.app.model.News;
-import com.epam.newsmanagement.app.utils.SearchCriteria;
 
 import java.util.List;
 
